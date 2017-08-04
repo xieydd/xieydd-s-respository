@@ -22,14 +22,27 @@ import java.util.Random;
 7.希尔排序：不稳定，时间复杂度 平均时间 O(nlogn) 最差时间O(n^s) 1<s<2
     在直接插入排序算法中，每次插入一个数，使有序序列只增加1个节点，并且对插入下一个数没有提供任何帮助。如果比较相隔较远距离（称为 增量）的数，使得数移动时能跨过多个元素，则进行一次比较就可能消除多个元素交换。D.L.shell于1959年在以他名字命名的排序算法中实现了这一思想。算法先将要排序的一组数按某个增量d分成若干组，每组中记录的下标相差d.对每组中全部元素进行排序，然后再用一个较小的增量对它进行，在每组中再进行排序。当增量减到1时，整个要排序的数被分成一组，排序完成。
  */
+/**
+ * 
+
+* @ClassName: Sort 
+
+* @Description: TODO(实现一些排序算法，并简单的测试速度) 
+
+* @author xieydd xieydd@gmail.com  
+
+* @date 2017-8-4 下午3:06:17 
+
+*
+ */
 public class Sort {
 	public static void main(String[] args) {
 		int[] src = getRandomIntArr(100000);
 		long startTimes = System.currentTimeMillis();
 
 		//insertSort(src);//100000个数排序花费时间4秒
-		shellSort(src);//100000个数排序花费时间1秒
-		
+		//shellSort(src);//100000个数排序花费时间1秒
+		selectSort(src);//100000个数排序花费时间4秒
 		
 		long endTimes = System.currentTimeMillis();
 		long times = endTimes - startTimes;
@@ -38,9 +51,62 @@ public class Sort {
 		System.out.println(src.length+"个数排序花费时间"+times/1000+"秒");
 	}
 
+	
 	/**
-	 * 希尔排序（最小增量排序）
-	 * 实际上是分组插入的方法
+	 *  
+	
+	* @Title: selectSort 
+	
+	* @Description: TODO(简单选择排序) 
+	
+	* @param @param src    设定文件 
+	
+	* @return void    返回类型 
+	
+	* @throws
+	 */
+	public static void selectSort(int[] src) {
+		
+		int position=0;
+		for(int i =0;i<src.length;i++) {
+			int temp = src[i];
+			position = i;
+			int j = i+1;
+			for(;j<src.length;j++) {
+				if(temp>src[j]){
+					temp = src[j];
+					position = j;
+				}
+			}
+			src[position] = src[i];
+			src[i] = temp;
+		}
+		showArr(src);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 
+	
+	* @Title: shellSort 
+	
+	* @Description: TODO(希尔排序（最小增量排序）实际上是分组插入的方法) 
+	
+	* @param @param src    设定文件 
+	
+	* @return void    返回类型 
+	
+	* @throws
 	 */
 	public static void shellSort(int[] src) {
 
@@ -57,8 +123,8 @@ public class Sort {
 					j = j -d;
 				}
 				src[j+d] = temp;
-//				System.out.println("希尔排序：第" + i + "次排序为：");
-//				showArr(src);
+				//System.out.println("希尔排序：第" + i + "次排序为：");
+				//showArr(src);
 			}
 			 d = d/2;
 		}
@@ -66,10 +132,17 @@ public class Sort {
 	}
 
 	/**
-	 * description:简单插入算法 注意for循环出来的条件和j的设定 取出数据和前面所有的相比较出现小于的继续，出现大于的化赋值到指定的位置
 	 * 
-	 * @param src
-	 * 
+	
+	* @Title: insertSort 
+	
+	* @Description: TODO(简单插入算法 注意for循环出来的条件和j的设定 取出数据和前面所有的相比较出现小于的继续，出现大于的化赋值到指定的位置) 
+	
+	* @param @param src    设定文件 
+	
+	* @return void    返回类型 
+	
+	* @throws
 	 */
 	public static void insertSort(int[] src) {
 
@@ -81,19 +154,33 @@ public class Sort {
 				src[j + 1] = src[j];
 			}
 			src[j + 1] = temp;
-//			System.out.println("插入排序：第" + i + "次排序为：");
-//			showArr(src);
+			//System.out.println("插入排序：第" + i + "次排序为：");
+			//showArr(src);
 		}
 		showArr(src);
 	}
 
-	// 创建需要排序的数组
+	
 	/*
 	 * public static int[] getIntArr() { int[] a = { 9, 5, 3, 7, 1, 2, 4, 6, 8,
 	 * 13, 78, 45, 90, 101, 111, 34, 43 }; return a; }
 	 */
-	// 当然是可以取出数据往里面放，烦死要判断数是否在里面，如果数据量大的化会非常占内存，改进(测试得到长度为n且数组数值为1到n且不能重复)
-	// 这种好处是,随机数所取范围逐步缩小,而且杜绝了大数据时集合执行删除操作时产生的瓶颈
+	/*当然是可以取出数据往里面放，烦死要判断数是否在里面，如果数据量大的化会非常占内存，改进(测试得到长度为n且数组数值为1到n且不能重复)
+	这种好处是,随机数所取范围逐步缩小,而且杜绝了大数据时集合执行删除操作时产生的瓶颈*/
+	/**
+	 * 
+	
+	* @Title: getRandomIntArr 
+	
+	* @Description: TODO(创建需要排序的数组:这里使用容器的概念，而不是简单的判断加入) 
+	
+	* @param @param n
+	* @param @return    设定文件 
+	
+	* @return int[]    返回类型 
+	
+	* @throws
+	 */
 	public static int[] getRandomIntArr(int n) {
 
 		// 得到两个容器
@@ -118,7 +205,19 @@ public class Sort {
 		return arrayB;
 	}
 
-	// 显示数组
+	/**
+	 * 
+	
+	* @Title: showArr 
+	
+	* @Description: TODO(显示打印数组) 
+	
+	* @param @param arr    设定文件 
+	
+	* @return void    返回类型 
+	
+	* @throws
+	 */
 	public static void showArr(int[] arr) {
 		for (int i = 0; i < arr.length; i++) {
 			System.out.print(arr[i]);
