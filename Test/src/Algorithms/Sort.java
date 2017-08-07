@@ -37,14 +37,15 @@ import java.util.Random;
  */
 public class Sort {
 	public static void main(String[] args) {
-		int[] src = getRandomIntArr(100000);
+		int[] src = getRandomIntArr(10000000);
 		long startTimes = System.currentTimeMillis();
 
 		// insertSort(src);//100000个数排序花费时间4秒
 		// shellSort(src);// 100000个数排序花费时间1秒
 		// selectSort(src);//100000个数排序花费时间4秒
-		bubbleSort(src);// 100000个数排序花费时间21秒
-
+		//bubbleSort(src);// 100000个数排序花费时间21秒
+		quickSort(src, 0, src.length-1);//10000000个数排序花费时间1秒
+		
 		long endTimes = System.currentTimeMillis();
 		long times = endTimes - startTimes;
 		// SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -54,22 +55,40 @@ public class Sort {
 
 	/**
 	 * 
-	
-	* @Title: quickSort 
-	
-	* @Description: TODO(快速排序) 
-	
-	* @param @param src    设定文件 
-	
-	* @return void    返回类型 
-	
-	* @throws
+	 * 
+	 * @Title: quickSort
+	 * 
+	 * @Description: TODO(快速排序)
+	 * 
+	 * @param @param src 设定文件
+	 * 
+	 * @return void 返回类型
+	 * 
+	 * @throws
 	 */
-	public static void quickSort(int[] src) {
-		
+	public static void quickSort(int[] src,int low,int high) {
+		if(low<high) {
+			int middle = getMiddle(src, low, high);
+			quickSort(src, low, middle-1);
+			quickSort(src, middle+1, high);
+		}
 	}
-	
-	
+	public static int getMiddle(int[] list, int low, int high) {
+		int tmp = list[low];//选择一个作为中轴
+		while (low < high) {
+			while (low<high&&list[high] > tmp) {
+				high--;
+			}
+			list[low] = list[high];
+			while (low<high&&list[low] <= tmp) {
+				low++;
+			}
+			list[high] = list[low];
+		}
+		list[low] = tmp;
+		return low;
+	}
+
 	/**
 	 * 
 	 * 
@@ -86,8 +105,9 @@ public class Sort {
 	public static void bubbleSort(int[] src) {
 		int temp = 0;
 		for (int i = 0; i < src.length - 1; i++) {
-			for (int j = 0; j < src.length - 1 - i; j++) {
+			for (int j = 0; j < src.length - 1 - i; j++) {//注意将最大的放到后面就不管了
 				if (src[j] > src[j + 1]) {
+					//大放后小放前
 					temp = src[j];
 					src[j] = src[j + 1];
 					src[j + 1] = temp;
@@ -117,7 +137,7 @@ public class Sort {
 			position = i;
 			int j = i + 1;
 			for (; j < src.length; j++) {
-				if (temp > src[j]) {
+				if (temp > src[j]) {//将最小的选择出来并记得其位号
 					temp = src[j];
 					position = j;
 				}
