@@ -37,15 +37,16 @@ import java.util.Random;
  */
 public class Sort {
 	public static void main(String[] args) {
-		int[] src = getRandomIntArr(10000000);
+		int[] src = getRandomIntArr(100);
 		long startTimes = System.currentTimeMillis();
 
 		// insertSort(src);//100000个数排序花费时间4秒
 		// shellSort(src);// 100000个数排序花费时间1秒
 		// selectSort(src);//100000个数排序花费时间4秒
-		//bubbleSort(src);// 100000个数排序花费时间21秒
-		quickSort(src, 0, src.length-1);//10000000个数排序花费时间1秒
-		
+		// bubbleSort(src);// 100000个数排序花费时间21秒
+		// quickSort(src, 0, src.length-1);//10000000个数排序花费时间1秒
+		mergingSort(src, 0, src.length - 1);
+
 		long endTimes = System.currentTimeMillis();
 		long times = endTimes - startTimes;
 		// SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -56,37 +57,98 @@ public class Sort {
 	/**
 	 * 
 	 * 
-	 * @Title: quickSort
+	 * @Title: mergingSort
 	 * 
-	 * @Description: TODO(快速排序)
+	 * @Description: TODO(归并排序)将两个（或两个以上）有序表合并成一个新的有序表 即把待排序序列分为若干个子序列，每个子序列是有序的。然后再把有序子序列合并为整体有序序列
 	 * 
-	 * @param @param src 设定文件
+	 * @param @param src
+	 * @param @param left
+	 * @param @param right 设定文件
 	 * 
 	 * @return void 返回类型
 	 * 
 	 * @throws
 	 */
-	public static void quickSort(int[] src,int low,int high) {
-		if(low<high) {
-			int middle = getMiddle(src, low, high);
-			quickSort(src, low, middle-1);
-			quickSort(src, middle+1, high);
+	public static void mergingSort(int[] src, int left, int right) {
+		if (left < right) {
+			System.out.println(left + "," + right);
+			int center = (left + right) / 2;
+			mergingSort(src, left, center);
+			mergingSort(src, center + 1, right);
+			//左右合并
+			merge(src, left, right, center);
 		}
 	}
+
+	public static void merge(int[] src, int left, int right, int center) {
+		System.out.println(left + "," + center + "," + right);
+
+		int[] tmpArr = new int[right-left+1];
+		//左指针
+		int third = left;
+		//右指针
+		int mid = center + 1;
+		int tmp = left;
+		//将较小的数移到新数组中
+		while (left <= center && mid <= right) {
+			if (src[left] < src[mid]) {
+				tmpArr[third++] = src[left++];
+			} else {
+				tmpArr[third++] = src[mid++];
+			}
+		}
+		//将左边剩余的数移入数组
+		while (left <= center) {
+			tmpArr[third++] = src[left++];
+		}
+		//将右边剩余的数移入数组
+		while (mid <= right) {
+			tmpArr[third++] = src[left++];
+		}
+		//将新数组覆盖原数组
+		while (tmp <= right) {
+			src[tmp++] = tmpArr[tmp++];
+		}
+		showArr(src);
+	}
+
+	/**
+	 * 
+	 * 
+	 * @Title: quickSort
+	 * 
+	 * @Description: TODO(快速排序)
+	 * 
+	 * @param @param src
+	 * @param @param low
+	 * @param @param high 设定文件
+	 * 
+	 * @return void 返回类型
+	 * 
+	 * @throws
+	 */
+	public static void quickSort(int[] src, int low, int high) {
+		if (low < high) {
+			int middle = getMiddle(src, low, high);
+			quickSort(src, low, middle - 1);
+			quickSort(src, middle + 1, high);
+		}
+	}
+
 	public static int getMiddle(int[] list, int low, int high) {
-		int tmp = list[low];//选择一个作为中轴
+		int tmp = list[low];// 选择一个作为中轴
 		while (low < high) {
-			while (low<high&&list[high] > tmp) {
+			while (low < high && list[high] > tmp) {
 				high--;
 			}
 			list[low] = list[high];
-			while (low<high&&list[low] <= tmp) {
+			while (low < high && list[low] <= tmp) {
 				low++;
 			}
 			list[high] = list[low];
 		}
-		list[low] = tmp;
-		return low;
+		list[low] = tmp;// 循环过后还是将原先设定的第一个数放到中轴位
+		return low;// 得到中位数
 	}
 
 	/**
@@ -105,9 +167,9 @@ public class Sort {
 	public static void bubbleSort(int[] src) {
 		int temp = 0;
 		for (int i = 0; i < src.length - 1; i++) {
-			for (int j = 0; j < src.length - 1 - i; j++) {//注意将最大的放到后面就不管了
+			for (int j = 0; j < src.length - 1 - i; j++) {// 注意将最大的放到后面就不管了
 				if (src[j] > src[j + 1]) {
-					//大放后小放前
+					// 大放后小放前
 					temp = src[j];
 					src[j] = src[j + 1];
 					src[j + 1] = temp;
@@ -137,7 +199,7 @@ public class Sort {
 			position = i;
 			int j = i + 1;
 			for (; j < src.length; j++) {
-				if (temp > src[j]) {//将最小的选择出来并记得其位号
+				if (temp > src[j]) {// 将最小的选择出来并记得其位号
 					temp = src[j];
 					position = j;
 				}
