@@ -21,6 +21,8 @@ import java.util.Random;
  快速排序是对冒泡排序的一种本质改进。它的基本思想是通过一趟扫描后，使得排序序列的长度能大幅度地减少。在冒泡排序中，一次扫描只能确保最大数值的数移到正确位置，而待排序序列的长度可能只减少1。快速排序通过一趟扫描，就能确保某个数（以它为基准点吧）的左边各数都比它小，右边各数都比它大。然后又用同样的方法处理它左右两边的数，直到基准点的左右只有一个元素为止。
  7.希尔排序：不稳定，时间复杂度 平均时间 O(nlogn) 最差时间O(n^s) 1<s<2
  在直接插入排序算法中，每次插入一个数，使有序序列只增加1个节点，并且对插入下一个数没有提供任何帮助。如果比较相隔较远距离（称为 增量）的数，使得数移动时能跨过多个元素，则进行一次比较就可能消除多个元素交换。D.L.shell于1959年在以他名字命名的排序算法中实现了这一思想。算法先将要排序的一组数按某个增量d分成若干组，每组中记录的下标相差d.对每组中全部元素进行排序，然后再用一个较小的增量对它进行，在每组中再进行排序。当增量减到1时，整个要排序的数被分成一组，排序完成。
+ 8.基数排序：稳定 ，时间复杂度为O(nlog(r)m)r为采取的基数，m为堆数；非比较型整数排序算法，将整数按照位数切割成不同的数字，这里的整数也可以是字符串比如名字和时间
+ 将所有待比较数值(正整数)统一为同样的数位长度,数位较短的数前面补零. 然后, 从最低位开始, 依次进行一次排序.这样从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列.基数排序的方式可以采用LSD（Least significantdigital）或MSD（Most significantdigital），LSD的排序方式由键值的最右边开始，适合低位数，而MSD则相反，由键值的最左边开始适合高位数
  */
 /**
  * 
@@ -37,23 +39,63 @@ import java.util.Random;
  */
 public class Sort {
 	public static void main(String[] args) {
-		int[] src = getRandomIntArr(100);
+		int[] src = getRandomIntArr(1000000);
 		long startTimes = System.currentTimeMillis();
 
 		// insertSort(src);//100000个数排序花费时间4秒
 		// shellSort(src);// 100000个数排序花费时间1秒
 		// selectSort(src);//100000个数排序花费时间4秒
-		// bubbleSort(src);// 100000个数排序花费时间21秒
-		// quickSort(src, 0, src.length-1);//10000000个数排序花费时间1秒
-		mergingSort(src, 0, src.length - 1);
-
+		//bubbleSort(src);// 100000个数排序花费时间21秒
+		//quickSort(src, 0, src.length-1);//10000000个数排序花费时间1秒
+		//mergingSort(src, 0, src.length - 1);//100000个数排序花费时间5秒
+		radixSort(src,src.length);//1000000个数排序花费时间17秒
+		
 		long endTimes = System.currentTimeMillis();
 		long times = endTimes - startTimes;
 		// SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		// String datas = data.format(new Date(times));
 		System.out.println(src.length + "个数排序花费时间" + times / 1000 + "秒");
 	}
-
+	
+	public static void radixSort(int[] src,int d){
+		
+		//代表位数对应的数
+		int n =1;
+		//保存每一位排序后的结果，用于下一次的排序的输入
+		int k =0;
+		
+		//保存每一次排序后的结果，这一位上排序结果相同的数字放在同一个桶里
+		int[][] bucket = new int[10][src.length];
+		//用于保存每一个桶中有多少个数字
+		int[] order = new int[src.length];
+		
+		
+		while(n<d){
+			for(int num:src) {//将数组中的数据放到相应的桶里
+				int digit = (num/n)%10;
+				bucket[digit][order[digit]] = num;
+				order[digit]++;//该位数为digit的个数
+			}
+			
+			for(int i =0;i<10;i++) {//将前一个循环生成的桶里数据覆盖到原数组中保存这一位排序的结果
+				if(order[i]!=0) {//只要桶里有数据
+					for(int j =0;j<order[i];j++) {
+						src[k] = bucket[i][j];
+						k++;
+					}
+				}
+				order[i]=0;//将桶里的计数置0，用于下一位的排序
+			}
+			n*=10;
+			k=0;//将k置0为下一轮保存位排序结果,因为每一次都排序所有的
+		}
+		showArr(src);
+	} 
+	
+	
+	
+	
+	
 	/**
 	 * 
 	 * 
@@ -70,48 +112,67 @@ public class Sort {
 	 * @throws
 	 */
 	public static void mergingSort(int[] src, int left, int right) {
-		if (left < right) {
-			System.out.println(left + "," + right);
-			int center = (left + right) / 2;
-			mergingSort(src, left, center);
-			mergingSort(src, center + 1, right);
-			//左右合并
-			merge(src, left, right, center);
+		if (left >= right) {
+			return;
 		}
+		//System.out.println(left + "," + right);
+		int center = (left + right) / 2;
+		//左边数组进行递归
+		mergingSort(src, left, center);
+		//右边数组进行递归
+		mergingSort(src, center + 1, right);
+		//左右合并
+		merge(src, left, right, center);
+		//showArr(src);
 	}
-
-	public static void merge(int[] src, int left, int right, int center) {
+	/**
+	 * 
+	* @Title: merge 
+	
+	* @Description: TODO 归并排序中进行调用，(归并:归并前的两个数组以及有序)
+	
+	* @param @param src
+	* @param @param left
+	* @param @param right
+	* @param @param center    设定文件 
+	
+	* @return void    返回类型 
+	
+	* @throws
+	 */
+	public static void merge(int[] data, int left, int right, int center) {
 		System.out.println(left + "," + center + "," + right);
 
-		int[] tmpArr = new int[right-left+1];
-		//左指针
-		int third = left;
+		int[] tmpArr = new int[data.length];
 		//右指针
 		int mid = center + 1;
+		//记录临时数组的索引 
+		int third = left;
+		//左指针
 		int tmp = left;
-		//将较小的数移到新数组中
+		
 		while (left <= center && mid <= right) {
-			if (src[left] < src[mid]) {
-				tmpArr[third++] = src[left++];
+			//将较小的数移到新数组中
+			if (data[left] <= data[mid]) {
+				tmpArr[third++] = data[left++];
 			} else {
-				tmpArr[third++] = src[mid++];
+				tmpArr[third++] = data[mid++];
 			}
+		}
+		//将剩余的部分依次放入临时数组
+		//将右边剩余的数移入数组
+		while (mid <= right) {
+			tmpArr[third++] = data[mid++];
 		}
 		//将左边剩余的数移入数组
 		while (left <= center) {
-			tmpArr[third++] = src[left++];
+			tmpArr[third++] = data[left++];
 		}
-		//将右边剩余的数移入数组
-		while (mid <= right) {
-			tmpArr[third++] = src[left++];
-		}
-		//将新数组覆盖原数组
+		//将新数组覆盖原数组(left到right的内容被复制到原数组)
 		while (tmp <= right) {
-			src[tmp++] = tmpArr[tmp++];
+			data[tmp] = tmpArr[tmp++];
 		}
-		showArr(src);
 	}
-
 	/**
 	 * 
 	 * 
@@ -330,7 +391,7 @@ public class Sort {
 		for (int i = 0; i < arr.length; i++) {
 			if (i < arr.length - 1) {
 				System.out.print(arr[i]);
-				System.out.print(", ");
+				System.out.print(" ");
 			} else {
 				System.out.print(arr[i]);
 			}
