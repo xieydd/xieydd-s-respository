@@ -60,4 +60,60 @@ Calendar rightNow = Calendar.getInstance();
 判断某一年的二月有多少天：1.得到日历对象2.设置c.set(year,2,1)即那一年的3.1号，然后将day减一天c.add(Claendar.DATE,-1)3.c.get(Claendar.DATE)
 
 10.DateFormat
+System.currentTimeMillis()系统现在的毫秒时间
+Date --》 String：SimpleDateFormat.format(Date对象) ，这个将Date按照创建SimpleDateFormat对象构造方法中指定的构造得到字符串
+String --》 Date：SimpleDateFormat.parse(String对象)得到的是Date对象，这里的String需要和创建SimpleDateFormat对象构造方法中的字符结构相同
+
+11.Math
+Math方法 .abs 绝对值 ; ceil 向上取整 ; floor 向下取整;；pow(a,b) a的b次方 ; random 随机数 ; max 最大数; round 四舍五入 ; sqrt 平方根
+Math成员变量 PI E
+
+12.正则表达式
+A:字符
+	x 字符 x。举例：'a'表示字符a
+	\\ 反斜线字符。两个才能代表一个
+	\n 新行（换行）符 ('\u000A') 
+	\r 回车符 ('\u000D')
+	
+B:字符类
+	[abc] a、b 或 c（简单类） 
+	[^abc] 任何字符，除了 a、b 或 c（否定） 
+	[a-zA-Z] a到 z 或 A到 Z，两头的字母包括在内（范围） 
+	[0-9] 0到9的字符都包括
+	
+C:预定义字符类
+	. 任何字符。我的就是.字符本身，怎么表示呢? \.
+	\d 数字：[0-9]
+	\w 单词字符：[a-zA-Z_0-9]
+		在正则表达式里面组成单词的东西必须有这些东西组成
+
+D:边界匹配器
+	^ 行的开头 
+	$ 行的结尾 
+	\b 单词边界
+		就是不是单词字符的地方。
+		举例：hello world?haha;xixi
+	
+E:Greedy 数量词 
+	X? X，一次或一次也没有
+	X* X，零次或多次
+	X+ X，一次或多次
+	X{n} X，恰好 n 次 
+	X{n,} X，至少 n 次 
+	X{n,m} X，至少 n 次，但是不超过 m 次 	
+s.matches(String regex);邮箱验证: \\w@\\w{2,6}\\.\\w{2,3} 标准：所有字符[a-zA-Z_0-9]@所有字符最小2位最大6位.所有字符只能是2或者3位
+s.replace(regex,String replaceMent)将符合正则形式的替换成给的字符串
+Pattern p = Pattern.compile(regex);//将规则编译成模式对象
+Matcher m = p.matcher(s);//通过模式对象得到匹配器对象
+
+
+13.集合
+由于数组是固定长度的，而StringBuffer虽然可伸缩但是返回的是字符串
+数组和集合的区别:1.长度区别2.内容区别:数组是同一种类型元素,集合可以存储不同种元素3.数据类型:数组可以存储基本数据类型和引用数据类型,集合只能存储引用类型
+Collection(是接口不能实例化，需要其子类) --》 List可重复,特有迭代listIterator(继承Iterator)特有previous()获得上一个元素、hasPrevious()判断是否有元素 -->ArrayList(底层是数组，查找快，增删慢)、Vector、LinkedList(底层是链表，查找慢，增删快)特有addFirst(),getFirst(),removeFirst()这个得到的是最先存入的可以使用这个方法实现栈的先进先出的结构,                  add,remove,get,set								--》 Map  --> 
+addAll(Collection),removeAll(Collection)移除一个元素就返回true,containsAll(Collection),retainAll(Collection)两个集合都有的元素，最终保存在A中B不变  返回的是boolean类型
+迭代:1、C.toArray()可以将集合转换成数组(Arrays.asList()可以将集合转换成数组)，用于实现集合的遍历 2、迭代器迭代遍历Collection c = new Collection(); Iterator it = c.iterator(); while(it.hasNext()){String s = (String)it.next()} 这里的String可以换成其他引用对象
+泛型的好处：将在运行时的问题提前、可以避免强制转换,有时会在接口对象创建上使用泛型 public class Interface<T>{public abstract T get(T t){}};在类方法用public<T> void  show(T t){}
+泛型高级嫁娶通配符: <? extends 类> E及E的子类  <? super E>E及E的父类
+增强for的目标不能是null可以加入if判断
 
