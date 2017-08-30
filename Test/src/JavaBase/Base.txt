@@ -110,18 +110,24 @@ Matcher m = p.matcher(s);//通过模式对象得到匹配器对象
 13.集合
 由于数组是固定长度的，而StringBuffer虽然可伸缩但是返回的是字符串
 数组和集合的区别:1.长度区别2.内容区别:数组是同一种类型元素,集合可以存储不同种元素3.数据类型:数组可以存储基本数据类型和引用数据类型,集合只能存储引用类型
-Collection(是接口不能实例化，需要其子类) 、addAll(Collection),removeAll(Collection)移除一个元素就返回true,containsAll(Collection),retainAll(Collection)两个集合都有的元素，最终保存在A中B不变  返回的是boolean类型
+Collection(是接口不能实例化，需要其子类；注意和Collections的区分，Collections是针对集合的操作类例如排序和二分查找，当对于自定义对象的时候需要在方法中定义匿名内部类) 、addAll(Collection),removeAll(Collection)移除一个元素就返回true,containsAll(Collection),retainAll(Collection)两个集合都有的元素，最终保存在A中B不变  返回的是boolean类型
 --》 List可重复,有顺序,特有迭代listIterator(继承Iterator)特有previous()获得上一个元素、hasPrevious()判断是否有元素 
 	-->ArrayList(底层是数组，查找快，增删慢、线程不安全效率高)；去除ArrayList中的重复项，可以创建一个新的数组存储，也可以通过遍历使前后元素比较，类似于排序；如果数组里是自定义对象而不是引用对象时，这时候不能用equals而是contains(底层依赖但是重写equals())
 	-->Vector(底层是数组，查找快，增删慢、线程安全效率低)
 	-->LinkedList(底层是链表，查找慢，增删快、线程不安全效率高)特有addFirst(),getFirst(),removeFirst()这个得到的是最先存入的可以使用这个方法实现栈的先进先出的结构,  add,remove,get,set
 --》 Set  无序但是不重复
-	--> HashSet 存储字符串的时候内容相同只存储一个，add依赖的hashCode()和equals()方法重写了
-
+	--> HashSet 存储字符串的时候内容相同只存储一个，add依赖的hashCode()和equals()方法重写了；；当add的是自定义的对象的时候，如果想避免add()重复对象，可以在POJO类重写hashCode和equals方法
+		-->LinkedHashSet:底层数据结构由Hash表和链表结构组成，存储和取出一致
+	--> TreeSet 能够使自定义对象唯一且排序(自然排序;比较器排序:自定义对象需要实现Comparable<>接口，实现其中的compareTo方法***当然可以不实现接口而是在创建TreeSet的时候实现匿名内部类(这个类还是要实现Comparator<>接口，实现其中的compare方法))
+		
 迭代:1、C.toArray()可以将集合转换成数组(Arrays.asList()可以将集合转换成数组)，用于实现集合的遍历 2、迭代器迭代遍历Collection c = new Collection(); Iterator it = c.iterator(); while(it.hasNext()){String s = (String)it.next()} 这里的String可以换成其他引用对象
 泛型的好处：将在运行时的问题提前、可以避免强制转换,有时会在接口对象创建上使用泛型 public class Interface<T>{public abstract T get(T t){}};在类方法用public<T> void  show(T t){}
 泛型高级嫁娶通配符: <? extends 类> E及E的子类  <? super E>E及E的父类
 增强for的目标不能是null可以加入if判断
+
+Map 键唯一值不唯一 put添加元素 values获得全部值(Collection<>) 获得全部的键keySet()(返回Set<>)
+--》HashMap 用哈希表保证键的唯一性
+	-->LinkedHashMap 
 
 14.静态导入、可变参数：例如不知道导入几个参数int... a这里的a其实相当于一个数组，可以通过遍历得到每一个参数
 
