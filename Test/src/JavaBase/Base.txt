@@ -18,6 +18,8 @@ boolean			Boolean
 Èç¹û·ÅÈë×Ö½ÚÀıÈçbyte[] bys = {97,98,99}  String s = new String(bys);»á±ä³Éa,b,c
 ×Ö·û´®Ò»µ©±»¸³ÖµÄÜ²»ÄÜ±»¸Ä±ä
  ×Ö·û´®Èç¹ûÊÇ±äÁ¿Ïà¼Ó£¬ÏÈ¿ª¿Õ¼ä£¬ÔÚÆ´½Ó£»×Ö·û´®Èç¹ûÊÇ³£Á¿Ïà¼Ó£¬ÊÇÏÈ¼Ó£¬È»ºóÔÚ³£Á¿³ØÕÒ£¬Èç¹ûÓĞ¾ÍÖ±½Ó·µ»Ø£¬·ñÔò£¬¾Í´´½¨  ÀıÈçString s1 = "hello" String s2 = "world" String s3 = "helloworld" s3!=s1+s2 µ«ÊÇs3 == "helloworld"
+±àÂëÎÊÌâ:byte --> String:string(byte[] bys,String charSetName) String --> byte getBytes(String charSetName)
+
 
 3.Array
 ÔÚAlgorithmÖĞÓĞSort.javaÅÅĞòËã·¨
@@ -118,7 +120,7 @@ Collection(ÊÇ½Ó¿Ú²»ÄÜÊµÀı»¯£¬ĞèÒªÆä×ÓÀà£»×¢ÒâºÍCollectionsµÄÇø·Ö£¬CollectionsÊÇÕ
 --¡· Set  ÎŞĞòµ«ÊÇ²»ÖØ¸´
 	--> HashSet ´æ´¢×Ö·û´®µÄÊ±ºòÄÚÈİÏàÍ¬Ö»´æ´¢Ò»¸ö£¬addÒÀÀµµÄhashCode()ºÍequals()·½·¨ÖØĞ´ÁË£»£»µ±addµÄÊÇ×Ô¶¨ÒåµÄ¶ÔÏóµÄÊ±ºò£¬Èç¹ûÏë±ÜÃâadd()ÖØ¸´¶ÔÏó£¬¿ÉÒÔÔÚPOJOÀàÖØĞ´hashCodeºÍequals·½·¨
 		-->LinkedHashSet:µ×²ãÊı¾İ½á¹¹ÓÉHash±íºÍÁ´±í½á¹¹×é³É£¬´æ´¢ºÍÈ¡³öÒ»ÖÂ
-	--> TreeSet ÄÜ¹»Ê¹×Ô¶¨Òå¶ÔÏóÎ¨Ò»ÇÒÅÅĞò(×ÔÈ»ÅÅĞò;±È½ÏÆ÷ÅÅĞò:×Ô¶¨Òå¶ÔÏóĞèÒªÊµÏÖComparable<>½Ó¿Ú£¬ÊµÏÖÆäÖĞµÄcompareTo·½·¨***µ±È»¿ÉÒÔ²»ÊµÏÖ½Ó¿Ú¶øÊÇÔÚ´´½¨TreeSetµÄÊ±ºòÊµÏÖÄäÃûÄÚ²¿Àà(Õâ¸öÀà»¹ÊÇÒªÊµÏÖComparator<>½Ó¿Ú£¬ÊµÏÖÆäÖĞµÄcompare·½·¨))
+	--> TreeSet ºìºÚÊ÷ÊµÏÖ£¬ÄÜ¹»Ê¹×Ô¶¨Òå¶ÔÏóÎ¨Ò»ÇÒÅÅĞò(×ÔÈ»ÅÅĞò;±È½ÏÆ÷ÅÅĞò:×Ô¶¨Òå¶ÔÏóĞèÒªÊµÏÖComparable<>½Ó¿Ú£¬ÊµÏÖÆäÖĞµÄcompareTo·½·¨***µ±È»¿ÉÒÔ²»ÊµÏÖ½Ó¿Ú¶øÊÇÔÚ´´½¨TreeSetµÄÊ±ºòÊµÏÖÄäÃûÄÚ²¿Àà(Õâ¸öÀà»¹ÊÇÒªÊµÏÖComparator<>½Ó¿Ú£¬ÊµÏÖÆäÖĞµÄcompare·½·¨))
 		
 µü´ú:1¡¢C.toArray()¿ÉÒÔ½«¼¯ºÏ×ª»»³ÉÊı×é(Arrays.asList()¿ÉÒÔ½«¼¯ºÏ×ª»»³ÉÊı×é)£¬ÓÃÓÚÊµÏÖ¼¯ºÏµÄ±éÀú 2¡¢µü´úÆ÷µü´ú±éÀúCollection c = new Collection(); Iterator it = c.iterator(); while(it.hasNext()){String s = (String)it.next()} ÕâÀïµÄString¿ÉÒÔ»»³ÉÆäËûÒıÓÃ¶ÔÏó
 ·ºĞÍµÄºÃ´¦£º½«ÔÚÔËĞĞÊ±µÄÎÊÌâÌáÇ°¡¢¿ÉÒÔ±ÜÃâÇ¿ÖÆ×ª»»,ÓĞÊ±»áÔÚ½Ó¿Ú¶ÔÏó´´½¨ÉÏÊ¹ÓÃ·ºĞÍ public class Interface<T>{public abstract T get(T t){}};ÔÚÀà·½·¨ÓÃpublic<T> void  show(T t){}
@@ -126,9 +128,33 @@ Collection(ÊÇ½Ó¿Ú²»ÄÜÊµÀı»¯£¬ĞèÒªÆä×ÓÀà£»×¢ÒâºÍCollectionsµÄÇø·Ö£¬CollectionsÊÇÕ
 ÔöÇ¿forµÄÄ¿±ê²»ÄÜÊÇnull¿ÉÒÔ¼ÓÈëifÅĞ¶Ï
 
 Map ¼üÎ¨Ò»Öµ²»Î¨Ò» putÌí¼ÓÔªËØ values»ñµÃÈ«²¿Öµ(Collection<>) »ñµÃÈ«²¿µÄ¼ükeySet()(·µ»ØSet<>)
---¡·HashMap ÓÃ¹şÏ£±í±£Ö¤¼üµÄÎ¨Ò»ĞÔ
-	-->LinkedHashMap 
-
+--¡·HashMap ÓÃ¹şÏ£±í±£Ö¤¼üµÄÎ¨Ò»ĞÔ £¬Ïß³Ì²»°²È«£¬Ğ§ÂÊ¸ß¡£ÔÊĞínull¼üºÍnullÖµ   ,HashtableÓëÖ®Ïà·´        HashMapÀï°üº¬ArrayList£¬ÆäÖĞÓÃkeySet»ñµÃkeyµÄSet<>¼¯ºÏ£¬È»ºó±éÀúÁ½´ÎµÃµ½ArrayListµÄvalue;ArrayListÖĞ°üº¬HashMap<key,value>Ê±ÏÈ±éÀúÔÚÓÃkeySet»ñµÃkey¼¯ºÏ£¬ÔÙµÃµ½value
+	-->LinkedHashMap ÊµÏÖMap½Ó¿ÚµÄ¹şÏ£±í(±£Ö¤Î¨Ò»)ºÍÁ´½ÓÁĞ±í(±£Ö¤´æ´¢ºÍÈ¡³öË³ĞòÒ»ÖÂ)µÄÊµÏÖ£¬¿ÉÒÔ¿ÉÔ¤Öªµü´úË³Ğò
+--¡·TreeMap ºìºÚÊ÷ÊµÏÖ
 14.¾²Ì¬µ¼Èë¡¢¿É±ä²ÎÊı£ºÀıÈç²»ÖªµÀµ¼Èë¼¸¸ö²ÎÊıint... aÕâÀïµÄaÆäÊµÏàµ±ÓÚÒ»¸öÊı×é£¬¿ÉÒÔÍ¨¹ı±éÀúµÃµ½Ã¿Ò»¸ö²ÎÊı
 
+15.Throwable error-->ÀıÈçÄÚ´æÒç³ö ¡¢Exception-->RuntimeException
+´¦Àí·½·¨-->try{}catch(Òì³£Ãû ±äÁ¿ ){±ØĞëÓĞÄÚÈİ}¿ÉÒÔ¶àcatchµ«ÊÇ¸¸×Ó¹ØÏµ£¬¸¸±ØĞë·ÅÔÚºóÃæ£¬CatchÄÚµÄÒì³£Ò²¿ÉÒÔÊÇ¶à¸öµ«ÊÇ±ØĞëÍ¬¼¶ e.toString e.getMessage()¿ÉÒÔ°ïÖúÎÒÃÇÁË½â´íÎóÀàĞÍfinally{}    final¡¢finallyºÍfinalizeµÄÇø±ğ£¿ finalÊÇ¹Ø¼ü×Ö¿ÉÒÔĞŞÊÎ³ÉÔ±±äÁ¿(³£Á¿)¡¢³ÉÔ±·½·¨(²»ÄÜ±»ÖØĞ´)¡¢Àà(²»ÄÜ±»¼Ì³Ğ),finallyÊÇÊÍ·Å×ÊÔ´£¬³ı·ÇÎ´Ö´ĞĞµ½finallyJVMÍÆ³ö²»È»¿Ï¶¨Ö´ĞĞ£¬Èç¹ûÔÚcatchÖĞÓĞreturnÄÇÃ´¿Ï¶¨Ö´ĞĞfinallyÔÚreturn Ö®Ç°,finalizeÓÃÓÚÀ¬»ø»ØÊÕ
+	-->throws ÓëthrowÇø±ğ  throwsÓÃÔÚ·½·¨ÉùÃ÷Ö®ºó£¬¿ÉÒÔÊÇ¶à¸ö·½·¨ÀàÃû£»throw·½·¨ÌåÖØ£¬Ò»µ©Ê¹ÓÃÒ»¶¨Å×³öÒì³£
+×Ô¶¨ÒåExceptionĞèÒª¼Ì³ĞException»òÕßRuntimeException ,×ÓÀàÖØĞ´¸¸Àà£¬×ÓÀà·½·¨Ö»ÄÜÅ×³öºÍ¸¸ÀàÒ»Ñù»òÕßÆä×ÓÀàµÄÒì³£
 
+16.File
+File(String pathname)¡¢File(parentpath,path)¡¢File(File,chilepath) ×¢ÒâÕâÀïµÄStringµÄ\·ûºÅ¶¼ĞèÒª\\×ªÒë¹ıÈ¥
+File.createFile()Èç¹û´æÔÚÕâÑùµÄÎÄ¼ş²»»á´´½¨¸ÃÎÄ¼ş  mkdir()´´½¨ÎÄ¼ş¼Ğ£¬Èç¹û´æÔÚ²»´´½¨  mkdirs()Èç¹û¸¸ÎÄ¼ş¼Ğ²»´æÔÚ»á°ïÄã´´½¨£¬Èç¹û²»Ğ´¸¸ÎÄ¼ş¼ĞÄ¬ÈÏÊÇÏîÄ¿ÎÄ¼ş¼Ğ  É¾³ıdeleteÎÄ¼ş¼ĞÖĞ²»ÄÜÓĞ¶«Î÷£¬ÇÒ²»×ß»ØÊÕÕ¾  ÖØÃüÃûrenameTo(File dest)Èç¹ûÂ·¾¶ÏàÍ¬ÎªÖØÃüÃû£¬Èç¹ûÂ·¾¶²»Í¬Îª¼ôÇĞ
+getPath()µÃµ½Ïà¶ÔÂ·¾¶  getAbsolutePath()µÃµ½¾ø¶ÔÂ·¾¶ getModified()»ñÈ¡×îºóĞŞ¸ÄÊ±¼ä list()»ñµÃËùÓĞµÄÎÄ¼ş¼°ÎÄ¼ş¼ĞµÄÃû×Östring[]  »ñµÃÎÄ¼şFile[]ÓÃlistFiles(new FilenameFilter(){accept·½·¨})ÀïÂôÅª¿ÉÒÔĞ´ÄäÃûÄÚ²¿Àà¹ıÂËÎÄ¼ş
+
+17.µİ¹é
+µİ¹éÒ»¶¨ÒªÓĞ³ö¿Ú²»È»ÎªËÀµİ¹é£¬µİ¹éÌ«¶àÈİÒ×ÄÚ´æÒç³ö£¬¹¹Ôì·½·¨²»ÄÜµİ¹éÊ¹ÓÃ;µİ¹éÉ¾³ı£¬µİ¹éµÃµ½ÎÄ¼şÃû£¬µİ¹éÊ÷
+
+18.IO Ö÷¶¯£¬Êä³ö¼´Ğ´£¬¶ÁÈ¡¼´¶Á;×¢ÒâÁ÷µÄ»ØÊÕÒ»°ãÔÚtry catch finallyÖĞµÄfinallyÖĞÖ´ĞĞ.close()
+-->×Ö½ÚÁ÷ OutputStream InputStream 
+	--¡· xxxOutputStream(File.¡¢Buffered.¸ßĞ§) ..ÊµÏÖÉÏÃæµÄ³éÏóÀàµÄ×ÓÀàxxx¶ÔÓ¦µÄÊÇ²Ù×÷¶ÔÏó,ÀıÈçFile writer(xxx)×¢ÒâÀïÃæÊÇ×Ö½Ú»á×Ô¶¯×ª»» ÆäÖĞµÄ»»ĞĞ²Ù×÷Í¬ÑùĞèÒª.getBytes()×ª»»³É×Ö½Ú£¬WindowsÎª\r\n linuxÎª\n macÎª\r;²Ù×÷ÖĞÎÄ»á³öÂÒÂë;Ö¸¶¨±àÂëºÍ½âÂëµÄÀàĞÍ InputStreamReader(new FileInputStream(""),"UTF-8")
+	--¡·xxxInputStream byte[] bys = new byte[]; int len =0; while((len = fis.read(bys))!=-1) {System.out.println(new String(bys,0,len))} fis.close();
+-->×Ö·ûÁ÷        Writer    Reader
+	--¡·OutputStreamWriter write(int char[] char[],0,len String String,0,n) ×¢ÒâÔÚĞ´µÄÊ±ºòĞèÒªflush()Ë¢ĞÂ»º´æÇø²ÅÄÜĞ´µ½;flush()ºÍclose()µÄÇø±ğ:flushÖ»ÊÇË¢ĞÂ»º´æÇø£¬Ë¢ĞÂºóµÄÁ÷¶ÔÏó»¹¿ÉÒÔ¼ÌĞøÊ¹ÓÃ£¬¶øclose()·½·¨ÏÈË¢ĞÂ»º³åÇøÔÙ¹Ø±ÕÁ÷¶ÔÏó£¬²»ÄÜÊ¹ÓÃ
+	--¡·InputStreamReader char[] chs = new char[1024];
+	--¡·FIleReader = FileInputStream + ±àÂë±í(GBK)
+	--¡·BufferedWriter new BufferedWriter(new FileWriter("path"));
+	--¡·BufferedReader ³ıÁËchar[] chs = new char[1024];»¹ÓĞ¶ÁÈ¡µÄÌØÊâ·½·¨newline()¸ù¾İÏµÍ³»»ĞĞ·ûstring line = null;while((BUfferedReader.readLine())!=-1){}
+	×¢ÒâBufferedWriterºÍBufferedReaderÔÚ¶ÁĞ´»òÕßĞ´¶ÁµÄÊ±ºò´´½¨¶ÔÏóĞèÒª·Ö¿ªÓÃµÄÊ±ºòÔÚ´´½¨
+¸´ÖÆÊı¾İ£¬Èç¹ûÎÒÃÇÖªµÀÓÃ¼ÇÊÂ±¾´ò¿ª²¢ÄÜ¹»¶Á¶®£¬¾ÍÓÃ×Ö·ûÁ÷£¬·ñÔòÓÃ×Ö½ÚÁ÷
