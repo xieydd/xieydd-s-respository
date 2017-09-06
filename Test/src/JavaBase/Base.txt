@@ -150,11 +150,82 @@ getPath()得到相对路径  getAbsolutePath()得到绝对路径 getModified()获取最后修改时
 -->字节流 OutputStream InputStream 
 	--》 xxxOutputStream(File.、Buffered.高效) ..实现上面的抽象类的子类xxx对应的是操作对象,例如File writer(xxx)注意里面是字节会自动转换 其中的换行操作同样需要.getBytes()转换成字节，Windows为\r\n linux为\n mac为\r;操作中文会出乱码;指定编码和解码的类型 InputStreamReader(new FileInputStream(""),"UTF-8")
 	--》xxxInputStream byte[] bys = new byte[]; int len =0; while((len = fis.read(bys))!=-1) {System.out.println(new String(bys,0,len))} fis.close();
+	--》DataInputStream(InputStream in)数据输入流一般保存位.dat文件和文本文件区分开来
+	
 -->字符流        Writer    Reader
 	--》OutputStreamWriter write(int char[] char[],0,len String String,0,n) 注意在写的时候需要flush()刷新缓存区才能写到;flush()和close()的区别:flush只是刷新缓存区，刷新后的流对象还可以继续使用，而close()方法先刷新缓冲区再关闭流对象，不能使用
 	--》InputStreamReader char[] chs = new char[1024];
 	--》FIleReader = FileInputStream + 编码表(GBK)
 	--》BufferedWriter new BufferedWriter(new FileWriter("path"));
 	--》BufferedReader 除了char[] chs = new char[1024];还有读取的特殊方法newline()根据系统换行符string line = null;while((BUfferedReader.readLine())!=-1){}
+		--》LineNumberReader getLineNumber()获得当前行号  setLineNumber(int lineNumber)
+	
 	注意BufferedWriter和BufferedReader在读写或者写读的时候创建对象需要分开用的时候在创建
+
+-->内存操作流:用于存储临时操作信息 --》字节数组ByteArrayInputStream 不需要释放资源;字符数组CharArrayReader;字符串StringReader
+-->打印流 PrintStream字节打印流 PrintWriter字符打印流  只能写不能读，可以开启自刷
+-->随机访问流 RandomAccessFile(pathname,"rw") 这里的rw位置有4中选项;rw表示可读可写 getFilePointer文件指针位置 seek(int)设置到哪个位置
+-->ObjectOutputStream是对象P到流数据(序列化流)      ObjectInputStream是流数据到对象(反序列化流)  都实现了Serializable接口(会出现黄色的线，需要在类中加入一个序列化id值)
+println()--> bw.writer() bw.readLine() bw.flush()
+一般的流的构造方法里有File和String一般可以操作文本文件
 复制数据，如果我们知道用记事本打开并能够读懂，就用字符流，否则用字节流
+a.txt+b.txt -- c.txt SequenceInputStream(Enumeration<InputStream> en); InputStream s1 s2 s3; Enumeration<InputStream> = v.elements(); v.add(s1)..;Vector<InputStream> v;
+Properties 是一个Map集合 set/getProperty stringPropertyNames获取所有键的集合     ;store(Writer writer,String comments)将集合中的数据存储在文件中 ;load(Reader r(""))这里的文件中的内容必须是键值对的形式
+IO流是阻塞的例如一个线程调用read或者write需要完全写入或者读取才能继续
+
+
+19.NIO IO面对流，NIO面向缓冲区，NIO为非阻塞
+http://www.importnew.com/19816.html
+Channel 
+-->FileChannel  IO FileChannel fileChannel = IO.getChannel()
+-->DatagramChannel UDP 发送和接受的是包
+-->SocketChannel TCP(server和client) channel.configureBlocking(false)返回值表明所请求操作完成的进度,如ServerSocketChannel调用accept()如果有连接请求返回SocketChannel否则返回null
+client
+打开:socketChannel = SocketChannel.open();socketChannel.connect(new InetSocketAddress("ip",8080))
+关闭:socketChannel.close()
+读取中:非阻塞模式下read()可能为读取数据就返回所以需要关注返回的值int表示读取的字节
+
+-->ServerSocketChannel
+server
+打开:ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+关闭:serverSocketChannel.close()
+监听新进来的连接:while(true) { SocketChannel socketChannel = serverSocketChannel.accept();} serverSocketChannel可以设置非阻塞的，所以在accept()会立即返回如果没有新进来的连接返回的是null ;后面加判断if(!socketChannel=null) {}
+
+Buffer
+-->每一个基本数据类型对应一个Buffer例如FloatBuffer 1.分配空间ByteBuffer buf = ByteBuffer.allocate(1024) 2.写入到buffer int bytesRead = fileChannel.read(buf) 3.调用filp方法buf.flip() 4.从Buffer读取数据buf.get()5.调用clear()(position=0,limit=capacity-->position=n,..-filp()->position=0,limit=n-clear()->初始)或者compact()Buffer有未读取数据的时候将未读取数据方法哦Buffer起始处，position=未读取数据末+1，这样Buffer准备好写入数据而不会覆盖未读取的数据
+	从Channel写入Buffer:fileChannel.read(buf) buf.put();从Buffer读取到Channel channel.write(buf) 从Buffer中读取buf.get()	
+-->MappedByteBuffer...
+
+Selector
+创建:Selector selector = Selector.open();
+注册(使channel和Selector配合): ssc = serverSocketChannel.open();这里的ssc必须是非阻塞的才能和Selector配合由于FileChannel不能切换到非阻塞模式，所以无法和Selector一起使用 ssc.socket().bind(new InetSocketAddress(PORT));ssc.configureBlocking(false);ssc.register(selector, SelectionKey.OP_ACCEPT#这个参数表明Selector监听Channel对于什么事件感兴趣Connect(连接就绪)、Accept(接受就绪)、Read、Writer,theObject#附加对象);
+	regist()返回的是SelectionKey对象，包含interest集合、ready集合int readySet = selectionKey.readyOps();可以得到什么事件准备好，也可以单独SelectionKey.isAcceptable()、SelectionKey访问Channel或Selector selectionKey.channel()
+通过Selector选择通道:
+注册了通道后，执行select()方法:select()阻塞到至少一个通道在注册的事件就就绪了，返回的是有多少通道就绪，但不包括上次的 select(long timeout)最长会阻塞这么长毫秒 selectNow()不会阻塞，没有准备好的通道返回0 返回的是感兴趣事件已经准备好的通道
+selector.selectionKeys().iterator()返回一个迭代对象 Iterator<SelectionKey> 在迭代这个对象例如while(true) {注意每一次迭代末尾的 iter.remove()因为Selector不会自己将已选择的键集从SelectKeys移除}
+selectionKey.channel()返回的通道需要转换成你需要的类型如ServerSocketChannel
+
+数据由通道(Channel类似于Stream但是是双向的)读取到缓冲区(如果目前没有可用的数据不会保存线程阻塞,写也是同理)，Selector(选择区)选择通道
+
+Java处理大文件一般使用BufferedReader或者BufferedInputStream这种带有缓冲的IO类，文件超大使用MapperByteBuffer
+select模型:将套接字通道(SocketChannel)注册到一个选择器Selector中，不时调用选择器的select方法返回满足的选择键SelectionKey
+SocketChannel读写通过ByteBuffer 直接:HeapByteBuffer直接操作堆内存但是对于大文件不好使 间接:MappedByteBuffer将文件映射到虚拟内存而不是物理内存 fileChannel.map(int mode（可访问内存映像文件的方式MapMode.READ_ONLY,READ_WRITE,PRIVATE（专用）修改会创建副本）,long position,long size) force()在RW模式下强行写入文件  load()将缓冲区文件写入内存 isLoader()缓冲区文件是否在内存中
+
+Scatter\Gatter 从Channel读取写入多个Buffer用Scatter Gatter将多个Buffer写入一个Channel
+transferFrom可以将数据从源通道反传输到FileChannel中 transferTo将数据从FileChannel传输到其他通道中
+ Pipe有一个source通道和一个sink通道，数据将会由source写道sink通道中  Pipe.SourceChannel sourceChannel = pipeTemp.source();//向通道中读数据
+
+同步与异步，阻塞和非阻塞？
+同步synchronous-->阻塞 调用发出后只有得到返回，自己才返回
+异步asynchronous-->非阻塞 调用发出后不反悔就自己返回
+
+多线程一般使用线程池可以让线程的创建和回收成本较低,但是线程创建成本高，占用内存大，线程切换成本偏高，在连接数很大的时候就需要抛弃BIO(Blocking)
+在BIO中socket.read()如果TCP RecvBuffer中没有数据，会一直阻塞而对于NIO如果有数据会将数据由网卡读取到内存中，如果没有数据返回0不会阻塞；而AIO是网卡到内存过程也是异步的
+在NIO中线程主要:1.时间分发器，单线程选择时间 2.I/O处理器 包括connect、read、write 3.业务线程一般有自己的业务逻辑当然还可能有其他阻塞IO如 DB操作、RPC等
+对于Redis，对于Redis来说，由于服务端是全局串行的，能够保证同一连接的所有请求与返回顺序一致。这样可以使用单线程＋队列，把请求数据缓冲。然后pipeline发送，返回future，然后channel可读时，直接在队列中把future取回来，done()就可以了
+
+
+20.Thread线程
+一个进程里可能有多个线程，并行parallelise指的是具有多种处理事件的能力但不一定是同时的;并发concurrency是同时处理多种事件
+自己写的线程需要继承Thread然后重写run()方法，注意和start()的区别,run只执行其中的内容，而start启动了JVM线程去调用该线程的run方法
+thread.setPriority(int a)可以设置优先级默认为5 范围为1-10;thread.sleep(int a)线程休眠;thread.setDaemon(true)守护线程，需在start之前调用
