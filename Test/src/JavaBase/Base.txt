@@ -115,7 +115,7 @@ Matcher m = p.matcher(s);//通过模式对象得到匹配器对象
 Collection(是接口不能实例化，需要其子类；注意和Collections的区分，Collections是针对集合的操作类例如排序和二分查找，当对于自定义对象的时候需要在方法中定义匿名内部类) 、addAll(Collection),removeAll(Collection)移除一个元素就返回true,containsAll(Collection),retainAll(Collection)两个集合都有的元素，最终保存在A中B不变  返回的是boolean类型
 --》 List可重复,有顺序,特有迭代listIterator(继承Iterator)特有previous()获得上一个元素、hasPrevious()判断是否有元素 
 	-->ArrayList(底层是数组，查找快，增删慢、线程不安全效率高)；去除ArrayList中的重复项，可以创建一个新的数组存储，也可以通过遍历使前后元素比较，类似于排序；如果数组里是自定义对象而不是引用对象时，这时候不能用equals而是contains(底层依赖但是重写equals())
-	-->Vector(底层是数组，查找快，增删慢、线程安全效率低)
+	-->Vector(底层是数组，查找快，增删慢、线程安全效率低)虽然线程安全但是不用，用List<> list = Collections.synchronizedList(new ArrayList<>())
 	-->LinkedList(底层是链表，查找慢，增删快、线程不安全效率高)特有addFirst(),getFirst(),removeFirst()这个得到的是最先存入的可以使用这个方法实现栈的先进先出的结构,  add,remove,get,set
 --》 Set  无序但是不重复
 	--> HashSet 存储字符串的时候内容相同只存储一个，add依赖的hashCode()和equals()方法重写了；；当add的是自定义的对象的时候，如果想避免add()重复对象，可以在POJO类重写hashCode和equals方法
@@ -226,6 +226,30 @@ transferFrom可以将数据从源通道反传输到FileChannel中 transferTo将数据从FileChanne
 
 
 20.Thread线程
+http://blog.csdn.net/vking_wang/article/details/9952063
 一个进程里可能有多个线程，并行parallelise指的是具有多种处理事件的能力但不一定是同时的;并发concurrency是同时处理多种事件
+Thread创建: 1.new Thread().setName("") 2.new Thread(Class.implementRunable,"")
 自己写的线程需要继承Thread然后重写run()方法，注意和start()的区别,run只执行其中的内容，而start启动了JVM线程去调用该线程的run方法
-thread.setPriority(int a)可以设置优先级默认为5 范围为1-10;thread.sleep(int a)线程休眠;thread.setDaemon(true)守护线程，需在start之前调用
+thread.setPriority(int a)可以设置优先级默认为5 范围为1-10;thread.sleep(int a)线程休眠，这里一般要try catch一下;thread.setDaemon(true)守护线程，需在start之前调用;thread.interrupt()中断线程 thread.yield()暂停当前启动其他线程
+
+
+线程同步问题:
+多个线程不加控制的对对象进行访问，修改数据可能出现问题，这里我们可以 1.对于资源类标记为private 2.对于需要同步的代码用synchronized同步代码块(该代码具有原子性:在某一时间只有一个线程运行该代码，由一个monitor监视对象保护和可见性:保证在释放锁之前修改的共享数据对于下一个线程可见的); 原理:对象获取锁对象后使自己的高速缓存失效保证从主内存到变量，释放锁之前会刷新高速缓存，迫使更改出现主内存 
+什么时候需要同步？
+1.可见性同步:读取可能由另一个线程写入的变量;写到下一个可能另一个线程读取的变量 2.一致性同步:当修改多个变量值的时候保证其他线程原子能看到其全部更改 3.不必同步:因为JVM已经执行同步静态字段或者static{}中的初始化器，初始化数据时，访问final字段，创建线程之前创建对象，线程可以看见它将要处理的对象
+synchronized限制:无法中断一个正在获得锁的线程，无法通过投票获得锁，要求释放锁的堆栈帧需要和获得锁的相同 --》 Lock框架在java.util.concurrent.lock将锁定实现作为Java类 -->ReentrantLock实现Lock，相比件Synchronized添加锁投票、定时锁等候和可中断锁等候，注意在Synchronized中在代码块结束后会自动释放锁，但是Lock需要.unlock()释放锁 try catch finally 
+通过代码发现Synchronized中的读取和写入县城互相不干扰,但是两个读取线程也不干扰，这是不对的。使用ReentrantLock的实现ReadWriteLock ,通过在set方法中ReadWriteLock.writeLock().lock()取到写锁;在get中ReadWriteLock.readLock().lock()获得读锁。这里我们将Synchronized称为互斥锁，ReadWriteLock称为读写锁(允许对于共享数据在进行更高级别的并发访问)这样就可以自由一个write线程写入数据，多个read线程读取数据，但是读写锁只有在多处理器并且只有访问模式的时候才能实现并发性增强
+
+-->线程间通讯增强Condition
+相比传统的线程间的通信:wait() -- await()  ;notify()-- Signal(); notifyAll() -- signalAll()之所以该是因为原对象中的这些方法是final不能重写，所以创痛的通信方法Condition都可以实现
+Condition绑定在Lock上，可以为多个线程创建不同的Condition 
+Lock Lock = new ReentrantLock(); lock.newCondition()创建线程锁对象Condition，一般需要两个 读线程锁rCon和写线程锁wCon,创建爱你缓存队列Object[] items = new Object[100]  int putptr;  写索引  int takeptr; 读索引  int count;   队列中数据数目
+在put(Object x)方法中，首先要lock.lock()锁定，然后判断如果队列中的数据数目count==items.length(),这样的话需要阻塞写线程wCon.await() 如果没有写满就写入队列items[putptr] = x; 需要更新写索引和队列中的数目同时得判断if(++putptr == items.length) putptr=0 ++count 最后唤醒读线程rCon.Signal() 注意在lock.lock()后的内容需要try catch finally这样的haul才能解除锁lock.unlock()
+在take()中，先锁定lock.lock() 判断消息队列如果为空while(count == 0) 读线程阻塞rCon.await() ,读取队列更新索引 Object x = items[takeptr] 判断if(++takeptr==items.length) {takeptr = 0} 读取后需要将count-- 唤醒写线程wCon.signal() return x
+
+加Synchronized锁的化，性能受到影响，如果要求效率较高采用OSSpinLock(没有进入系统的Kennel)
+
+21.设计模式
+
+
+
