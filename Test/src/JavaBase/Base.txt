@@ -250,6 +250,53 @@ Lock Lock = new ReentrantLock(); lock.newCondition()´´½¨Ïß³ÌËø¶ÔÏóCondition£¬Ò»°
 ¼ÓSynchronizedËøµÄ»¯£¬ĞÔÄÜÊÜµ½Ó°Ïì£¬Èç¹ûÒªÇóĞ§ÂÊ½Ï¸ß²ÉÓÃOSSpinLock(Ã»ÓĞ½øÈëÏµÍ³µÄKennel)
 
 21.Éè¼ÆÄ£Ê½
+1.´´½¨ĞÍÄ£Ê½(ÎŞĞèÖ±½ÓÊµÀı»¯¶ÔÏó):¼òµ¥¹¤³§Ä£Ê½(not 23)¡¢¹¤³§·½·¨¡¢³éÏó¹¤³§Ä£Ê½¡¢µ¥ÀıÄ£Ê½¡¢Éú³ÉÆ÷Ä£Ê½ºÍÔ­ĞÍÄ£Ê½
+2.½á¹¹ĞÔÄ£Ê½(½«¶à¸ö¶ÔÏó×éÖ¯³É¸ü´óµÄ½á¹¹):ÊÊÅäÆ÷Ä£Ê½adapter¡¢ÇÅ½ÓÄ£Ê½bridge¡¢×éºÏÆ÷Ä£Ê½component¡¢×°ÊÎÆ÷Ä£Ê½decorator¡¢ÃÅÃæÄ£Ê½¡¢ºàÔªÄ£Ê½flyweightºÍ´úÀíÄ£Ê½proxy
+3.ĞĞÎªÄ£Ê½(°ïÖúÏµÍ³¼äµÄ¶ÔÏó¼äÍ¨ĞÅ¡¢¿ØÖÆ¸´ÔÓÏµÍ³µÄÁ÷³Ì):ÃüÁîÄ£Ê½command¡¢½âÊÍÆ÷Ä£Ê½¡¢µü´úÆ÷Ä£Ê½¡¢ÖĞ½éÕßÄ£Ê½¡¢±¸ÍüÂ¼Ä£Ê½¡¢¹Û²ìÕßÄ£Ê½¡¢×´Ì¬Ä£Ê½state¡¢²ßÂÔÄ£Ê½¡¢Ä£°åÄ£Ê½ºÍ·ÃÎÊÖĞÄ£Ê½
+³£ÓÃµÄÉè¼ÆÄ£Ê½:
+1.µ¥ÀıÄ£Ê½ Ö»ÄÜÍ¨¹ıÀàÃû.getInstance()(Õâ¸ö·½·¨ÊÇ×Ô¼º´´½¨µÄ)´´½¨¶ÔÏó£¬¶ø²»ÄÜÍ¨¹ı¹¹ÔìÆ÷¡£ÓÅµã:¼õÉÙ´´½¨JavaÊµÀı´øÀ´µÄÏµÍ³¿ªÏú£¬±ãÓÚÏµÍ³¸ú×ÙJavaÊµÀıµÄÉúÃüÖÜÆÚºÍÊµÀı×´Ì¬
+2.¼òµ¥¹¤³§Ä£Ê½(StaticFactory Method) :ÈÃ¶ÔÏóµ÷ÓÃºÍ¶ÔÏó´´½¨·ÖÀë(¶ÔÏó´´½¨ÔÚ¼òµ¥¹¤³§ÀàÖĞ´´½¨),È±ÏİÊÇÔÚ²úÆ·ĞŞ¸ÄÊ±¼òµ¥¹¤³§ÀàÒ²ĞèÒªĞŞ¸Ä
+3.¹¤³§·½·¨(Factory Method)ºÍ³éÏó·½·¨(Abstract Method) Ïà¶ÔÓÚ¼òµ¥¹¤³§Ä£Ê½²»ÓÃÅĞ¶Ïµ«ÊÇ¶ÔÏóµ÷ÓÃÀàºÍ¹¤³§ÀàñîºÏ(ÕâÀï¿ÉÒÔÔÙ³£¼ûÒ»¸öÅĞ¶ÏµÄ¹¤³§Ààµ«ÊÇºÃÏñÓĞÖØ¸´Ñ­»·ÁË)
+4.´úÀíÄ£Ê½ ÀıÈçHibernateÄ¬ÈÏÆô¶¯ÑÓ³Ù¼ÓÔØ£¬µ±ÏµÍ³¼ÓÔØA¶ÔÏóÊ±£¬A¹ØÁªµÄB¶ÔÏó²¢Î´±»¼ÓÔØ£¬Ö»ÓĞÕæÕıÓÃµ½BÀàÊ±²Å»á±»¼ÓÔØ ÀûÓÃJavaµÄProxyºÍInvocationHandlerÊµÏÖÔÚÔËĞĞÊ±Éú³É¶¯Ì¬´úÀí
+´´½¨´úÀíÀàMyProxyFactory
 
+//ÔöÇ¿´úÀí¶ÔÏó
+publci class MyInvokationHandler implements InvocationHandler {
 
+	public void setTarget(Object target) {
+		target = this.target ;
+	}
+
+	//Ö´ĞĞ¶¯Ì¬´úÀí¶ÔÏóµÄËùÓĞ·½·¨£¬¶¼»á±»Ìæ»»³ÉÖ´ĞĞÈçÏÂµÄinvoke()·½·¨
+	public Object invoke(Object proxy,Method method,Object[] args) throws Exception {
+		TxUtil tx = new TxUtil();
+		tx.beginTx();
+
+		Object result = methoe.invoke(target,args);
+
+		tx.endTx()
+
+		return result;
+	}
+
+}
+//´´½¨´úÀí¶ÔÏó
+public class MyProxyFactory() {
+	public static Object getProxy(Object target) {
+		MyInvokationHandler handler = new MyInvokationHandler();
+		handler.setTarget(target);
+		//·µ»Ø¶¯Ì¬´úÀí¶ÔÏó
+		return Proxy.newProxyInstance(target.getClass().getClassLoader(),Target.getClass().getInterfaces(),handler)
+	}
+}
+//ÊÂÎñÀà
+public class TxUtil() {
+	public void beginTx() {
+		System.out.println("---start Transaction---")
+	}
+
+	public void endTx() {
+		System.out.println("---end Transaction---")
+	}
+}
 
