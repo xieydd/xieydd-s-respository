@@ -272,7 +272,7 @@ publci class MyInvokationHandler implements InvocationHandler {
 		TxUtil tx = new TxUtil();
 		tx.beginTx();
 
-		Object result = methoe.invoke(target,args);
+		Object result = method.invoke(target,args);
 
 		tx.endTx()
 
@@ -300,3 +300,122 @@ public class TxUtil() {
 	}
 }
 
+5.命令模式
+某个方法需要实现一个功能，但是这个功能的大部分已经被实现，这里的少部分需要执行该方法才能被确定；故在Java中一般传入此方法的是一个对象，该对象一般使用一个匿名内部实现类的实例，该接口称为命令接口
+Interface Command: process(int[] tagret)用于封装处理行为
+
+Class ProcessArray: each(int[] target,Command cmd) {cmd.process(target)}
+
+Class TestCommand {
+	ProcessArray pa = new ProcessArray();
+	int[] target = {3,-4,6,4}
+	//第一次具体处理
+	pa.each(target,new Command() {
+		//重写process方法
+		..
+	})
+	//第二次具体处理
+	pa.each(target,new Command() {
+		//重写process方法
+		..
+	})
+}
+
+6.策略模式Strategy
+用于封装系列算法在Context中，客户端可以自由选择算法，也可以让Context为客户选择最佳的算法
+Interface DiscountStrategy {double getDiscount(double originalPrice)}
+
+CLass NormalDiscount implements DiscountStrategy {double getDiscount(double originalPrice){return originalPrice*0.7}}
+Class Vip implements DiscountStrategy {double getDiscount(double originalPrice){return originalPrice*0.3}}
+
+//策略定义
+Class DiscountContext {
+	private DiscountStrategy strategy;
+
+	//用构造器闯入传入DiscountStrategy
+	public DiscountContext(DiscountStrategy strategy) {
+		this.strategy = strategy;
+	}
+
+	//提供策略设定方法
+	public void setStrategy(DiscountStrategy strategy) {
+		this.strategy = strategy;
+	}
+
+	//获得策略中想要得到的值
+	public static double getDiscountPrice(double price) {
+		if(strategy == null) {
+			strategy =  ew NormalDiscount();
+		}
+
+		return strategy.getDiscount(price);
+	}
+}
+
+//测试
+//正常打折
+double normal = 36.23; DiscountContext sc = new DiscountContext(null); sc.getDiscountPrice(normal);
+double vip = 50.0; DiscountContext sc1 = new DiscountContext().setStrategy(new Vip()); sc1.getDiscountPrice(vip);这里可以使用配置文件将客户端和不同打折策略类耦合分离
+
+
+7.门面模式Facade
+将一组复杂的类包装到一个剪但的外部接口
+// 依次创建三个部门实例
+Payment pay = new PaymentImpl();
+Cook cook = new CookImpl();
+Waiter waiter = new WaiterImpl();
+// 依次调用三个部门实例的方法来实现用餐功能
+String food = pay.pay();
+food = cook.cook(food);
+waiter.serve(food);
+-->
+publicclass Facade {
+    // 定义被Facade封装的三个部门
+    Payment pay;
+    Cook cook;
+    Waiter waiter;
+ 
+    // 构造器
+    public Facade() {
+       this.pay = new PaymentImpl();
+       this.cook = new CookImpl();
+       this.waiter = new WaiterImpl();
+    }
+ 
+    publicvoid serveFood() {
+       // 依次调用三个部门的方法，封装成一个serveFood()方法
+       String food = pay.pay();
+       food = cook.cook(food);
+       waiter.serve(food);
+    }
+}
+
+Test Facade f = new Facade();f.serveFood();
+
+8.桥接模式Bridge
+例如Dao 和DaoImpl
+//口味接口
+Interface Peppery {String style();}
+
+Class pepperyStyle implements Peppery{
+	public String style() {
+		..辣
+	}
+}
+
+Class plainStyle implements Peppery{
+	public String style() {
+		..清淡
+	}
+}
+
+public abstract class AbstractNoodle {
+	//组合Perppery变量，用于将该维度的变化独立出来
+	protected Peppery style;
+    //每份Noodle必须组合一个Peppery对象
+    public AbstractNoodle(Peppery style)
+    {
+       this.style = style;
+    }
+    publicabstractvoid eat();
+}
