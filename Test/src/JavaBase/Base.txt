@@ -233,15 +233,143 @@ Thread创建: 1.new Thread().setName("") 2.new Thread(Class.implementRunable,"")
 thread.setPriority(int a)可以设置优先级默认为5 范围为1-10;thread.sleep(int a)线程休眠，这里一般要try catch一下;thread.setDaemon(true)守护线程，需在start之前调用;thread.interrupt()中断线程 thread.yield()暂停当前启动其他线程
 
 
+1.wait() 将当前的线程进入休眠，在调用wait()之前需要获得该对象的对象级别锁(非静态方法锁和代码块锁即只能在其中调用wait方法)如果没有获得就返回IllegalMintorStateException，进入wait方法后释放当前锁,wait返回之前线程和其他线程竞争获得锁
+sleep和wait的区别？ sleep是线程内部的行为，wait是别人让你停止
+2.notify 
+同样是需要是对象级别锁，将会通知所有可能等待该对象对象锁的处于wait状态的线程，在获得对象锁后需要等待被notify如果没有被notify还是会阻塞在wait状态,在notify之后线程不会马上释放对象锁，wait所在的线程也不会马上获得对象锁，需要等到程序退出synchronized代码块后，
+3.notifyAll
+与notify差别为使原来处于wait状态的所有线程退出wait状态(即不用等待notify)，但是还没有获得对象锁，一旦对象锁释放(notifyAll线程退出调用的notifyAll的synchronized代码块)，会竞争获得该对象锁，在退出sychranized代码块释放锁后其他继续竞争一直讲所有唤醒的线程执行完毕
+总结：如果线程调用对象的wait方法，那么线程就会处于该对象的等待池中不会竞争该对象的锁；当调用notify或者notifyALL，被唤醒的线程进入该对象的锁池中，锁池中的线程会竞争该对象锁，如果没有竞争到锁，只有在调用wait方法才能回到等待池中，竞争到对象锁的线程会继续执行完synchranized代码块会释放该对象锁，这时锁池中的线程会继续竞争
+实例:
+
+
+
+class Basket{
+	private Apple[] basket = new Apple[3];
+	private int index = 0;
+
+	public synchronized void put(Apple a) {
+		while(index == 2) {
+			this.wait();
+		}catch(interruptException e) {}
+
+		this.notifyAll();
+		basket[index++] = a;
+		System.out.println("生产：" + a + " 篮子剩余=" + index);
+	}
+
+	public synchronized vid eat() {
+		while(index == 0) {
+			try{
+				this.wait();
+			}catch(interruptException e) {}
+			
+			this.notifyAll();
+			System.out.println("吃掉：" + basket[--index] + " 篮子剩余=" + index);  
+		}
+
+	}
+}
+
+class Apple{
+	private String id;
+	public Apple(String id){
+		this.id = id
+	}
+	public String toString() {
+		return id;
+	}
+
+}
+
+
+Sychronized互斥锁:锁住的是对象而不是代码，多个线程获取同一把锁
+死锁：两个或者两个以上的线程由于争夺资源造成的互相等待的现象，这些线程称为死锁线程；例如线程a锁定obj1和obj2，吧锁定obj1，当a已经锁定obj1正在锁定obj2的时候b要去锁定obj1那么两个锁都五大结束产生死锁
+实例：
+class DiedSynchronized {
+	main {
+		TellMe tm = new TellMe();
+		Thread t1 = new (tm,"t1")
+		Thread t2 = new (tm,"t2")
+		System.out.println(Thread.currentThread().getName()+"：t1和t2线程已经启动……");  
+        t1.start();  
+        t2.start();
+
+        try{
+        	Thread.sleep((long)10000);
+        }catch (InterruptedException ex) { }  
+        if(t1.isAlive() && t2.isAlive()) {  
+            System.out.println(Thread.currentThread().getName()+"：10s内，t1和t2线程均没有正常结束，证明t1和t2线程死锁！");  
+            System.exit(0);  
+        }  
+        else  
+            System.out.println(Thread.currentThread().getName()+"：t1和t2线程已经结束，证明没有死锁！");  
+	}
+}
+
+class TellMe implements Runnable {
+	private Integer number = new Integer(10);
+	public boolean flag = true;
+	public void run() {
+		if(flag) {
+			flag = false;
+			synchronized(this) {
+				System.out.println(Thread.currentThread().getName()+"：已经获取到this锁，正在获取Number锁……");  
+				try{
+					Thread.sleep(long(1000));#即使没有sleep也会死锁
+				}catch(interruptException e){}
+				synchronized(number) {
+					 System.out.println(Thread.currentThread().getName()+"：this锁和Number锁同时获取完毕！");  
+				}
+			}
+
+		}else {
+			synchronized(_number) {  
+                System.out.println(Thread.currentThread().getName()+"：已经获取到Number锁，正在获取this锁……"); 
+                try{
+                	Thread.sleep(long(1000));
+                }catch(interruptException e){}
+
+                Sychronized(this) {
+                	System.out.println(Thread.currentThread().getName()+"：this锁和Number锁同时获取完毕！");  
+                }
+		}
+	}
+}
+
 线程同步问题:
 多个线程不加控制的对对象进行访问，修改数据可能出现问题，这里我们可以 1.对于资源类标记为private 2.对于需要同步的代码用synchronized同步代码块(该代码具有原子性:在某一时间只有一个线程运行该代码，由一个monitor监视对象保护和可见性:保证在释放锁之前修改的共享数据对于下一个线程可见的); 原理:对象获取锁对象后使自己的高速缓存失效保证从主内存到变量，释放锁之前会刷新高速缓存，迫使更改出现主内存 
 什么时候需要同步？
 1.可见性同步:读取可能由另一个线程写入的变量;写到下一个可能另一个线程读取的变量 2.一致性同步:当修改多个变量值的时候保证其他线程原子能看到其全部更改 3.不必同步:因为JVM已经执行同步静态字段或者static{}中的初始化器，初始化数据时，访问final字段，创建线程之前创建对象，线程可以看见它将要处理的对象
 synchronized限制:无法中断一个正在获得锁的线程，无法通过投票获得锁，要求释放锁的堆栈帧需要和获得锁的相同 --》 Lock框架在java.util.concurrent.lock将锁定实现作为Java类 -->ReentrantLock实现Lock，相比件Synchronized添加锁投票、定时锁等候和可中断锁等候，注意在Synchronized中在代码块结束后会自动释放锁，但是Lock需要.unlock()释放锁 try catch finally 
-通过代码发现Synchronized中的读取和写入县城互相不干扰,但是两个读取线程也不干扰，这是不对的。使用ReentrantLock的实现ReadWriteLock ,通过在set方法中ReadWriteLock.writeLock().lock()取到写锁;在get中ReadWriteLock.readLock().lock()获得读锁。这里我们将Synchronized称为互斥锁，ReadWriteLock称为读写锁(允许对于共享数据在进行更高级别的并发访问)这样就可以自由一个write线程写入数据，多个read线程读取数据，但是读写锁只有在多处理器并且只有访问模式的时候才能实现并发性增强
+通过代码发现Synchronized中的读取和写入线程互相不干扰,但是两个读取线程也不干扰，这是不对的。使用ReentrantLock的实现ReadWriteLock ,通过在set方法中ReadWriteLock.writeLock().lock()取到写锁;在get中ReadWriteLock.readLock().lock()获得读锁。这里我们将Synchronized称为互斥锁，ReadWriteLock称为读写锁(允许对于共享数据在进行更高级别的并发访问)这样就可以自由一个write线程写入数据，多个read线程读取数据，但是读写锁只有在多处理器并且只有访问模式的时候才能实现并发性增强
+
+synchronized修饰静态方法和类对象是叫类锁，修饰普通方法或者代码块叫做对象锁
+加了相同锁的东西，对于获得这个锁的对象都开放，如何判断是否加的是同一个锁？ 不同类型的锁不是同一把锁，加的是对象锁，必须是同一对象实例为一把锁，加的是同一类时才为一把锁
+
+实例:class synTest {private synchronized void test1() private void test2(){synchronized(this)}}
+	main{
+		final synTest st = new synTest(); 
+		Thread t1 = new Thread(new Runnable(){ 
+			public void run{
+				st.test1()});
+			}
+			
+		Thread t2 = new Thread(new Runnable(){
+			public void run() {
+				st.test2();
+			}
+		})
+		t1.start()
+		t2.start()
+	}
+我们可以发现synchronized一个是给非静态方法加锁一个是给当前对象this加锁，所以都是对象锁都是对同一个，所以先运行t1运行t2
+如果创建两个实例final synTest st1 = new synTest(); 将t2改成 st1.test2()这样两者的所不是同一个就互不干扰
+如果给test1改成静态 private static synchronized test1();test2中改成synchronized(synTest.class)那么两者都是类锁，就会限制性t1后执行t2
+
 
 -->线程间通讯增强Condition
-相比传统的线程间的通信:wait() -- await()  ;notify()-- Signal(); notifyAll() -- signalAll()之所以该是因为原对象中的这些方法是final不能重写，所以创痛的通信方法Condition都可以实现
+相比传统的线程间的通信:wait()一直等待构造函数也可以设置毫秒数 -- await()  ;notify()唤醒一个线程对象(具体的)-- Signal(); notifyAll()唤醒所有线程对象 -- signalAll()之所以该是因为原对象中的这些方法是final不能重写，所以的通信方法Condition都可以实现
 Condition绑定在Lock上，可以为多个线程创建不同的Condition 
 Lock Lock = new ReentrantLock(); lock.newCondition()创建线程锁对象Condition，一般需要两个 读线程锁rCon和写线程锁wCon,创建爱你缓存队列Object[] items = new Object[100]  int putptr;  写索引  int takeptr; 读索引  int count;   队列中数据数目
 在put(Object x)方法中，首先要lock.lock()锁定，然后判断如果队列中的数据数目count==items.length(),这样的话需要阻塞写线程wCon.await() 如果没有写满就写入队列items[putptr] = x; 需要更新写索引和队列中的数目同时得判断if(++putptr == items.length) putptr=0 ++count 最后唤醒读线程rCon.Signal() 注意在lock.lock()后的内容需要try catch finally这样的haul才能解除锁lock.unlock()
@@ -417,5 +545,33 @@ public abstract class AbstractNoodle {
     {
        this.style = style;
     }
-    publicabstractvoid eat();
+    public abstract void eat();
 }
+
+public Class PorkyNoodle extends AbstractNoodle {
+	public PorkyNoodle(Peppery style) {
+		super(style);
+	}
+	publicvoid eat()
+    {
+       System.out.println("这是一碗稍嫌油腻的猪肉面条。"
+           + super.style.style());
+    }
+}
+
+BeefMoodle 牛肉类似
+
+Test AbstractNoodle noodle1 = new BeefMoodle(new pepperyStyle); noodle1.eat()得到辣油猪肉面
+	AbstractNoodle noodle1 = new PorkyNoodle(new pepperyStyle); noodle1.eat()得到辣油牛肉面
+
+
+
+9.观察者模式
+一、主题：主题是一个接口，该接口规定了具体主题需要实现的方法，比如添加、删除观察者以及通知观察者更新数据的方法。
+二、观察者：观察者也是一个接口，该接口规定了具体观察者用来更新数据的方法。
+Interface Observer{void update(Observerable o,Object args)}
+三、具体主题：具体主题是一个实现主题接口的类，该类包含了会经常发生变化的数据。而且还有一个集合，该集合存放的是观察者的引用。
+
+四：具体观察者：具体观察者是实现了观察者接口的一个类。具体观察者包含有可以存放具体主题引用的主题接口变量，以便具体观察者让具体主题将自己的引用添加到具体主题的集合中，让自己成为它的观察者，或者让这个具体主题将自己从具体主题的集合中删除，使自己不在时它的观察者
+
+一对多的依赖关系，多个观察者Observer观察一个主题对象subject，如果其发生变化，系统能够通知所有观察者
