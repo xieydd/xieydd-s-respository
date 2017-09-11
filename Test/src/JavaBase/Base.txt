@@ -241,7 +241,56 @@ sleep和wait的区别？ sleep是线程内部的行为，wait是别人让你停止
 与notify差别为使原来处于wait状态的所有线程退出wait状态(即不用等待notify)，但是还没有获得对象锁，一旦对象锁释放(notifyAll线程退出调用的notifyAll的synchronized代码块)，会竞争获得该对象锁，在退出sychranized代码块释放锁后其他继续竞争一直讲所有唤醒的线程执行完毕
 总结：如果线程调用对象的wait方法，那么线程就会处于该对象的等待池中不会竞争该对象的锁；当调用notify或者notifyALL，被唤醒的线程进入该对象的锁池中，锁池中的线程会竞争该对象锁，如果没有竞争到锁，只有在调用wait方法才能回到等待池中，竞争到对象锁的线程会继续执行完synchranized代码块会释放该对象锁，这时锁池中的线程会继续竞争
 实例:
+这里的篮子就像一个控制中心，生产过剩就会让生产进程wait让消费进程notify，如果篮子没有就会让消费wait转而notify生产
+class Producer_Customer{
+	Basket basket = new Basket();  
+    Producer pro = new Producer(basket);  
+    Customer cus = new Customer(basket);  
+     
+    Thread proth1 = new Thread(pro, "一");  
+    Thread proth2 = new Thread(pro, "二");  
+    Thread proth3 = new Thread(pro, "三");  
+    Thread proth4 = new Thread(pro, "四");  
+    Thread custh1 = new Thread(cus, "custh1");  
+    Thread custh2 = new Thread(cus, "custh2");  
+     
+    proth1.start();  
+    proth2.start();  
+    proth3.start();  
+    proth4.start();  
+    custh1.start();  
+    custh2.start();
+}
 
+class Produce implements Runnable{
+	private Basket basket = null;
+	public Producer(Basket basket) {  
+        this.basket = basket;  
+    } 
+    public void run(){
+    	Random r = new Random();
+    	basket.put(new Apple(Thread.getCurrentThread().getNmae()+"#"+i));
+    	try{
+    		Thread.sleep(long(r.nextDouble()*1000));
+    	}catch(interruptException e)
+    }
+}
+
+class Customer implements Runnable {  
+    private Basket basket = null;  
+    public Customer(Basket basket) {  
+        this.basket = basket;  
+    }  
+    public void run() {  
+        Random r = new Random();  
+        for (int i = 0; i < 8; i++) {  
+            basket.eat();  
+            try {  
+                Thread.sleep((long) r.nextDouble() * 1000);  
+            } catch (InterruptedException ex) { }  
+        }  
+    }  
+}  
 
 
 class Basket{
