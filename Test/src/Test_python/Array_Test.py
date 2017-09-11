@@ -1,3 +1,6 @@
+#@Description: Final rate of Rap Of China
+#@author xieydd xieydd@gmail.com  
+#@date 2017-9-11 下午1:25:50 
 from itertools import combinations,permutations
 from scipy.special import comb, perm
 import numpy as np
