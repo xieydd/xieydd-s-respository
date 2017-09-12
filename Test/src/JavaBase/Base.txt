@@ -332,6 +332,15 @@ class Apple{
 }
 
 
+Ïß³Ì×é:
+ThreadGroup tg = new ThreadGroup("New Group");
+MyRunnable mr = new MyRunnable();
+Thread t1 = new Thread(tg,mr,"Thread Name");
+
+...
+tg.setDaemon(true);//ÉèÖÃ×éÃû³ÆÉèÖÃºóÌ¨½ø³Ì±íÊ¾¸ÃÏß³Ì¶¼ÊÇºóÌ¨½ø³Ì
+
+
 Sychronized»¥³âËø:Ëø×¡µÄÊÇ¶ÔÏó¶ø²»ÊÇ´úÂë£¬¶à¸öÏß³Ì»ñÈ¡Í¬Ò»°ÑËø
 ËÀËø£ºÁ½¸ö»òÕßÁ½¸öÒÔÉÏµÄÏß³ÌÓÉÓÚÕù¶á×ÊÔ´Ôì³ÉµÄ»¥ÏàµÈ´ıµÄÏÖÏó£¬ÕâĞ©Ïß³Ì³ÆÎªËÀËøÏß³Ì£»ÀıÈçÏß³ÌaËø¶¨obj1ºÍobj2£¬°ÉËø¶¨obj1£¬µ±aÒÑ¾­Ëø¶¨obj1ÕıÔÚËø¶¨obj2µÄÊ±ºòbÒªÈ¥Ëø¶¨obj1ÄÇÃ´Á½¸öËø¶¼Îå´ó½áÊø²úÉúËÀËø
 ÊµÀı£º
@@ -425,6 +434,193 @@ Lock Lock = new ReentrantLock(); lock.newCondition()´´½¨Ïß³ÌËø¶ÔÏóCondition£¬Ò»°
 ÔÚtake()ÖĞ£¬ÏÈËø¶¨lock.lock() ÅĞ¶ÏÏûÏ¢¶ÓÁĞÈç¹ûÎª¿Õwhile(count == 0) ¶ÁÏß³Ì×èÈûrCon.await() ,¶ÁÈ¡¶ÓÁĞ¸üĞÂË÷Òı Object x = items[takeptr] ÅĞ¶Ïif(++takeptr==items.length) {takeptr = 0} ¶ÁÈ¡ºóĞèÒª½«count-- »½ĞÑĞ´Ïß³ÌwCon.signal() return x
 
 ¼ÓSynchronizedËøµÄ»¯£¬ĞÔÄÜÊÜµ½Ó°Ïì£¬Èç¹ûÒªÇóĞ§ÂÊ½Ï¸ß²ÉÓÃOSSpinLock(Ã»ÓĞ½øÈëÏµÍ³µÄKennel)
+
+
+
+Ïß³Ì³Ø:
+Ïß³Ì³ØµÄºÃ´¦:¶ÔÓÚ¶à¸öÏß³ÌÖ´ĞĞÎÊÌâ£¬¿Î¼ş¼õÉÙ´¦ÀíÆ÷µ¥ÔªÏĞÖÃµÄÊ±¼ä£¬Ôö¼Ó´¦ÀíÆ÷µ¥ÔªµÄÍÌÍÂÄÜÁ¦
+1.Ïß³Ì³Ø¹ÜÀíÆ÷(ThreadPool) ´´½¨Ïú»ÙÏß³Ì³Ø£¬Ìí¼ÓĞÂÈÎÎñ
+2.¹¤×÷Ïß³Ì(PoolWorker) Ïß³Ì³ØÖĞµÄÏß³ÌÃ»ÓĞÈÎÎñµÄÊ±ºò´¦ÓÚµÈ´ı×´Ì¬£¬¿ÉÒÔÑ­»·Ö´ĞĞÈÎÎñ
+3.ÈÎÎñ½Ó¿Ú(Task) Ã¿¸öÈÎÎñ±ØĞëÊµÏÖµÄ½Ó¿Ú£¬¹©¹¤×÷Ïß³Ìµ÷ÓÃÈÎÎñµÄÖ´ĞĞ£¬¹æ¶¨ÈÎÎñµÄÈë¿ÚºÍ½áÊøÊÕÎ²¹¤×÷ÒÔ¼°ÈÎÎñÖ´ĞĞµÄ×´Ì¬
+4.ÈÎÎñ¶ÓÁĞ(taskQueue):¶ÔÓÚ´æ·ÅÃ»ÓĞ´¦ÀíµÄÈÎÎñ£¬»º´æ»úÖÆ
+T1´´½¨Ïß³ÌÊ±¼ä T2Ö´ĞĞÏß³ÌÊ±¼ä T3Ïú»ÙÏß³ÌÊ±¼ä T1+T3 >> T2Ê±ºòÓÃÏß³Ì³Ø-->¼õÉÙT1ºÍT3
+volatile :ĞŞÊÎ²»Í¬Ïß³Ì·ÃÎÊºÍĞŞ¸Ä£¬ÓÃÀ´±£Ö¤²»»áÓÉÓÚ±àÒëÆ÷ÓÅ»¯¶øÊ¡ÂÔ£¬ÒªÇóÃ¿´ÎÖ±½Ó¶ÁÈ¡
+/** 
+ * Ïß³Ì³ØÀà£¬Ïß³Ì¹ÜÀíÆ÷£º´´½¨Ïß³Ì£¬Ö´ĞĞÈÎÎñ£¬Ïú»ÙÏß³Ì£¬»ñÈ¡Ïß³Ì»ù±¾ĞÅÏ¢ 
+ */  
+public final class ThreadPool {  
+    // Ïß³Ì³ØÖĞÄ¬ÈÏÏß³ÌµÄ¸öÊıÎª5  
+    private static int worker_num = 5;  
+    // ¹¤×÷Ïß³Ì  
+    private WorkThread[] workThrads;  
+    // Î´´¦ÀíµÄÈÎÎñ  
+    private static volatile int finished_task = 0;  
+    // ÈÎÎñ¶ÓÁĞ£¬×÷ÎªÒ»¸ö»º³å,ListÏß³Ì²»°²È«  
+    private List<Runnable> taskQueue = new LinkedList<Runnable>();  
+    private static ThreadPool threadPool;  
+  
+    // ´´½¨¾ßÓĞÄ¬ÈÏÏß³Ì¸öÊıµÄÏß³Ì³Ø  
+    private ThreadPool() {  
+        this(5);  
+    }  
+  
+    // ´´½¨Ïß³Ì³Ø,worker_numÎªÏß³Ì³ØÖĞ¹¤×÷Ïß³ÌµÄ¸öÊı  
+    private ThreadPool(int worker_num) {  
+        ThreadPool.worker_num = worker_num;  
+        workThrads = new WorkThread[worker_num];  
+        for (int i = 0; i < worker_num; i++) {  
+            workThrads[i] = new WorkThread();  
+            workThrads[i].start();// ¿ªÆôÏß³Ì³ØÖĞµÄÏß³Ì  
+        }  
+    }  
+  
+    // µ¥Ì¬Ä£Ê½£¬»ñµÃÒ»¸öÄ¬ÈÏÏß³Ì¸öÊıµÄÏß³Ì³Ø  
+    public static ThreadPool getThreadPool() {  
+        return getThreadPool(ThreadPool.worker_num);  
+    }  
+  
+    // µ¥Ì¬Ä£Ê½£¬»ñµÃÒ»¸öÖ¸¶¨Ïß³Ì¸öÊıµÄÏß³Ì³Ø,worker_num(>0)ÎªÏß³Ì³ØÖĞ¹¤×÷Ïß³ÌµÄ¸öÊı  
+    // worker_num<=0´´½¨Ä¬ÈÏµÄ¹¤×÷Ïß³Ì¸öÊı  
+    public static ThreadPool getThreadPool(int worker_num1) {  
+        if (worker_num1 <= 0)  
+            worker_num1 = ThreadPool.worker_num;  
+        if (threadPool == null)  
+            threadPool = new ThreadPool(worker_num1);  
+        return threadPool;  
+    }  
+  
+    // Ö´ĞĞÈÎÎñ,ÆäÊµÖ»ÊÇ°ÑÈÎÎñ¼ÓÈëÈÎÎñ¶ÓÁĞ£¬Ê²Ã´Ê±ºòÖ´ĞĞÓĞÏß³Ì³Ø¹ÜÀíÆ÷¾õ¶¨  
+    public void execute(Runnable task) {  
+        synchronized (taskQueue) {  
+            taskQueue.add(task);  
+            taskQueue.notify();  
+        }  
+    }  
+  
+    // ÅúÁ¿Ö´ĞĞÈÎÎñ,ÆäÊµÖ»ÊÇ°ÑÈÎÎñ¼ÓÈëÈÎÎñ¶ÓÁĞ£¬Ê²Ã´Ê±ºòÖ´ĞĞÓĞÏß³Ì³Ø¹ÜÀíÆ÷¾õ¶¨  
+    public void execute(Runnable[] task) {  
+        synchronized (taskQueue) {  
+            for (Runnable t : task)  
+                taskQueue.add(t);  
+            taskQueue.notify();  
+        }  
+    }  
+  
+    // ÅúÁ¿Ö´ĞĞÈÎÎñ,ÆäÊµÖ»ÊÇ°ÑÈÎÎñ¼ÓÈëÈÎÎñ¶ÓÁĞ£¬Ê²Ã´Ê±ºòÖ´ĞĞÓĞÏß³Ì³Ø¹ÜÀíÆ÷¾õ¶¨  
+    public void execute(List<Runnable> task) {  
+        synchronized (taskQueue) {  
+            for (Runnable t : task)  
+                taskQueue.add(t);  
+            taskQueue.notify();  
+        }  
+    }  
+  
+    // Ïú»ÙÏß³Ì³Ø,¸Ã·½·¨±£Ö¤ÔÚËùÓĞÈÎÎñ¶¼Íê³ÉµÄÇé¿öÏÂ²ÅÏú»ÙËùÓĞÏß³Ì£¬·ñÔòµÈ´ıÈÎÎñÍê³É²ÅÏú»Ù  
+    public void destroy() {  
+        while (!taskQueue.isEmpty()) {// Èç¹û»¹ÓĞÈÎÎñÃ»Ö´ĞĞÍê³É£¬¾ÍÏÈË¯»á°É  
+            try {  
+                Thread.sleep(10);  
+            } catch (InterruptedException e) {  
+                e.printStackTrace();  
+            }  
+        }  
+        // ¹¤×÷Ïß³ÌÍ£Ö¹¹¤×÷£¬ÇÒÖÃÎªnull  
+        for (int i = 0; i < worker_num; i++) {  
+            workThrads[i].stopWorker();  
+            workThrads[i] = null;  
+        }  
+        threadPool=null;  
+        taskQueue.clear();// Çå¿ÕÈÎÎñ¶ÓÁĞ  
+    }  
+  
+    // ·µ»Ø¹¤×÷Ïß³ÌµÄ¸öÊı  
+    public int getWorkThreadNumber() {  
+        return worker_num;  
+    }  
+  
+    // ·µ»ØÒÑÍê³ÉÈÎÎñµÄ¸öÊı,ÕâÀïµÄÒÑÍê³ÉÊÇÖ»³öÁËÈÎÎñ¶ÓÁĞµÄÈÎÎñ¸öÊı£¬¿ÉÄÜ¸ÃÈÎÎñ²¢Ã»ÓĞÊµ¼ÊÖ´ĞĞÍê³É  
+    public int getFinishedTasknumber() {  
+        return finished_task;  
+    }  
+  
+    // ·µ»ØÈÎÎñ¶ÓÁĞµÄ³¤¶È£¬¼´»¹Ã»´¦ÀíµÄÈÎÎñ¸öÊı  
+    public int getWaitTasknumber() {  
+        return taskQueue.size();  
+    }  
+  
+    // ¸²¸ÇtoString·½·¨£¬·µ»ØÏß³Ì³ØĞÅÏ¢£º¹¤×÷Ïß³Ì¸öÊıºÍÒÑÍê³ÉÈÎÎñ¸öÊı  
+    @Override  
+    public String toString() {  
+        return "WorkThread number:" + worker_num + "  finished task number:"  
+                + finished_task + "  wait task number:" + getWaitTasknumber();  
+    }  
+  
+    /** 
+     * ÄÚ²¿Àà£¬¹¤×÷Ïß³Ì 
+     */  
+    private class WorkThread extends Thread {  
+        // ¸Ã¹¤×÷Ïß³ÌÊÇ·ñÓĞĞ§£¬ÓÃÓÚ½áÊø¸Ã¹¤×÷Ïß³Ì  
+        private boolean isRunning = true;  
+  
+        /* 
+         * ¹Ø¼üËùÔÚ°¡£¬Èç¹ûÈÎÎñ¶ÓÁĞ²»¿Õ£¬ÔòÈ¡³öÈÎÎñÖ´ĞĞ£¬ÈôÈÎÎñ¶ÓÁĞ¿Õ£¬ÔòµÈ´ı 
+         */  
+        @Override  
+        public void run() {  
+            Runnable r = null;  
+            while (isRunning) {// ×¢Òâ£¬ÈôÏß³ÌÎŞĞ§Ôò×ÔÈ»½áÊørun·½·¨£¬¸ÃÏß³Ì¾ÍÃ»ÓÃÁË  
+                synchronized (taskQueue) {  
+                    while (isRunning && taskQueue.isEmpty()) {// ¶ÓÁĞÎª¿Õ  
+                        try {  
+                            taskQueue.wait(20);  
+                        } catch (InterruptedException e) {  
+                            e.printStackTrace();  
+                        }  
+                    }  
+                    if (!taskQueue.isEmpty())  
+                        r = taskQueue.remove(0);// È¡³öÈÎÎñ  
+                }  
+                if (r != null) {  
+                    r.run();// Ö´ĞĞÈÎÎñ  
+                }  
+                finished_task++;  
+                r = null;  
+            }  
+        }  
+  
+        // Í£Ö¹¹¤×÷£¬ÈÃ¸ÃÏß³Ì×ÔÈ»Ö´ĞĞÍêrun·½·¨£¬×ÔÈ»½áÊø  
+        public void stopWorker() {  
+            isRunning = false;  
+        }  
+    }  
+}  
+
+//²âÊÔÏß³Ì³Ø  
+public class TestThreadPool {  
+    public static void main(String[] args) {  
+        // ´´½¨3¸öÏß³ÌµÄÏß³Ì³Ø  
+        ThreadPool t = ThreadPool.getThreadPool(3);  
+        t.execute(new Runnable[] { new Task(), new Task(), new Task() });  
+        t.execute(new Runnable[] { new Task(), new Task(), new Task() });  
+        System.out.println(t);  
+        t.destroy();// ËùÓĞÏß³Ì¶¼Ö´ĞĞÍê³É²Ådestory  
+        System.out.println(t);  
+    }  
+  
+    // ÈÎÎñÀà  
+    static class Task implements Runnable {  
+        private static volatile int i = 1;  
+  
+        @Override  
+        public void run() {// Ö´ĞĞÈÎÎñ  
+            System.out.println("ÈÎÎñ " + (i++) + " Íê³É");  
+        }  
+    }  
+}  
+ÉÏÊöÎª×Ô¶¨ÒåÏß³Ì³Ø
+JavaÍ¨¹ıExecutorsÌá¹©4ÖÖÏß³Ì³Ø:
+ExecutorService cachedThreadPool = Executor.newCachedThreadPool();
+
 
 21.Éè¼ÆÄ£Ê½
 1.´´½¨ĞÍÄ£Ê½(ÎŞĞèÖ±½ÓÊµÀı»¯¶ÔÏó):¼òµ¥¹¤³§Ä£Ê½(not 23)¡¢¹¤³§·½·¨¡¢³éÏó¹¤³§Ä£Ê½¡¢µ¥ÀıÄ£Ê½¡¢Éú³ÉÆ÷Ä£Ê½ºÍÔ­ĞÍÄ£Ê½
@@ -608,7 +804,7 @@ public Class PorkyNoodle extends AbstractNoodle {
     }
 }
 
-BeefMoodle Å£ÈâÀàËÆ
+BeefMoodle Å£ÈâÃæÀàËÆ
 
 Test AbstractNoodle noodle1 = new BeefMoodle(new pepperyStyle); noodle1.eat()µÃµ½À±ÓÍÖíÈâÃæ
 	AbstractNoodle noodle1 = new PorkyNoodle(new pepperyStyle); noodle1.eat()µÃµ½À±ÓÍÅ£ÈâÃæ
@@ -620,7 +816,104 @@ Test AbstractNoodle noodle1 = new BeefMoodle(new pepperyStyle); noodle1.eat()µÃµ
 ¶ş¡¢¹Û²ìÕß£º¹Û²ìÕßÒ²ÊÇÒ»¸ö½Ó¿Ú£¬¸Ã½Ó¿Ú¹æ¶¨ÁË¾ßÌå¹Û²ìÕßÓÃÀ´¸üĞÂÊı¾İµÄ·½·¨¡£
 Interface Observer{void update(Observerable o,Object args)}
 Èı¡¢¾ßÌåÖ÷Ìâ£º¾ßÌåÖ÷ÌâÊÇÒ»¸öÊµÏÖÖ÷Ìâ½Ó¿ÚµÄÀà£¬¸ÃÀà°üº¬ÁË»á¾­³£·¢Éú±ä»¯µÄÊı¾İ¡£¶øÇÒ»¹ÓĞÒ»¸ö¼¯ºÏ£¬¸Ã¼¯ºÏ´æ·ÅµÄÊÇ¹Û²ìÕßµÄÒıÓÃ¡£
-
 ËÄ£º¾ßÌå¹Û²ìÕß£º¾ßÌå¹Û²ìÕßÊÇÊµÏÖÁË¹Û²ìÕß½Ó¿ÚµÄÒ»¸öÀà¡£¾ßÌå¹Û²ìÕß°üº¬ÓĞ¿ÉÒÔ´æ·Å¾ßÌåÖ÷ÌâÒıÓÃµÄÖ÷Ìâ½Ó¿Ú±äÁ¿£¬ÒÔ±ã¾ßÌå¹Û²ìÕßÈÃ¾ßÌåÖ÷Ìâ½«×Ô¼ºµÄÒıÓÃÌí¼Óµ½¾ßÌåÖ÷ÌâµÄ¼¯ºÏÖĞ£¬ÈÃ×Ô¼º³ÉÎªËüµÄ¹Û²ìÕß£¬»òÕßÈÃÕâ¸ö¾ßÌåÖ÷Ìâ½«×Ô¼º´Ó¾ßÌåÖ÷ÌâµÄ¼¯ºÏÖĞÉ¾³ı£¬Ê¹×Ô¼º²»ÔÚÊ±ËüµÄ¹Û²ìÕß
 
 Ò»¶Ô¶àµÄÒÀÀµ¹ØÏµ£¬¶à¸ö¹Û²ìÕßObserver¹Û²ìÒ»¸öÖ÷Ìâ¶ÔÏósubject£¬Èç¹ûÆä·¢Éú±ä»¯£¬ÏµÍ³ÄÜ¹»Í¨ÖªËùÓĞ¹Û²ìÕß
+Ö÷Ìâ(Interface) --> ¾ßÌåÖ÷Ìâ(ArrayList<¹Û²ìÕß>(index)ÔöÉ¾¡¢Í¨Öª¹Û²ìÕß) -->  <--¹Û²ìÕß(Interface) --> ¾ßÌå¹Û²ìÕß
+
+¹Û²ìÕß½Ó¿Ú
+public Interface Observer {
+	void update(Observable o,Object arg);
+}
+
+Observable Ä¿±ê»òÖ÷Ìâ
+³éÏóÀàºÍ½Ó¿Ú:³éÏóÀàÓÃabstractĞŞÊÎ£¬½Ó¿ÚÓÃInterfaceĞŞÊÎ£¬³éÏóÀàÖĞ¿ÉÒÔÓĞ·Ç³éÏó·½·¨ºÍÓĞÊı¾İµÄ³ÉÔ±±äÁ¿£¬¶ø½Ó¿Ú±ØĞëËùÓĞµÄ·½·¨¶¼ÊÇ³éÏóµÄ£¬½Ó¿ÚÖĞµÄÊı¾İ³ÉÔ±±ØĞëÊÇ³£Á¿
+public abstract class Observable{
+	//±£´æËùÓĞµÄ¹Û²ìÕß£¬×÷Îª±¾¶ÔÏóµÄÊÂ¼ş¼ì²âÆ÷
+	List<Observer> observers = new ArrayList<Observer>();
+
+	public void registObserver(Observer o) {
+		observers.add(o);
+	}
+
+	public void removeObserver(Observer o) {
+		observers.remove(o);
+	}
+
+	public void notifyObservers(Object value) {
+		//±éÀú×¢²áµ½¸Ã±»¹Û²ìÕßÉÏµÄËùÓĞ¹Û²ìÕß
+		for(Iterator it = observers.iterator();it.hasNext();) {
+			Observer o = (Observer)it.next();
+			o.update(this,value);
+		}
+	}
+}
+
+Product±»¹Û²ìÕß ¾ßÌåÖ÷Ìâ
+public class Product extends Observerable {
+	private String name;
+	private double price;
+
+	 public Product() {
+	}
+
+    public Product(String name, double price) {
+       this.name = name;
+       this.price = price;
+	}
+
+	public String getName() {
+   		return name;
+	}
+
+	//ÔÚÉèÖÃÄÇÃ´ÊôĞÔµÄÊ±ºòµ÷ÓÃ´¥·¢×¢²áËùÓĞµÄ¹Û²ìÕß
+	public void setName(String name) {
+   		this.name = name;
+   		notifyObservers(name);
+	}
+}
+
+public class NameObserver implements Observer {
+	public void update(Observable o,Object arg) {
+		if (arg instanceof String) {
+           // ²úÆ·Ãû³Æ¸Ä±äÖµÔÚnameÖĞ
+           String name = (String) arg;
+           // Æô¶¯Ò»¸öJFrame´°¿ÚÀ´ÏÔÊ¾±»¹Û²ì¶ÔÏóµÄ×´Ì¬¸Ä±ä
+           JFrame f = new JFrame("¹Û²ìÕß");
+           JLabel l = new JLabel("Ãû³Æ¸Ä±äÎª£º" + name);
+           f.add(l);
+           f.pack();
+           f.setVisible(true);
+           System.out.println("Ãû³Æ¹Û²ìÕß:" + o + "ÎïÆ·Ãû³ÆÒÑ¾­¸Ä±äÎª: " + name);
+       }
+	}
+}
+
+public class PriceObserver implements Observer {
+    // ÊµÏÖ¹Û²ìÕß±ØĞëÊµÏÖµÄupdate·½·¨
+    public void update(Observable o, Object arg) {
+       if (arg instanceof Double) {
+           System.out.println("¼Û¸ñ¹Û²ìÕß:" + o + "ÎïÆ·¼Û¸ñÒÑ¾­¸Ä±äÎª: " + arg);
+       }
+    }
+}
+
+public class Test{
+	public static void main(String[] args) {
+       // ´´½¨Ò»¸ö±»¹Û²ìÕß¶ÔÏó
+       Product p = new Product("µçÊÓ»ú", 176);
+       // ´´½¨Á½¸ö¹Û²ìÕß¶ÔÏó
+       NameObserver no = new NameObserver();
+       PriceObserver po = new PriceObserver();
+       // Ïò±»¹Û²ì¶ÔÏóÉÏ×¢²áÁ½¸ö¹Û²ìÕß¶ÔÏó
+       p.registObserver(no);
+       p.registObserver(po);
+       // ³ÌĞòµ÷ÓÃsetter·½·¨À´¸Ä±äProductµÄnameºÍpriceÊôĞÔ
+       p.setName("Êé×À");
+       p.setPrice(345f);
+    }
+}
+
+
+
+
