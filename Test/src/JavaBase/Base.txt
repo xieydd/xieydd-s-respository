@@ -445,6 +445,161 @@ Lock Lock = new ReentrantLock(); lock.newCondition()´´½¨Ïß³ÌËø¶ÔÏóCondition£¬Ò»°
 4.ÈÎÎñ¶ÓÁĞ(taskQueue):¶ÔÓÚ´æ·ÅÃ»ÓĞ´¦ÀíµÄÈÎÎñ£¬»º´æ»úÖÆ
 T1´´½¨Ïß³ÌÊ±¼ä T2Ö´ĞĞÏß³ÌÊ±¼ä T3Ïú»ÙÏß³ÌÊ±¼ä T1+T3 >> T2Ê±ºòÓÃÏß³Ì³Ø-->¼õÉÙT1ºÍT3
 volatile :ĞŞÊÎ²»Í¬Ïß³Ì·ÃÎÊºÍĞŞ¸Ä£¬ÓÃÀ´±£Ö¤²»»áÓÉÓÚ±àÒëÆ÷ÓÅ»¯¶øÊ¡ÂÔ£¬ÒªÇóÃ¿´ÎÖ±½Ó¶ÁÈ¡
+
+ÃæÏò¶ÔÏóµÄÈıÖÖ»ù±¾ÌØÕ÷:·â×°(Òş²Ø¾ßÌåÏ¸½ÚÄ£¿é»¯)¡¢¶àÌ¬¡¢¼Ì³Ğ£»·â×°ºÍ¼Ì³Ğ¶¼ÊÇÍØÕ¹ÒÑ´æÔÚµÄ´úÂëÄ£¿éÊµÏÖ´úÂëÖØÓÃ£¬¶ø¶àÌ¬ÎªÁËÊµÏÖ½Ó¿ÚÖØÓÃ£¬ÎªÁËÀàÔÚ¼Ì³ĞºÍÅÉÉúµÄÊ±ºò±£Ö¤Ê¹ÓÃÕßÖĞµÄÈÎÒ»ÀàµÄÊµÀıµÄÄ³Ò»ÊôĞÔÕıÈ·µ÷ÓÃ
+¶àÌ¬ºÍ¼Ì³Ğ:ÕâÀï×¢Òâ¼Ì³ĞÖĞµ÷ÓÃ¸¸ÀàµÄ¹¹Ôì·½·¨ÆäÖĞsuperÓï¾ä±ØĞëÊÇ¹¹Ôì·½·¨ÖĞµÄµÚÒ»ÌõÒòÎªĞèÒªÏÈ´´½¨¸¸Àà¶ÔÏóÔÙ´´½¨×ÓÀà£º¶àÌ¬ÊµÏÖÂú×ãÈı¸öÌõ¼ş:¼Ì³Ğ¡¢ÖØĞ´¡¢ÏòÉÏ×ªĞÍ£¬ÊµÏÖĞÎÊ½Îª¼Ì³Ğ(¶à¸ö×ÓÀà¶ÔÓÚ¸¸Àà·½·¨ÖØĞ´±íÏÖ²»Í¬µÄÊôĞÔ)ºÍ½Ó¿Ú(ÊµÏÖ½Ó¿Ú²¢¸²¸Ç½Ó¿ÚÖĞÍ¬Ò»·½·¨µÄ²»Í¬Àà£¬ÓÉÓÚ½Ó¿Ú¿ÉÒÔ¶à¼Ì³ĞºÍ¶àÊµÏÖËùÒÔÁé»îĞÔ±È¼Ì³ĞºÃ)£¬³ÌĞòÖĞ¶¨ÒåµÄÒıÓÃ±äÁ¿ËùÖ¸ÏòµÄ¾ßÌåÀàĞÍºÍ¸ÃÒıÓÃ±äÁ¿µ÷ÓÃµÄ·½·¨ÔÚ±à³ÌÊÇ²»È·¶¨ÔÚ³ÌĞòÔËĞĞµÄÊ±ºò²ÅÈ·¶¨£¬ËùÒÔ²»ÓÃĞŞ¸Ä³ÌĞò´úÂë¾Í¿ÉÒÔÈÃÒıÓÃ±äÁ¿°ó¶¨µ½²»Í¬µÄÀàÉÏÃæ£¬´Ó¶øµ¼ÖÂµ÷ÓÃ·½·¨µÄ¸Ä±ä(¶ø²»ÓÃĞŞ¸ÄËù°ó¶¨µÄ¾ßÌå´úÂë)£¬½«¸¸ÀàÀàĞÍ×÷Îª²ÎÊıÀàĞÍ£¬¸Ã¸¸Àà¼°Æä×ÓÀà¶ÔÏó×÷Îª²ÎÊı´«Èë£¬ÔËĞĞÊ±¸ù¾İÊµ¼Ê´´½¨µÄ¶ÔÏóÀàĞÍ¶¯Ì¬¾ö¶¨Ê¹ÓÃÄÄ¸ö·½·¨
+ÏòÉÏ×ªĞÍ:µ±AÊÇBµÄ¸¸ÀàµÄÊ±ºò A a = new B();ÕâÑù»á×Ô¶¯ÏòÉÏ×ªĞÍ£¬ÕâÑù×öµÄºÃ´¦ÊÇ³ıÁËÊ¹ÓÃ¸¸ÀàºÍ×ÓÀàµÄ¹²ĞÔ»¹¿ÉÒÔÊ¹ÓÃ×ÓÀàµÄ¶ÀÌØ¹¦ÄÜ£¬È±µã¾ÍÊÇ»á¶ªÊ§×ÓÀà×Ô¼º¶¨ÒåµÄÊôĞÔºÍ·½·¨£¬ÖØĞ´µÄ·½·¨²»»áµ«ÊÇÖØÔØµÄ·½·¨»á¶ª£¬¶ÔÓÚÖØĞ´µÄ·½·¨ÔÚµ÷ÓÃµÄÊ±ºò±Ø¶¨Ê¹ÓÃµÄÊÇ×ÓÀà¶¨ÒåµÄ·½·¨£¬×öµ½¶¯Ì¬Á¬½Ó¶¯Ì¬µ÷ÓÃ
+¸²¸Ç(×ÓÀàÖØĞÂ¶¨Òå¸¸ÀàµÄ·½·¨)ºÍÖØÔØ(ÔÊĞí´æÔÚ¶à¸öÖØÃûµÄ·½·¨µ«ÊÇ²ÎÊı²»Í¬)
+ÊµÀı:
+public class A {
+    public String show(D obj) {
+        return ("A and D");
+    }
+
+    public String show(A obj) {
+        return ("A and A");
+    } 
+
+}
+
+public class B extends A{
+    public String show(B obj){
+        return ("B and B");
+    }
+    
+    public String show(A obj){
+        return ("B and A");
+    } 
+}
+
+public class C extends B{
+
+}
+
+public class D extends B{
+
+}
+
+public class Test {
+    public static void main(String[] args) {
+        A a1 = new A();
+        A a2 = new B();
+        B b = new B();
+        C c = new C();
+        D d = new D();
+        
+        System.out.println("1--" + a1.show(b));
+        System.out.println("2--" + a1.show(c));
+        System.out.println("3--" + a1.show(d));
+        System.out.println("4--" + a2.show(b));
+        System.out.println("5--" + a2.show(c));
+        System.out.println("6--" + a2.show(d));
+        System.out.println("7--" + b.show(b));
+        System.out.println("8--" + b.show(c));
+        System.out.println("9--" + b.show(d));      
+    }
+}
+resulu in console
+1--A and A
+2--A and A
+3--A and D
+4--B and A ÎªÊ²Ã´²»ÊÇB and B µ±³¬Àà¶ÔÏóÒıÓÃ±äÁ¿ÒıÓÃ×ÓÀà¶ÔÏóÊ±£¬±»ÒıÓÃ¶ÔÏóÀàĞÍ¾ö¶¨µ÷ÓÃË­µÄ³ÉÔ±·½·¨£¬¼Ì³ĞÁ´ÖĞ¶ÔÏó·½·¨µÄµ÷ÓÃ´æÔÚÒ»¸öÓÅÏÈ¼¶£ºthis.show(O)¡¢super.show(O)¡¢this.show((super)O)¡¢super.show((super)O)
+5--B and A a2ÊÇAÀàĞÍµÄÒıÓÃÀàĞÍ£¬thisÎªA£¬AÀàÖĞÃ»ÓĞ»Øµ½AµÄ³¬ÀàÕÒsuper.show(),ÓÉÓÚÃ»ÓĞ³¬Àà(³ıObjectÍâ) this.show((super)O) ×¢Òâsuper(C)ÎªA»òÕßB
+6--A and D 
+7--B and B
+8--B and B
+9--A and D
+×Ü½á:µ±³¬Àà¶ÔÏóÒıÓÃ±äÁ¿ÒıÓÃ×Ó¶ÔÏóµÄÊ±ºò£¬±»ÒıÓÃ¶ÔÏóµÄÀàĞÍ²»ÊÇÒıÓÃ¶ÔÏó¾ö¶¨µ÷ÓÃË­µÄ·½·¨£¬¶øÊÇ±»µ÷ÓÃ·½·¨±ØĞëÔÚ³¬Àà±»¶¨Òå¹ı£¬¸ù¾İÓÅÏÈ¼¶
+
+µ¥ÀıºÍ¶àÀı(¶ÔÏóÄ£ĞÍ):µ¥Àı¾ÍÊÇËùÓĞµÄÇëÇóÊ¹ÓÃÍ¬Ò»¸ö¶ÔÏó´¦ÀíÀıÈçServiceºÍDao¶øactionÎª¶àÀı£»
+±ÈÈçÒ»¸ötxtÎÄ¼ş¶ÁÈ¡txtÎÄµµ£¬¾ÍÊÊºÏµ¥Àı£¬ÕâÑùÃ¿Ò»´Î¶ÁÈ¡txtÎÄ¼ş¾Í²»ÓÃÔÙnew³öÀ´¶ÔÏó£¬»¹ÓĞÒ»¸ö¾ÍÊÇ±£Ö¤¶ÔÏóµÄÎ¨Ò»ĞÔ£¬µ«ÊÇÔÚstrut1µÄactionÎªµ¥ÊµÀı¶àÏß³ÌÕâÑùµÄ»¯¿ÉÄÜ¶à¸öÓÃ»§Í¬Ê±²Ù×÷¾Í»áÓöµ½ÎÊÌâ¶øStruts2 ¾Í²»»á
+ÊµÀı:
+µ¥ÀıÄ£Ê½
+/*
+µ¥ÀıÄ£Ê½(¾­µäÄ£Ê½):Æä¹¹Ôì·½·¨Î´Ë½ÓĞ,¶¨ÒåË½ÓĞµÄ¾²Ì¬È«¾Ö±äÁ¿singletonÀ´±£´æ¸ÃÀàµÄÎ»ÒÆÊµÀı£¬µ«ÊÇÕâÀïÈç¹ûÎªnullµÄ»¯¾Í³öÏÖÁ½¸öÏß³Ì´´½¨¶ÔÏóÎ¥·´µ¥ÀıµÄÔ­Ôò
+ */
+public class Singleton() {
+	private static Singleton singleton = new Singleton();
+	private Singleton(){}
+	public static Singleton getInstance(){
+		if(singleton == null){
+			singleton = new Singleton();
+		}
+		return singleton;
+	}
+}
+/**
+ * Lazyµ¥ÀıÀÁººÄ£Ê½£º¼ÓËø±£Ö¤Ö»ÓĞÒ»¸öÏß³ÌÄÜ¹»·ÃÎÊ¸ÃÓï¾ä¿é£¬ÕâÀï¼ÓÁËifÅĞ¶Ïµ±Ã»ÓĞ¶ÔÏóµÄÊ±ºò¼ÓËø£¬ÓĞ¶ÔÏóÖ±½Ó·µ»Ø
+ */
+public class Singleton() {
+	private static Singleton singleton;
+	private static object _lock = new object();
+	private Singleton(){}
+	public static Singleton getInstance(){
+		if(singleton == null) {
+			lock(_lock){
+				if(singleton == null){
+					singleton = new Singleton();
+				}
+			}
+		}
+			return singleton;
+	}
+}
+/**
+ * ¶öººÄ£Ê½ readonlyÖ¸¶¨¸Ã³£Á¿ÊÇÀà±ğ¼¶£¬ËüµÄ³õÊ¼»¯½»ÓÉ¾²Ì¬¹¹Ôìº¯ÊıÊµÏÖ£¬²¢¿ÉÒÔÔÚÔËĞĞÊ±±àÒëÔÚÕâÖÖÄ£Ê½ÏÂ£¬ÎŞĞè×Ô¼º½â¾öÏß³Ì°²È«ĞÔÎÊÌâ£¬CLR»á¸øÎÒÃÇ½â¾ö¡£ÓÉ´Ë¿ÉÒÔ¿´µ½Õâ¸öÀà±»¼ÓÔØÊ±£¬»á×Ô¶¯ÊµÀı»¯Õâ¸öÀà£¬¶ø²»ÓÃÔÚµÚÒ»´Îµ÷ÓÃGetInstance()ºó²ÅÊµÀı»¯³öÎ¨Ò»µÄµ¥Àı¶ÔÏó
+ */
+public sealed class Singleton() {
+	private static readonly Singleton singleton = new Singleton();
+	private Singleton(){}
+	public static Singleton getInstance(){
+		return singleton;
+	}
+}
+
+¶àÀıÄ£Ê½:±ØĞë×Ô¼º´´½¨¹ÜÀí×Ô¼ºµÄÊµÀı£¬²¢ÏòÍâÌá¹©
+public class Student {
+	private static int maxNumOfStudent = 2;
+	private static ArrayList<String> studentInfoList = new ArrayList<String>(maxNumOfStudent);//×°Ñ§ÉúĞÕÃû
+	private static ArrayList<Student> studentList = new ArrayList<Student>(maxNumOfStudent);
+	private statuc int selectNum = 0;
+
+	static{
+		for(int i = 0;i<3;i++) {
+			studentList.add(new Student("Ñ§Éú"+(i+1));
+		}
+	}
+
+	public Student(String info) {
+		studentInfoList.add(info);
+	}
+
+	//Ñ¡³öÑ§Éú
+	public static Student getInstance() {
+		Random r = new Random();
+		selectNum = r.nextInt(maxNumOfStudent);
+		return studentList.get(selectNum)
+	}
+
+	//Êä³öÑ§ÉúĞÕÃû
+	public static void studentInfo() {
+	System.out.println(studentInfoList.get(selectNum));}
+}
+class Test{
+	main{
+		int maxTeacher = 10;
+		for(int i =0;i<maxTeacher;i++) {
+			Student s = Student.getInstance();
+			System.out.print("µÚ"+(i+1)+"¸öÀÏÊ¦ÕÒµÄÊÇ£º"); 
+			s.studentInfo();
+		}
+	}
+}
+
+¶àÌ¬ÊôÓÚµ¥Àı»¹ÊÇ¶àÀı£º²»ÊÇÒ»¸ö¸ÅÄî£¬µ¥ÀıºÍ¶àÀıÊÇÉè¼ÆÄ£Ê½ÖĞµÄ¸ÅÄî£¬¶àÌ¬ÊÇÓïÑÔ±¾ÉíµÄ¸ÅÄî£¬¿ÉÒÔÔÚµ¥ÀıÄ£Ê½ÏÂÊ¹ÓÃ¶àÌ¬Ò²¿ÉÒÔÔÚ¶àÀıÄ£Ê½ÏÂÊ¹ÓÃ
+
+
+
 /** 
  * Ïß³Ì³ØÀà£¬Ïß³Ì¹ÜÀíÆ÷£º´´½¨Ïß³Ì£¬Ö´ĞĞÈÎÎñ£¬Ïú»ÙÏß³Ì£¬»ñÈ¡Ïß³Ì»ù±¾ĞÅÏ¢ 
  */  
@@ -489,7 +644,7 @@ public final class ThreadPool {
         return threadPool;  
     }  
   
-    // Ö´ĞĞÈÎÎñ,ÆäÊµÖ»ÊÇ°ÑÈÎÎñ¼ÓÈëÈÎÎñ¶ÓÁĞ£¬Ê²Ã´Ê±ºòÖ´ĞĞÓĞÏß³Ì³Ø¹ÜÀíÆ÷¾õ¶¨  
+    // Ö´ĞĞÈÎÎñ,ÆäÊµÖ»ÊÇ°ÑÈÎÎñ¼ÓÈëÈÎÎñ¶ÓÁĞ£¬Ê²Ã´Ê±ºòÖ´ĞĞÓÉÏß³Ì³Ø¹ÜÀíÆ÷¾ö¶¨ 
     public void execute(Runnable task) {  
         synchronized (taskQueue) {  
             taskQueue.add(task);  
@@ -619,7 +774,65 @@ public class TestThreadPool {
 }  
 ÉÏÊöÎª×Ô¶¨ÒåÏß³Ì³Ø
 JavaÍ¨¹ıExecutorsÌá¹©4ÖÖÏß³Ì³Ø:
-ExecutorService cachedThreadPool = Executor.newCachedThreadPool();
+1.newCachedThreadPool
+ExecutorService cachedThreadPool = Executor.newCachedThreadPool();//¿É»º´æµÄÏß³Ì³Ø£¬¿É»ØÊÕºÍ´´½¨
+for(){
+	try{
+		Thread.sleep(1000);
+	}catch
+	cachedThreadPool.execute(new Runnable() {..run(){}..})
+}
+ÔÚµÚÒ»¸öÈÎÎñÍê³Éºó»á¸´ÓÃÍê³ÉµÚÒ»¸öÈÎÎñµÄÏß³Ì£¬¶ø²»»áÖØĞÂ´´½¨
+2.newFixedThreadPool//¶¨³¤Ïß³Ì³Ø,Èç¹û³¬³öÏß³Ì»áÔÚ¶ÓÁĞÖĞµÈ´ı
+ExecutorService  fixedThreadPool = Executor.newFixedThreadPool(3);
+for(int i =0;i<5;i++) {
+	final int index = i;
+	fixedThreadPool.execute(new Runnable{
+		public void run() {
+			try{
+		System.out.println(index);
+		Thread.sleep(1000);
+	}catch(){
+	}
+		}
+	});
+}
+¶ÔÓÚ¶¨³¤Ïß³Ì³Ø×îºÃ¸ù¾İÏµÍ³×ÊÔ´½øĞĞÉèÖÃRunntime.getRuntime().availableProcessors()
+3.newScheduledThreadPool//¶¨³¤Ïß³Ì³ØÖ§³Ö¶¨Ê±ºÍÖÜÆÚĞÔÖ´ĞĞÈÎÎñ
+main{
+	ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
+	scheduledThreadPool.execute(new Runnable() {
+		public void run() {
+			System.out.println("ÑÓÊ±3Ãë")
+		}
+	},3,TimeUnit.SECONDS);
+}
+ main{
+ 	...
+ 	scheduledThreadPool.execute(new Runnable() {...},1,2,TimeUnit.SECONDS);//¶¨Ê±ÑÓÊ±Ò»ÃëÈıÃëÖ´ĞĞÒ»´Î
+ }
+4.newSingleThreadExecutor//´´½¨µ¥Ïß³Ì»¯µÄÏß³Ì³Ø°´ÕÕÖ¸¶¨Ë³Ğò(FIFO,LIFO,ÓÅÏÈ¼¶Ö´ĞĞ)
+main{
+	ExecutorService singleThreadExecutor = Executor.newSingleThreadExecutor();
+	for(int i = 0;i<100;i++) {
+		final int index = i;
+		singleThreadExecutor.execute(new Runnable(){
+			try{
+				while(true) {
+					System.out.println(index)
+					Thread.sleep(10*1000);
+				}
+			}catch{}
+
+		});
+		try{
+			Thread.sleep(500);
+		}catch (){}
+	}
+}
+//½«»áÒÀ´ÎÊä³ö
+\jdk1.6.0_06\bin\jconsole.exe¿ÉÒÔ¿´µ½½ø³ÌÊı
+runnableºÍcallable<>(){£¿ call(){}}×¢ÒâÓĞ·ºĞÍ½Ó¿Ú¼´·µ»ØÊ²Ã´<>ÀïÌîÊ²Ã´£»Í¬Ê±²»ÔÚÊÇfixedThreadPool.execute()¶øÊÇfixedThreadPool.submit(New Callable<>());
 
 
 21.Éè¼ÆÄ£Ê½
