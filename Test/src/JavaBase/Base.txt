@@ -226,6 +226,8 @@ transferFrom可以将数据从源通道反传输到FileChannel中 transferTo将数据从FileChanne
 
 
 20.Thread线程
+线程五种状态:创建 new Thread(..)、(就绪 t.start()返回后处于就绪 、阻塞:运行过程暂时让出CPU，而其他就绪的线程获得CPU资源进入运行导致阻塞 1.线程通过sleep方法进入睡眠 2.调用一个I/O时被阻塞 3.线程想得到一个锁，但是锁再被其他人使用 4.线程在等待一个触发条件
+	、运行 执行run方法)、消亡(run方法正常退出时自然消亡或者终止run方法没有异常 用is.Alive()判断线程是否运行)，括号内表示可以相互转换
 http://blog.csdn.net/vking_wang/article/details/9952063
 一个进程里可能有多个线程，并行parallelise指的是具有多种处理事件的能力但不一定是同时的;并发concurrency是同时处理多种事件
 Thread创建: 1.new Thread().setName("") 2.new Thread(Class.implementRunable,"")
@@ -811,6 +813,7 @@ main{
  	...
  	scheduledThreadPool.execute(new Runnable() {...},1,2,TimeUnit.SECONDS);//定时延时一秒三秒执行一次
  }
+
 4.newSingleThreadExecutor//创建单线程化的线程池按照指定顺序(FIFO,LIFO,优先级执行)
 main{
 	ExecutorService singleThreadExecutor = Executor.newSingleThreadExecutor();
@@ -832,7 +835,58 @@ main{
 }
 //将会依次输出
 \jdk1.6.0_06\bin\jconsole.exe可以看到进程数
-runnable和callable<>(){？ call(){}}注意有泛型接口即返回什么<>里填什么；同时不在是fixedThreadPool.execute()而是fixedThreadPool.submit(New Callable<>());
+runnable和callable<>(){？ call(){}}注意有泛型接口即返回什么<>里填什么；同时不再是fixedThreadPool.execute()而是fixedThreadPool.submit(New Callable<>())返回的是Future<里面是Callable类中call()方法的返回值>;Future.get()将得到返回值
+
+
+定时器:
+Timer t = new Timer();
+t.scheduler(TimerTask task,long delay,#long period);或者t.scheduler(TimerTask task,Date)
+
+定时删除xxx文件
+class DeteleDir{
+	private 
+	main{
+		Timer t = new Timer();
+		String s = "2015-10-11 15:23:65"
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = sdf.parse(s);//date.getTime()返回的是从1970年往后的毫秒数long
+		t.scheduler(new DeleteDirTask(t),date);
+	}
+}
+
+class DeleteDirTask extend TimerTask{
+	private Timer t;
+	public DeleteDirTask{
+	}
+	public DeleteDirTask(Timer t) {
+		this.t = t;
+	}
+
+	@Override
+	public void run() {
+		String path = "...";
+		deleteDir(path);
+	}
+
+	public void deleteDir(String path) {
+		File srcFile = new File(path);
+		File[] fileArray = srcFile.listFiles();
+		if(fileArray != null) {
+			for(File file:fileArray) {
+				if(file.isDirectory()) {
+					deleteDir(file.getPath());
+				}else{
+					file.delete();
+				}
+			}
+		}
+		srcFile.delete();
+	}
+
+}
+
+
+多线程实现顺序操作:1.滑动窗口应用  Student.id Student.point       new ArrayList<Student>(int n); 创建线程池 ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(m); 其中m<n 第一次取出n个学生pop到线程池中，到计算完学生point之后就开始滑动学生id划出去多少学生就push进来多少没有得到point的学生进入数组；这里的N越大可能的并发性就越强，被block的可能性就低，可能出现的饿BadCase就是一个小ID计算point的时间很长，其他比他大的都基三晚了这样窗口就无法滑动了
 
 
 21.设计模式
@@ -1127,6 +1181,167 @@ public class Test{
     }
 }
 
+22.事件监听机制
+由事件源:例如点击一个button(当然这个button需要注册listener以对事件响应)
+事件对象:一般继承java.util.EventObject 封装了事件源对象和事件相关信息 用于在事件源和事件监听器中传递数据
+事件监听器:实现java.util.EventListener接口 需要注册在事件源上，处理事件
 
+事件监听器的实现机制:
+事件监听机制和观察者模式:被观察者即具体主题相当于事件源，执行逻辑时通知Observer的update(传递被观察者,参数) 事件对象就是notifyObservers(String)的String对象
+实例:
+public class DoorEvent extends EventObject
+{
+	private String doorState = "";	// 表示门的状态，有“开”和“关”两种
+	public DoorEvent(Object source)
+	{
+		super(source);
+	}
+	
+	public void setDoorState(String doorState)
+	{
+		this.doorState = doorState;
+	}
+	
+	public String getDoorState()
+	{
+		return this.doorState;
+	}
+}
+ 
 
+IDoorListener：事件监听器（event listener）
 
+public interface IDoorListener extends EventListener
+{
+	//EventListener是所有事件侦听器接口必须扩展的标记接口、因为它是无内容的标记接口、     
+    //所以事件处理方法由我们自己声明如下：
+	public void dealDoorEvent(DoorEvent event);
+}
+ 
+
+FrontDoorListener：事件监听器（event listener）
+
+public class FrontDoorListener implements IDoorListener
+{
+	/**
+	 * 做具体的开门，关门动作
+	 * @param event 
+	 */
+	@Override
+	public void dealDoorEvent(DoorEvent event)
+	{
+		if (event.getDoorState()!=null && event.getDoorState().equals("open"))
+		{
+			System.out.println("前门打开");
+		}
+		else
+		{
+			System.out.println("前门关闭");
+		}
+	}	
+}
+ 
+
+DoorManager：事件源（event source）
+
+public class DoorManager
+{
+	private List<IDoorListener> listeners = new ArrayList();
+	
+	public void addDoorListener(IDoorListener listener)
+	{
+		synchronized (this)
+		{
+			if (listener != null && !(listeners.contains(listener)))
+			{
+				listeners.add(listener);
+			}
+		}
+	}
+	
+	public void removeDoorListener(IDoorListener listener)
+	{
+		synchronized (this)
+		{
+			if (listeners.contains(listener))
+			{
+				listeners.remove(listener);
+			}
+		}
+	}
+	
+	public void notifyDoors(DoorEvent event)
+	{
+		for (IDoorListener iDoorListener : listeners)
+		{
+			iDoorListener.dealDoorEvent(event);
+		}
+	}
+	
+	/**
+	 * 模拟开门事件
+	 */
+	public void fireOpend()
+	{
+		if (listeners == null)
+		{
+			return;
+		}
+		DoorEvent event = new DoorEvent(this);
+		event.setDoorState("open");
+		
+		notifyDoors(event);
+	}
+}
+ 
+
+测试类：
+
+public class TestMain
+{
+	public static void main(String[] args)
+	{
+		DoorManager doorManager = new DoorManager();
+		// 添加监听器
+		doorManager.addDoorListener(new FrontDoorListener());
+		doorManager.addDoorListener(new IDoorListener()
+		{
+			@Override
+			public void dealDoorEvent(DoorEvent event)
+			{
+				if (event.getDoorState() != null && event.getDoorState().equals("open"))
+				{
+					System.out.println("后门打开，警示灯亮起");
+				}
+				else
+				{
+					System.out.println("后门关闭，警示灯熄灭");
+				}
+			}
+		});
+		
+		// 模拟事件
+		System.out.println("模拟门打开事件");
+		doorManager.fireOpend();
+		
+		System.out.println("模拟门关闭事件");
+		DoorEvent doorEvent = new DoorEvent(doorManager);
+		doorEvent.setDoorState("close");
+		doorManager.notifyDoors(doorEvent);
+	}
+}
+输出结果：
+
+模拟门打开事件 
+前门打开 
+后门打开，警示灯亮起 
+模拟门关闭事件 
+前门关闭 
+后门关闭，警示灯熄灭
+23. GUI
+
+Frame f = new Frame("窗体对象的名称");//一般不显示或者JFrame
+f.setTitle("标题")
+f.setSize(int weight,int height);  -->与下方刻印合并为s.setBounds(int x,int y,int weight,int height);
+f.setLocation(int x,int y);//左上角坐标 -->
+f.setVisable();设置可见
