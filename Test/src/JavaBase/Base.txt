@@ -430,14 +430,14 @@ synchronized修饰静态方法和类对象是叫类锁，修饰普通方法或�
 
 -->线程间通讯增强Condition
 相比传统的线程间的通信:wait()一直等待构造函数也可以设置毫秒数 -- await()  ;notify()唤醒一个线程对象(具体的)-- Signal(); notifyAll()唤醒所有线程对象 -- signalAll()之所以该是因为原对象中的这些方法是final不能重写，所以的通信方法Condition都可以实现
-Condition绑定在Lock上，可以为多个线程创建不同的Condition 
-Lock Lock = new ReentrantLock(); lock.newCondition()创建线程锁对象Condition，一般需要两个 读线程锁rCon和写线程锁wCon,创建爱你缓存队列Object[] items = new Object[100]  int putptr;  写索引  int takeptr; 读索引  int count;   队列中数据数目
-在put(Object x)方法中，首先要lock.lock()锁定，然后判断如果队列中的数据数目count==items.length(),这样的话需要阻塞写线程wCon.await() 如果没有写满就写入队列items[putptr] = x; 需要更新写索引和队列中的数目同时得判断if(++putptr == items.length) putptr=0 ++count 最后唤醒读线程rCon.Signal() 注意在lock.lock()后的内容需要try catch finally这样的haul才能解除锁lock.unlock()
+Condition绑定在Lock上(Lock可以使用COndition进行线程间的调度)，可以为多个线程创建不同的Condition 
+Lock Lock = new ReentrantLock(); lock.newCondition()创建线程锁对象Condition，一般需要两个 读线程锁rCon和写线程锁wCon(实现读写分离),创建缓存队列Object[] items = new Object[100]  int putptr;  写索引  int takeptr; 读索引  int count;   队列中数据数目
+在put(Object x)方法中，首先要lock.lock()锁定，然后判断如果队列中的数据数目count==items.length(),这样的话需要阻塞写线程wCon.await() 如果没有写满就写入队列items[putptr] = x; 需要更新写索引和队列中的数目同时得判断if(++putptr == items.length) putptr=0 ++count 最后唤醒读线程rCon.Signal() 注意在lock.lock()后的内容需要try catch finally这样才能解除锁lock.unlock()
 在take()中，先锁定lock.lock() 判断消息队列如果为空while(count == 0) 读线程阻塞rCon.await() ,读取队列更新索引 Object x = items[takeptr] 判断if(++takeptr==items.length) {takeptr = 0} 读取后需要将count-- 唤醒写线程wCon.signal() return x
 
 加Synchronized锁的化，性能受到影响，如果要求效率较高采用OSSpinLock(没有进入系统的Kennel)
-
-
+Sychronized和lock对比:可重入和不可重入，自动释放和手动释放，一个基于boolean实现一个基于计数器实现
+ReentrantLock为Lock的实现类不仅拥有和Synchronize相同的并非性和内存语句，还多了投票锁定时锁等候和中断锁，在竞争很激烈的时候ReentranLock的性能保持不变而Synchronized锁性能下降，ReentranLock可以通过interrupt来中断等待，而synchronized只能等待锁的释放，ReentranLock可以通过trylock()知道有没有获得锁
 
 线程池:
 线程池的好处:对于多个线程执行问题，课件减少处理器单元闲置的时间，增加处理器单元的吞吐能力
@@ -1510,6 +1510,8 @@ P2P:应该一个P2P程序中既包含客户端程序，也包含服务器端程�
 		4.关闭连接
 
 TCP编程:客户端java.net.Socket 服务器端java.net.ServerSocket
+
+//客户端
 main{
 	Socket socket = null;
 	InputStream is = null;
@@ -1521,12 +1523,180 @@ main{
 
 	String message = "from Client";
 	try{
-		Socket socket = new Socket(serverIp,port);
+		socket = new Socket(serverIp,port);//如果服务器端未开通会抛出异常
 
-		os = socket.getOutputStream();
-		
+		//发送数据
+		os = socket.getOutputStream();//使用流的嵌套将这些获得到的基本流对象转换成需要的装饰流对象，从而方便数据的操作
+		os.write(message.getBytes());
+
+		//接受数据
+		is = socket.getInputStream();
+		byte[] b = new byte[1024];
+		int n = is.read(b);
+
+		//输出反馈数据
+        System.out.println("服务器反馈：" + new String(b,0,n));
+
 	}catch(Exception e) {
 		e.printStackTrace();
+	}finally{
+		try{
+			is.close();
+			os.close();
+			socket.close();
+		}catch(Exception e2){}
 	}
 }
+
+
+//服务器端
+main{
+	ServerSocket serverSocket = null;
+	Socket socket = null;
+	OutputStream os = null;
+	InputStream is = null;
+	int port = 10000;
+	try{
+		//监听端口建立连接
+		serverSocket = new ServerSocket(port);
+		//获得连接
+		socket = serverSocket.accept();
+		//接受客户端发送的内容
+		is = socket.getInputStream();
+		byte[] b = new Byte[1024];
+		int n = is.read(b);
+		//输出
+        System.out.println("客户端发送内容为：" + new String(b,0,n));
+        //向客户端发送反馈内容
+        os = socket.getOutputStream();
+        os.write(b, 0, n);
+
+	}catch(Exception e){
+		e.printStackTrace();
+	}finally{
+		try{
+			 os.close();
+             is.close();
+             socket.close();
+             serverSocket.close();
+		}catch(Exception e){}
+	}
+}
+上面的示例只是展示了一次socket连接，如何复用? 将数据交换的逻辑写到循环中只要循环不结束连接不会关
+改造1:
+//将数据交换的部分用循环包起来
+//Client
+for(int i = 0;i<3;i++) {
+	//发送数据
+	os = socket.getOutputStream();
+	os.write(message.getBytes());
+
+	//得到服务端反应
+	is = server.getInputStream();
+	byte[] b = new byte[1024];
+	int n = is.read(b);
+	System.out.println("服务器反馈："+new String(b,0,n)+i);
+}
+结果:
+服务器反馈：from Client0
+服务器反馈：from Client1
+服务器反馈：from Client2
+//Server
+for(int i = 0;i<3;i++) {
+	is = serverSocket.getInputStream();
+	byte[] b = new byte[1024];
+	int n = is.read(b);
+	System.out.println("客户端发送的数据为:"+new String(b,0,n)+i);
+
+	//反馈给客户端
+	os = serverSocket.getOutputStream();
+	os.write(b,0,n);
+}
+结果:
+客户端发送内容为：from Client0
+客户端发送内容为：from Client1
+客户端发送内容为：from Client2
+
+如何实现一个服务器支持多个客户端同时工作?
+需要服务器端收到一个连接单独创建一个线程专门处理其和客户端的通讯，MulThreadSocketServer类实现服务器端控制，实现接收客户端连接，
+然后开启专门的逻辑线程处理该连接，LogicThread类实现对于一个客户端连接的逻辑处理，将处理的逻辑放置在该类的run方法中
+改造2:
+//支持多客户端服务端实现
+class MulThreadSocketServer {
+	main{
+		LogicThread logicThread = null;
+		Socket socket = null;
+		ServerSocket serverSocket = null;
+
+		int port = 10000;
+		try{
+			//监听端口号
+			serverSocket = new ServerSocket(port);
+			System.out.println("服务器端已启动");
+			while(true) {
+				//获得连接
+				socket = serverSocket.accept();
+				//启动线程
+				new LogicThread(socket);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+
+class LogicThread extends Thread{
+	private Socket socket;
+	private InputStream is;
+	private OutputStream os;
+
+	public LogicThread(Socket socket){
+		this.socket = socket;
+		start();//启动线程
+	}
+	public void run() {
+		byte[] b = new byte[1024];
+		try{
+			is = socket.getInputStream();
+			os = socket.getOutputStream();
+			for(int i =0;i<3;i++) {
+				//读取客户端信息
+				int n = is.read(b);
+				//逻辑处理
+				byte[] response = logic(b,0,n);
+				//反馈的数据
+				os.write(response);
+			}
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+	}
+
+	public void close() {
+		try{
+			os.close();
+			is.close();
+			socket.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private byte[] logic(byte[],int off,int len) {
+		byte[] response = new byte[len];
+		System.arraycopy(b,0,response,0,len);
+		return response;
+	}
+}
+
+在实际的服务器端实现中，由于硬件和端口数的限制，所以不能无限制的创建线程对象，
+而且频繁的创建线程对象效率也比较低，所以程序中都实现了线程池来提高程序的执行效率
+
+
+
+
 
