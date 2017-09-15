@@ -1693,8 +1693,128 @@ class LogicThread extends Thread{
 	}
 }
 
-在实际的服务器端实现中，由于硬件和端口数的限制，所以不能无限制的创建线程对象，
-而且频繁的创建线程对象效率也比较低，所以程序中都实现了线程池来提高程序的执行效率
+在实际的服务器端实现中，由于硬件和端口数的限制，所以不能无限制的创建线程对象，而且频繁的创建线程对象效率也比较低，
+所以程序中都实现了线程池来提高程序的执行效率,当客户端连接到达时从池中取出一个已经创建完成的线程对象使用即可。当客户端连接关闭以后，
+将该线程对象重新放入到线程池中供其它的客户端重复使用，这样可以提高程序的执行速度，优化程序对于内存的占用等
+
+
+UDP网络编程:只是有可能丢，可能性小但是最可靠的还是TCP
+	DatagramSocket:既可以实现客户端传输也可以实现服务端传输
+		实现的是发送数据时的发射器以及接受数据时的监听器
+
+	DatagramPacket
+		实现对于网络传输数据的封装，无论是发送的数据和接受的数据都要处理成DatagramPacket的类型的对象，该类型对象包括发送的地址、发送的端口号以及发送的内容
+		类似于信件，IO操作在这里也变得不是必须
+
+//实例:客户端将系统时间发送给服务器端
+class SimpleUDPClient{
+	main{
+		String s = "xieydd";
+		String serverhost = "127.0.0.1";
+		int port = 10001;
+		DatagramSocket ds = null; //连接对象
+		DatagramPacket sendDp = null;//发送数据包对象
+		DatagramPacket receiveDp = null;//接受数据包对象
+		int i = 1;
+		try{
+			while(true) {
+				//建立连接
+				ds = new DatagramSocket();
+				//初始化发送数据
+				Date d = new Date();
+				String content = d.toString();//将当前时间转换成字符串
+				byte[] data = content.getBytes();
+
+				//初始化发送包对象
+				InetAddress address = InetAddress.getByName(serverhost);
+				sendDp = new DatagramPacket(data,data.length,address,port);
+
+				//发送
+				ds.send(sendDp);
+
+				//初始化接受数据
+				byte[] b = new byte[1024];
+				receiveDp = new DatagramPacket(b,b.length);
+				//接收
+				ds.receive(receiveDp);
+				//读取反馈内容，并输出
+		        byte[] response = receiveDp.getData();
+		        int len = receiveDp.getLength();
+		        String sb = new String(response,0,len);
+		        System.out.println("服务器端"+i+"反馈为：" + sb);
+				Thread.sleep(1000);
+				i++;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+				ds.close();
+			}catch(Exception e) {}
+		}
+	}
+}
+
+//服务器端
+class SimpleUDPServer{
+	main{
+		DatagramSocket ds = null; //连接对象
+		DatagramPacket sendDp = null;//发送数据包对象
+		DatagramPacket receiveDp = null;//接受数据包对象
+		final int port = 10010;
+		int i = 1;
+		try{
+			ds = new DatagramSocket(port);
+			System.out.println("服务器端已启动："+i);
+			while(true) {
+				//初始化接收数据
+				byte[] b = new byte[1024];
+				receiveDp = new DatagramPacket(b,b.length);
+				ds.receive(receiveDp);
+
+				//读取数据反馈
+				
+				InetAddress clientIP = receiveDp.getAddress();
+				int clientPort = receiveDp.getPort();
+				byte[] data = receiveDp.getData();
+
+				int len = receiveDp.getLength();
+				System.out.println("客户端IP：" + clientIP.getHostAddress());
+	            System.out.println("客户端端口：" + clientPort);
+	            System.out.println("客户端发送内容：" +i+ new String(data,0,len));
+
+	            String response = "OK";
+	            byte[] sb = response.getBytes();
+	            sendDp = new DatagramPacket(sb,sb.length,clientIP,clientPort);
+	            ds.send(sendDp);
+	            Thread.sleep(1000);
+	            i++;
+			}
+		}catch(Exception e) {
+		}finally{
+			try{
+				ds.close();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
