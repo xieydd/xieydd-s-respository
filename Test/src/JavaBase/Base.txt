@@ -1,11 +1,11 @@
-1.��������
+1.键盘输入
 Scanner sc = new Scanner(System.in);
-int x = sc.nextInt();//����������͸��ı���String Char ..
-sc.hasNext();���ص���boolean���ͣ������ڻ��߲�����
+int x = sc.nextInt();//这个根据类型更改比如String Char ..
+sc.hasNext();返回的是boolean类型，即存在或者不存在
 
 2.String
-�����������ͣ��ַ���Char,Boolean��,��ֵ�ͣ�byte8��short16��long64��int32��float32��double64
-�����ǽڱ����͵İ�װ�࣬���û������͵�һЩ�����ͷ���
+基本数据类型：字符型Char,Boolean型,数值型：byte8、short16、long64、int32、float32、double64
+下面是节本类型的包装类，即该基本类型的一些参数和方法
 byte 			Byte
 short			Short
 int				Integer
@@ -14,245 +14,245 @@ float			Float
 double			Double
 char			Character
 boolean			Boolean
-�ַ�����ȡ String s = new String(s1,n,m);
-��������ֽ�����byte[] bys = {97,98,99}  String s = new String(bys);����a,b,c
-�ַ���һ������ֵ�ܲ��ܱ��ı�
- �ַ�������Ǳ�����ӣ��ȿ��ռ䣬��ƴ�ӣ��ַ�������ǳ�����ӣ����ȼӣ�Ȼ���ڳ������ң�����о�ֱ�ӷ��أ����򣬾ʹ���  ����String s1 = "hello" String s2 = "world" String s3 = "helloworld" s3!=s1+s2 ����s3 == "helloworld"
-��������:byte --> String:string(byte[] bys,String charSetName) String --> byte getBytes(String charSetName)
+字符串截取 String s = new String(s1,n,m);
+如果放入字节例如byte[] bys = {97,98,99}  String s = new String(bys);会变成a,b,c
+字符串一旦被赋值能不能被改变
+ 字符串如果是变量相加，先开空间，在拼接；字符串如果是常量相加，是先加，然后在常量池找，如果有就直接返回，否则，就创建  例如String s1 = "hello" String s2 = "world" String s3 = "helloworld" s3!=s1+s2 但是s3 == "helloworld"
+编码问题:byte --> String:string(byte[] bys,String charSetName) String --> byte getBytes(String charSetName)
 
 
 3.Array
-��Algorithm����Sort.java�����㷨
-�������ַ����������ʱ���Ƚ��ַ���ת�����ַ�����Char[] chs = s.toCharArray();��Ȼ�����㷨����Ȼ�󽫵õ����ַ�����ת�����ַ��� String s = String.valueOf(chs);
+在Algorithm中有Sort.java排序算法
+当对于字符进行排序的时候，先将字符串转化成字符数组Char[] chs = s.toCharArray();，然后用算法排序，然后将得到的字符数组转换成字符串 String s = String.valueOf(chs);
 
-������������һ��������ֵ��λ�ÿ���ʹ��ֱ�Ӳ���(һ��һ������)�����߶��ֲ���binarySearch������Ǳ�����API��Դ���е��õ���DualPivotQuicksort����������(�ҳ���λ����value��Ҫ�ҵ����Աȣ�С��min = mid+1������max = mid-1),ע����ֲ���Ҫע���ڼ�һ���ж�һ��min > max return -1;���˳�
+排序后如果想找一个具体数值的位置可以使用直接查找(一个一个遍历)，或者二分查找binarySearch（这个是本身的API，源码中调用的是DualPivotQuicksort即快速排序）(找出中位数的value和要找的数对比，小于min = mid+1，大于max = mid-1),注意二分查找要注意在加一个判断一旦min > max return -1;即退出
 4.Character
-�ж��Ƿ����ַ��Ƿ��Ǵ�д����Сд��������У���У�����һ��������isUpperCase isLowerCase isDigit ��is����to����ת��
-����ͨ�������жϽ��д�дСд�����ֵ�ͳ��
+判断是否是字符是否是大写数字小写，在密码校验中，但是一般用正则；isUpperCase isLowerCase isDigit 将is换成to可以转换
+可以通过遍历判断进行大写小写和数字的统计
 
 5.Integer
-int �� Stringת����1.String --��int Integer.parseInt(s) 2.int --> String String.toString(int);
-����ת����
-ʮ����ת������Integer.toBinaryString();ע�ⷵ�ص���String
-����תʮ���ƣ�Integer.ParseInt(String,int(������))
+int 和 String转换：1.String --》int Integer.parseInt(s) 2.int --> String String.toString(int);
+进制转化：
+十进制转其他：Integer.toBinaryString();注意返回的是String
+其他转十进制：Integer.ParseInt(String,int(进制数))
 
-Integer = 100;���ǶԵģ���Ϊ��JDK5֮�������Զ���װ�䣬����100��Ϊ�ַ����д��� װ��Integer.valueOf() ���䣺Integer.intValue()
-���-128��127֮������ݣ�����һ�����ݻ���أ���������Ǹ÷�Χ�ڵģ�ÿ�β��������µĿռ�
-Integer i1 = 128 Integer i2 = 128 i1!=i2 ���������127�Ⱥų���
+Integer = 100;这是对的，因为在JDK5之后引入自动拆装箱，即将100作为字符进行处理 装：Integer.valueOf() 拆箱：Integer.intValue()
+针对-128到127之间的数据，做了一个数据缓冲池，如果数据是该范围内的，每次并不创建新的空间
+Integer i1 = 128 Integer i2 = 128 i1!=i2 但是如果是127等号成立
 
-6.StringBuffer(�̰߳�ȫ��ͬ���Ŀɱ��ַ���)
-StringBuffer��ͬ���ģ����ݰ�ȫ,Ч�ʵ�;StringBuilder�ǲ�ͬ����,���ݲ���ȫ,Ч�ʸ�
-����StringBuffer��String��˵��ǰ���ǲ��̶��ģ������ڽ����ַ���ƴ��append��ɾ��delete������ָ��λ�ã��滻replace����ָ��λ�ã���תreverse�������˷���Դ
-String --> StringBuffer ֱ��ʹ��StringBuffer�Ĺ��췽����StringBuffer --> String toString
-������ƴ���ַ�����1.ֱ��ʹ��String 2.ʹ��StringBuffer����ƴ��
-StringBuffer����������𣺶����������������з��ö������ݵ��Ǳ�����ͬһ�֣�StringBuffer�������ַ�������
-��ʽ����������ǻ������ͣ��ı䲻Ӱ��ʵ�ʲ������������͸ı�Ӱ�������ע��String��Ϊ�������ݣ�Ч���ͻ���������Ϊ����������һ����
+6.StringBuffer(线程安全即同步的可变字符串)
+StringBuffer是同步的，数据安全,效率低;StringBuilder是不同步的,数据不安全,效率高
+对于StringBuffer和String来说，前者是不固定的，所以在进行字符串拼接append；删除delete还可以指定位置；替换replace可以指定位置；翻转reverse，不会浪费资源
+String --> StringBuffer 直接使用StringBuffer的构造方法；StringBuffer --> String toString
+将数组拼接字符串：1.直接使用String 2.使用StringBuffer进行拼接
+StringBuffer和数组的区别：都是容器但是数组中放置多种数据但是必须是同一种，StringBuffer最终是字符串类型
+形式参数，如果是基本类型，改变不影响实际参数；引用类型改变影响参数，注意String作为参数传递，效果和基本类型作为参数传递是一样的
 
 7.BigDecimal
-BigDecimal�ࣺ���ɱ�ġ����⾫�ȵ��з���ʮ������,���Խ�����ȶ�ʧ����
-add��subtract��multiply��divide
+BigDecimal类：不可变的、任意精度的有符号十进制数,可以解决精度丢失问题
+add、subtract、multiply、divide
 
 8.BigInteger
-�Գ���Integer��-2147483647--2147483647����Χ����������
-divideAndRemainder�õ������̺�����������
+对超过Integer（-2147483647--2147483647）范围的整数操作
+divideAndRemainder得到含有商和余数的数组
 
 9.Calendar
 Calendar rightNow = Calendar.getInstance();
-ͨ��get�����;�̬�������Եõ�year,month(��0��ʼ��),day
-�ж�ĳһ��Ķ����ж����죺1.�õ���������2.����c.set(year,2,1)����һ���3.1�ţ�Ȼ��day��һ��c.add(Claendar.DATE,-1)3.c.get(Claendar.DATE)
+通过get方法和静态参数可以得到year,month(从0开始的),day
+判断某一年的二月有多少天：1.得到日历对象2.设置c.set(year,2,1)即那一年的3.1号，然后将day减一天c.add(Claendar.DATE,-1)3.c.get(Claendar.DATE)
 
 10.DateFormat
-System.currentTimeMillis()ϵͳ���ڵĺ���ʱ��
-Date --�� String��SimpleDateFormat.format(Date����) �������Date���մ���SimpleDateFormat�����췽����ָ���Ĺ���õ��ַ���
-String --�� Date��SimpleDateFormat.parse(String����)�õ�����Date���������String��Ҫ�ʹ���SimpleDateFormat�����췽���е��ַ��ṹ��ͬ
+System.currentTimeMillis()系统现在的毫秒时间
+Date --》 String：SimpleDateFormat.format(Date对象) ，这个将Date按照创建SimpleDateFormat对象构造方法中指定的构造得到字符串
+String --》 Date：SimpleDateFormat.parse(String对象)得到的是Date对象，这里的String需要和创建SimpleDateFormat对象构造方法中的字符结构相同
 
 11.Math
-Math���� .abs ����ֵ ; ceil ����ȡ�� ; floor ����ȡ��;��pow(a,b) a��b�η� ; random ����� ; max �����; round �������� ; sqrt ƽ����
-Math��Ա���� PI E
+Math方法 .abs 绝对值 ; ceil 向上取整 ; floor 向下取整;；pow(a,b) a的b次方 ; random 随机数 ; max 最大数; round 四舍五入 ; sqrt 平方根
+Math成员变量 PI E
 
-12.�������ʽ
-A:�ַ�
-	x �ַ� x��������'a'��ʾ�ַ�a
-	\\ ��б���ַ����������ܴ���һ��
-	\n ���У����У��� ('\u000A') 
-	\r �س��� ('\u000D')
+12.正则表达式
+A:字符
+	x 字符 x。举例：'a'表示字符a
+	\\ 反斜线字符。两个才能代表一个
+	\n 新行（换行）符 ('\u000A') 
+	\r 回车符 ('\u000D')
 	
-B:�ַ���
-	[abc] a��b �� c�����ࣩ 
-	[^abc] �κ��ַ������� a��b �� c���񶨣� 
-	[a-zA-Z] a�� z �� A�� Z����ͷ����ĸ�������ڣ���Χ�� 
-	[0-9] 0��9���ַ�������
+B:字符类
+	[abc] a、b 或 c（简单类） 
+	[^abc] 任何字符，除了 a、b 或 c（否定） 
+	[a-zA-Z] a到 z 或 A到 Z，两头的字母包括在内（范围） 
+	[0-9] 0到9的字符都包括
 	
-C:Ԥ�����ַ���
-	. �κ��ַ����ҵľ���.�ַ���������ô��ʾ��? \.
-	\d ���֣�[0-9]
-	\w �����ַ���[a-zA-Z_0-9]
-		���������ʽ������ɵ��ʵĶ�����������Щ�������
+C:预定义字符类
+	. 任何字符。我的就是.字符本身，怎么表示呢? \.
+	\d 数字：[0-9]
+	\w 单词字符：[a-zA-Z_0-9]
+		在正则表达式里面组成单词的东西必须有这些东西组成
 
-D:�߽�ƥ����
-	^ �еĿ�ͷ 
-	$ �еĽ�β 
-	\b ���ʱ߽�
-		���ǲ��ǵ����ַ��ĵط���
-		������hello world?haha;xixi
+D:边界匹配器
+	^ 行的开头 
+	$ 行的结尾 
+	\b 单词边界
+		就是不是单词字符的地方。
+		举例：hello world?haha;xixi
 	
-E:Greedy ������ 
-	X? X��һ�λ�һ��Ҳû��
-	X* X����λ���
-	X+ X��һ�λ���
-	X{n} X��ǡ�� n �� 
-	X{n,} X������ n �� 
-	X{n,m} X������ n �Σ����ǲ����� m �� 	
-s.matches(String regex);������֤: \\w@\\w{2,6}\\.\\w{2,3} ��׼�������ַ�[a-zA-Z_0-9]@�����ַ���С2λ���6λ.�����ַ�ֻ����2����3λ
-s.replace(regex,String replaceMent)������������ʽ���滻�ɸ����ַ���
-Pattern p = Pattern.compile(regex);//����������ģʽ����
-Matcher m = p.matcher(s);//ͨ��ģʽ����õ�ƥ��������
+E:Greedy 数量词 
+	X? X，一次或一次也没有
+	X* X，零次或多次
+	X+ X，一次或多次
+	X{n} X，恰好 n 次 
+	X{n,} X，至少 n 次 
+	X{n,m} X，至少 n 次，但是不超过 m 次 	
+s.matches(String regex);邮箱验证: \\w@\\w{2,6}\\.\\w{2,3} 标准：所有字符[a-zA-Z_0-9]@所有字符最小2位最大6位.所有字符只能是2或者3位
+s.replace(regex,String replaceMent)将符合正则形式的替换成给的字符串
+Pattern p = Pattern.compile(regex);//将规则编译成模式对象
+Matcher m = p.matcher(s);//通过模式对象得到匹配器对象
 
 
-13.����
-���������ǹ̶����ȵģ���StringBuffer��Ȼ���������Ƿ��ص����ַ���
-����ͼ��ϵ�����:1.��������2.��������:������ͬһ������Ԫ��,���Ͽ��Դ洢��ͬ��Ԫ��3.��������:������Դ洢�����������ͺ�������������,����ֻ�ܴ洢��������
-Collection(�ǽӿڲ���ʵ��������Ҫ�����ࣻע���Collections�����֣�Collections����Լ��ϵĲ�������������Ͷ��ֲ��ң��������Զ�������ʱ����Ҫ�ڷ����ж��������ڲ���) ��addAll(Collection),removeAll(Collection)�Ƴ�һ��Ԫ�ؾͷ���true,containsAll(Collection),retainAll(Collection)�������϶��е�Ԫ�أ����ձ�����A��B����  ���ص���boolean����
---�� List���ظ�,��˳��,���е���listIterator(�̳�Iterator)����previous()�����һ��Ԫ�ء�hasPrevious()�ж��Ƿ���Ԫ�� 
-	-->ArrayList(�ײ������飬���ҿ죬��ɾ�����̲߳���ȫЧ�ʸ�)��ȥ��ArrayList�е��ظ�����Դ���һ���µ�����洢��Ҳ����ͨ������ʹǰ��Ԫ�رȽϣ�����������������������Զ��������������ö���ʱ����ʱ������equals����contains(�ײ�����������дequals())
-	-->Vector(�ײ������飬���ҿ죬��ɾ�����̰߳�ȫЧ�ʵ�)��Ȼ�̰߳�ȫ���ǲ��ã���List<> list = Collections.synchronizedList(new ArrayList<>())
-	-->LinkedList(�ײ�������������������ɾ�졢�̲߳���ȫЧ�ʸ�)����addFirst(),getFirst(),removeFirst()����õ��������ȴ���Ŀ���ʹ���������ʵ��ջ���Ƚ��ȳ��Ľṹ,  add,remove,get,set
---�� Set  �����ǲ��ظ�
-	--> HashSet �洢�ַ�����ʱ��������ֻͬ�洢һ����add������hashCode()��equals()������д�ˣ�����add�����Զ���Ķ����ʱ����������add()�ظ����󣬿�����POJO����дhashCode��equals����
-		-->LinkedHashSet:�ײ����ݽṹ��Hash���������ṹ��ɣ��洢��ȡ��һ��
-	--> TreeSet �����ʵ�֣��ܹ�ʹ�Զ������Ψһ������(��Ȼ����;�Ƚ�������:�Զ��������Ҫʵ��Comparable<>�ӿڣ�ʵ�����е�compareTo����***��Ȼ���Բ�ʵ�ֽӿڶ����ڴ���TreeSet��ʱ��ʵ�������ڲ���(����໹��Ҫʵ��Comparator<>�ӿڣ�ʵ�����е�compare����))
+13.集合
+由于数组是固定长度的，而StringBuffer虽然可伸缩但是返回的是字符串
+数组和集合的区别:1.长度区别2.内容区别:数组是同一种类型元素,集合可以存储不同种元素3.数据类型:数组可以存储基本数据类型和引用数据类型,集合只能存储引用类型
+Collection(是接口不能实例化，需要其子类；注意和Collections的区分，Collections是针对集合的操作类例如排序和二分查找，当对于自定义对象的时候需要在方法中定义匿名内部类) 、addAll(Collection),removeAll(Collection)移除一个元素就返回true,containsAll(Collection),retainAll(Collection)两个集合都有的元素，最终保存在A中B不变  返回的是boolean类型
+--》 List可重复,有顺序,特有迭代listIterator(继承Iterator)特有previous()获得上一个元素、hasPrevious()判断是否有元素 
+	-->ArrayList(底层是数组，查找快，增删慢、线程不安全效率高)；去除ArrayList中的重复项，可以创建一个新的数组存储，也可以通过遍历使前后元素比较，类似于排序；如果数组里是自定义对象而不是引用对象时，这时候不能用equals而是contains(底层依赖但是重写equals())
+	-->Vector(底层是数组，查找快，增删慢、线程安全效率低)虽然线程安全但是不用，用List<> list = Collections.synchronizedList(new ArrayList<>())
+	-->LinkedList(底层是链表，查找慢，增删快、线程不安全效率高)特有addFirst(),getFirst(),removeFirst()这个得到的是最先存入的可以使用这个方法实现栈的先进先出的结构,  add,remove,get,set
+--》 Set  无序但是不重复
+	--> HashSet 存储字符串的时候内容相同只存储一个，add依赖的hashCode()和equals()方法重写了；；当add的是自定义的对象的时候，如果想避免add()重复对象，可以在POJO类重写hashCode和equals方法
+		-->LinkedHashSet:底层数据结构由Hash表和链表结构组成，存储和取出一致
+	--> TreeSet 红黑树实现，能够使自定义对象唯一且排序(自然排序;比较器排序:自定义对象需要实现Comparable<>接口，实现其中的compareTo方法***当然可以不实现接口而是在创建TreeSet的时候实现匿名内部类(这个类还是要实现Comparator<>接口，实现其中的compare方法))
 		
-����:1��C.toArray()���Խ�����ת��������(Arrays.asList()���Խ�����ת��������)������ʵ�ּ��ϵı��� 2����������������Collection c = new Collection(); Iterator it = c.iterator(); while(it.hasNext()){String s = (String)it.next()} �����String���Ի����������ö���
-���͵ĺô�����������ʱ��������ǰ�����Ա���ǿ��ת��,��ʱ���ڽӿڶ��󴴽���ʹ�÷��� public class Interface<T>{public abstract T get(T t){}};���෽����public<T> void  show(T t){}
-���͸߼���Ȣͨ���: <? extends ��> E��E������  <? super E>E��E�ĸ���
-��ǿfor��Ŀ�겻����null���Լ���if�ж�
+迭代:1、C.toArray()可以将集合转换成数组(Arrays.asList()可以将集合转换成数组)，用于实现集合的遍历 2、迭代器迭代遍历Collection c = new Collection(); Iterator it = c.iterator(); while(it.hasNext()){String s = (String)it.next()} 这里的String可以换成其他引用对象
+泛型的好处：将在运行时的问题提前、可以避免强制转换,有时会在接口对象创建上使用泛型 public class Interface<T>{public abstract T get(T t){}};在类方法用public<T> void  show(T t){}
+泛型高级嫁娶通配符: <? extends 类> E及E的子类  <? super E>E及E的父类
+增强for的目标不能是null可以加入if判断
 
-Map ��Ψһֵ��Ψһ put����Ԫ�� values���ȫ��ֵ(Collection<>) ���ȫ���ļ�keySet()(����Set<>)
---��HashMap �ù�ϣ����֤����Ψһ�� ���̲߳���ȫ��Ч�ʸߡ�����null����nullֵ   ,Hashtable��֮�෴        HashMap�����ArrayList��������keySet���key��Set<>���ϣ�Ȼ��������εõ�ArrayList��value;ArrayList�а���HashMap<key,value>ʱ�ȱ�������keySet���key���ϣ��ٵõ�value
-	-->LinkedHashMap ʵ��Map�ӿڵĹ�ϣ��(��֤Ψһ)�������б�(��֤�洢��ȡ��˳��һ��)��ʵ�֣����Կ�Ԥ֪����˳��
---��TreeMap �����ʵ��
-14.��̬���롢�ɱ���������粻֪�����뼸������int... a�����a��ʵ�൱��һ�����飬����ͨ�������õ�ÿһ������
+Map 键唯一值不唯一 put添加元素 values获得全部值(Collection<>) 获得全部的键keySet()(返回Set<>)
+--》HashMap 用哈希表保证键的唯一性 ，线程不安全，效率高。允许null键和null值   ,Hashtable与之相反        HashMap里包含ArrayList，其中用keySet获得key的Set<>集合，然后遍历两次得到ArrayList的value;ArrayList中包含HashMap<key,value>时先遍历在用keySet获得key集合，再得到value
+	-->LinkedHashMap 实现Map接口的哈希表(保证唯一)和链接列表(保证存储和取出顺序一致)的实现，可以可预知迭代顺序
+--》TreeMap 红黑树实现
+14.静态导入、可变参数：例如不知道导入几个参数int... a这里的a其实相当于一个数组，可以通过遍历得到每一个参数
 
-15.Throwable error-->�����ڴ���� ��Exception-->RuntimeException
-��������-->try{}catch(�쳣�� ���� ){����������}���Զ�catch���Ǹ��ӹ�ϵ����������ں��棬Catch�ڵ��쳣Ҳ�����Ƕ�����Ǳ���ͬ�� e.toString e.getMessage()���԰��������˽��������finally{}    final��finally��finalize������ final�ǹؼ��ֿ������γ�Ա����(����)����Ա����(���ܱ���д)����(���ܱ��̳�),finally���ͷ���Դ������δִ�е�finallyJVM�Ƴ���Ȼ�϶�ִ�У������catch����return��ô�϶�ִ��finally��return ֮ǰ,finalize������������
-	-->throws ��throw����  throws���ڷ�������֮�󣬿����Ƕ������������throw�������أ�һ��ʹ��һ���׳��쳣
-�Զ���Exception��Ҫ�̳�Exception����RuntimeException ,������д���࣬���෽��ֻ���׳��͸���һ��������������쳣
+15.Throwable error-->例如内存溢出 、Exception-->RuntimeException
+处理方法-->try{}catch(异常名 变量 ){必须有内容}可以多catch但是父子关系，父必须放在后面，Catch内的异常也可以是多个但是必须同级 e.toString e.getMessage()可以帮助我们了解错误类型finally{}    final、finally和finalize的区别？ final是关键字可以修饰成员变量(常量)、成员方法(不能被重写)、类(不能被继承),finally是释放资源，除非未执行到finallyJVM推出不然肯定执行，如果在catch中有return那么肯定执行finally在return 之前,finalize用于垃圾回收
+	-->throws 与throw区别  throws用在方法声明之后，可以是多个方法类名；throw方法体重，一旦使用一定抛出异常
+自定义Exception需要继承Exception或者RuntimeException ,子类重写父类，子类方法只能抛出和父类一样或者其子类的异常
 
 16.File
-File(String pathname)��File(parentpath,path)��File(File,chilepath) ע�������String��\���Ŷ���Ҫ\\ת���ȥ
-File.createFile()��������������ļ����ᴴ�����ļ�  mkdir()�����ļ��У�������ڲ�����  mkdirs()������ļ��в����ڻ���㴴���������д���ļ���Ĭ������Ŀ�ļ���  ɾ��delete�ļ����в����ж������Ҳ��߻���վ  ������renameTo(File dest)���·����ͬΪ�����������·����ͬΪ����
-getPath()�õ����·��  getAbsolutePath()�õ�����·�� getModified()��ȡ����޸�ʱ�� list()������е��ļ����ļ��е�����string[]  ����ļ�File[]��listFiles(new FilenameFilter(){accept����})����Ū����д�����ڲ�������ļ�
+File(String pathname)、File(parentpath,path)、File(File,chilepath) 注意这里的String的\符号都需要\\转译过去
+File.createFile()如果存在这样的文件不会创建该文件  mkdir()创建文件夹，如果存在不创建  mkdirs()如果父文件夹不存在会帮你创建，如果不写父文件夹默认是项目文件夹  删除delete文件夹中不能有东西，且不走回收站  重命名renameTo(File dest)如果路径相同为重命名，如果路径不同为剪切
+getPath()得到相对路径  getAbsolutePath()得到绝对路径 getModified()获取最后修改时间 list()获得所有的文件及文件夹的名字string[]  获得文件File[]用listFiles(new FilenameFilter(){accept方法})里卖弄可以写匿名内部类过滤文件
 
-17.�ݹ�
-�ݹ�һ��Ҫ�г��ڲ�ȻΪ���ݹ飬�ݹ�̫�������ڴ���������췽�����ܵݹ�ʹ��;�ݹ�ɾ�����ݹ�õ��ļ������ݹ���
+17.递归
+递归一定要有出口不然为死递归，递归太多容易内存溢出，构造方法不能递归使用;递归删除，递归得到文件名，递归树
 
-18.IO �����������д����ȡ����;ע�����Ļ���һ����try catch finally�е�finally��ִ��.close()
--->�ֽ��� OutputStream InputStream 
-	--�� xxxOutputStream(File.��Buffered.��Ч) ..ʵ������ĳ����������xxx��Ӧ���ǲ�������,����File writer(xxx)ע���������ֽڻ��Զ�ת�� ���еĻ��в���ͬ����Ҫ.getBytes()ת�����ֽڣ�WindowsΪ\r\n linuxΪ\n macΪ\r;�������Ļ������;ָ������ͽ�������� InputStreamReader(new FileInputStream(""),"UTF-8")
-	--��xxxInputStream byte[] bys = new byte[]; int len =0; while((len = fis.read(bys))!=-1) {System.out.println(new String(bys,0,len))} fis.close();
-	--��DataInputStream(InputStream in)����������һ�㱣��λ.dat�ļ����ı��ļ����ֿ���
+18.IO 主动，输出即写，读取即读;注意流的回收一般在try catch finally中的finally中执行.close()
+-->字节流 OutputStream InputStream 
+	--》 xxxOutputStream(File.、Buffered.高效) ..实现上面的抽象类的子类xxx对应的是操作对象,例如File writer(xxx)注意里面是字节会自动转换 其中的换行操作同样需要.getBytes()转换成字节，Windows为\r\n linux为\n mac为\r;操作中文会出乱码;指定编码和解码的类型 InputStreamReader(new FileInputStream(""),"UTF-8")
+	--》xxxInputStream byte[] bys = new byte[]; int len =0; while((len = fis.read(bys))!=-1) {System.out.println(new String(bys,0,len))} fis.close();
+	--》DataInputStream(InputStream in)数据输入流一般保存位.dat文件和文本文件区分开来
 	
--->�ַ���        Writer    Reader
-	--��OutputStreamWriter write(int char[] char[],0,len String String,0,n) ע����д��ʱ����Ҫflush()ˢ�»���������д��;flush()��close()������:flushֻ��ˢ�»�������ˢ�º�������󻹿��Լ���ʹ�ã���close()������ˢ�»������ٹر������󣬲���ʹ��
-	--��InputStreamReader char[] chs = new char[1024];
-	--��FIleReader = FileInputStream + �����(GBK)
-	--��BufferedWriter new BufferedWriter(new FileWriter("path"));
-	--��BufferedReader ����char[] chs = new char[1024];���ж�ȡ�����ⷽ��newline()����ϵͳ���з�string line = null;while((BUfferedReader.readLine())!=-1){}
-		--��LineNumberReader getLineNumber()��õ�ǰ�к�  setLineNumber(int lineNumber)
+-->字符流        Writer    Reader
+	--》OutputStreamWriter write(int char[] char[],0,len String String,0,n) 注意在写的时候需要flush()刷新缓存区才能写到;flush()和close()的区别:flush只是刷新缓存区，刷新后的流对象还可以继续使用，而close()方法先刷新缓冲区再关闭流对象，不能使用
+	--》InputStreamReader char[] chs = new char[1024];
+	--》FIleReader = FileInputStream + 编码表(GBK)
+	--》BufferedWriter new BufferedWriter(new FileWriter("path"));
+	--》BufferedReader 除了char[] chs = new char[1024];还有读取的特殊方法newline()根据系统换行符string line = null;while((BUfferedReader.readLine())!=-1){}
+		--》LineNumberReader getLineNumber()获得当前行号  setLineNumber(int lineNumber)
 	
-	ע��BufferedWriter��BufferedReader�ڶ�д����д����ʱ�򴴽�������Ҫ�ֿ��õ�ʱ���ڴ���
+	注意BufferedWriter和BufferedReader在读写或者写读的时候创建对象需要分开用的时候在创建
 
--->�ڴ������:���ڴ洢��ʱ������Ϣ --���ֽ�����ByteArrayInputStream ����Ҫ�ͷ���Դ;�ַ�����CharArrayReader;�ַ���StringReader
--->��ӡ�� PrintStream�ֽڴ�ӡ�� PrintWriter�ַ���ӡ��  ֻ��д���ܶ������Կ�����ˢ
--->��������� RandomAccessFile(pathname,"rw") �����rwλ����4��ѡ��;rw��ʾ�ɶ���д getFilePointer�ļ�ָ��λ�� seek(int)���õ��ĸ�λ��
--->ObjectOutputStream�Ƕ���P��������(���л���)      ObjectInputStream�������ݵ�����(�����л���)  ��ʵ����Serializable�ӿ�(����ֻ�ɫ���ߣ���Ҫ�����м���һ�����л�idֵ)
+-->内存操作流:用于存储临时操作信息 --》字节数组ByteArrayInputStream 不需要释放资源;字符数组CharArrayReader;字符串StringReader
+-->打印流 PrintStream字节打印流 PrintWriter字符打印流  只能写不能读，可以开启自刷
+-->随机访问流 RandomAccessFile(pathname,"rw") 这里的rw位置有4中选项;rw表示可读可写 getFilePointer文件指针位置 seek(int)设置到哪个位置
+-->ObjectOutputStream是对象P到流数据(序列化流)      ObjectInputStream是流数据到对象(反序列化流)  都实现了Serializable接口(会出现黄色的线，需要在类中加入一个序列化id值)
 println()--> bw.writer() bw.readLine() bw.flush()
-һ������Ĺ��췽������File��Stringһ����Բ����ı��ļ�
-�������ݣ��������֪���ü��±��򿪲��ܹ������������ַ������������ֽ���
+一般的流的构造方法里有File和String一般可以操作文本文件
+复制数据，如果我们知道用记事本打开并能够读懂，就用字符流，否则用字节流
 a.txt+b.txt -- c.txt SequenceInputStream(Enumeration<InputStream> en); InputStream s1 s2 s3; Enumeration<InputStream> = v.elements(); v.add(s1)..;Vector<InputStream> v;
-Properties ��һ��Map���� set/getProperty stringPropertyNames��ȡ���м��ļ���     ;store(Writer writer,String comments)�������е����ݴ洢���ļ��� ;load(Reader r(""))������ļ��е����ݱ����Ǽ�ֵ�Ե���ʽ
-IO��������������һ���̵߳���read����write��Ҫ��ȫд����߶�ȡ���ܼ���
+Properties 是一个Map集合 set/getProperty stringPropertyNames获取所有键的集合     ;store(Writer writer,String comments)将集合中的数据存储在文件中 ;load(Reader r(""))这里的文件中的内容必须是键值对的形式
+IO流是阻塞的例如一个线程调用read或者write需要完全写入或者读取才能继续
 
 
-19.NIO IO�������NIO���򻺳�����NIOΪ������
+19.NIO IO面对流，NIO面向缓冲区，NIO为非阻塞
 http://www.importnew.com/19816.html
 Channel 
 -->FileChannel  IO FileChannel fileChannel = IO.getChannel()
--->DatagramChannel UDP ���ͺͽ��ܵ��ǰ�
--->SocketChannel TCP(server��client) channel.configureBlocking(false)����ֵ���������������ɵĽ���,��ServerSocketChannel����accept()������������󷵻�SocketChannel���򷵻�null
+-->DatagramChannel UDP 发送和接受的是包
+-->SocketChannel TCP(server和client) channel.configureBlocking(false)返回值表明所请求操作完成的进度,如ServerSocketChannel调用accept()如果有连接请求返回SocketChannel否则返回null
 client
-��:socketChannel = SocketChannel.open();socketChannel.connect(new InetSocketAddress("ip",8080))
-�ر�:socketChannel.close()
-��ȡ��:������ģʽ��read()����Ϊ��ȡ���ݾͷ���������Ҫ��ע���ص�ֵint��ʾ��ȡ���ֽ�
+打开:socketChannel = SocketChannel.open();socketChannel.connect(new InetSocketAddress("ip",8080))
+关闭:socketChannel.close()
+读取中:非阻塞模式下read()可能为读取数据就返回所以需要关注返回的值int表示读取的字节
 
 -->ServerSocketChannel
 server
-��:ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-�ر�:serverSocketChannel.close()
-�����½���������:while(true) { SocketChannel socketChannel = serverSocketChannel.accept();} serverSocketChannel�������÷������ģ�������accept()�������������û���½��������ӷ��ص���null ;������ж�if(!socketChannel=null) {}
+打开:ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+关闭:serverSocketChannel.close()
+监听新进来的连接:while(true) { SocketChannel socketChannel = serverSocketChannel.accept();} serverSocketChannel可以设置非阻塞的，所以在accept()会立即返回如果没有新进来的连接返回的是null ;后面加判断if(!socketChannel=null) {}
 
 Buffer
--->ÿһ�������������Ͷ�Ӧһ��Buffer����FloatBuffer 1.����ռ�ByteBuffer buf = ByteBuffer.allocate(1024) 2.д�뵽buffer int bytesRead = fileChannel.read(buf) 3.����filp����buf.flip() 4.��Buffer��ȡ����buf.get()5.����clear()(position=0,limit=capacity-->position=n,..-filp()->position=0,limit=n-clear()->��ʼ)����compact()Buffer��δ��ȡ���ݵ�ʱ��δ��ȡ���ݷ���ŶBuffer��ʼ����position=δ��ȡ����ĩ+1������Buffer׼����д�����ݶ����Ḳ��δ��ȡ������
-	��Channelд��Buffer:fileChannel.read(buf) buf.put();��Buffer��ȡ��Channel channel.write(buf) ��Buffer�ж�ȡbuf.get()	
+-->每一个基本数据类型对应一个Buffer例如FloatBuffer 1.分配空间ByteBuffer buf = ByteBuffer.allocate(1024) 2.写入到buffer int bytesRead = fileChannel.read(buf) 3.调用filp方法buf.flip() 4.从Buffer读取数据buf.get()5.调用clear()(position=0,limit=capacity-->position=n,..-filp()->position=0,limit=n-clear()->初始)或者compact()Buffer有未读取数据的时候将未读取数据方法哦Buffer起始处，position=未读取数据末+1，这样Buffer准备好写入数据而不会覆盖未读取的数据
+	从Channel写入Buffer:fileChannel.read(buf) buf.put();从Buffer读取到Channel channel.write(buf) 从Buffer中读取buf.get()	
 -->MappedByteBuffer...
 
 Selector
-����:Selector selector = Selector.open();
-ע��(ʹchannel��Selector���): ssc = serverSocketChannel.open();�����ssc�����Ƿ������Ĳ��ܺ�Selector�������FileChannel�����л���������ģʽ�������޷���Selectorһ��ʹ�� ssc.socket().bind(new InetSocketAddress(PORT));ssc.configureBlocking(false);ssc.register(selector, SelectionKey.OP_ACCEPT#�����������Selector����Channel����ʲô�¼�����ȤConnect(���Ӿ���)��Accept(���ܾ���)��Read��Writer,theObject#���Ӷ���);
-	regist()���ص���SelectionKey���󣬰���interest���ϡ�ready����int readySet = selectionKey.readyOps();���Եõ�ʲô�¼�׼���ã�Ҳ���Ե���SelectionKey.isAcceptable()��SelectionKey����Channel��Selector selectionKey.channel()
-ͨ��Selectorѡ��ͨ��:
-ע����ͨ����ִ��select()����:select()����������һ��ͨ����ע����¼��;����ˣ����ص����ж���ͨ�����������������ϴε� select(long timeout)���������ô������ selectNow()����������û��׼���õ�ͨ������0 ���ص��Ǹ���Ȥ�¼��Ѿ�׼���õ�ͨ��
-selector.selectionKeys().iterator()����һ���������� Iterator<SelectionKey> �ڵ��������������while(true) {ע��ÿһ�ε���ĩβ�� iter.remove()��ΪSelector�����Լ�����ѡ��ļ�����SelectKeys�Ƴ�}
-selectionKey.channel()���ص�ͨ����Ҫת��������Ҫ��������ServerSocketChannel
+创建:Selector selector = Selector.open();
+注册(使channel和Selector配合): ssc = serverSocketChannel.open();这里的ssc必须是非阻塞的才能和Selector配合由于FileChannel不能切换到非阻塞模式，所以无法和Selector一起使用 ssc.socket().bind(new InetSocketAddress(PORT));ssc.configureBlocking(false);ssc.register(selector, SelectionKey.OP_ACCEPT#这个参数表明Selector监听Channel对于什么事件感兴趣Connect(连接就绪)、Accept(接受就绪)、Read、Writer,theObject#附加对象);
+	regist()返回的是SelectionKey对象，包含interest集合、ready集合int readySet = selectionKey.readyOps();可以得到什么事件准备好，也可以单独SelectionKey.isAcceptable()、SelectionKey访问Channel或Selector selectionKey.channel()
+通过Selector选择通道:
+注册了通道后，执行select()方法:select()阻塞到至少一个通道在注册的事件就就绪了，返回的是有多少通道就绪，但不包括上次的 select(long timeout)最长会阻塞这么长毫秒 selectNow()不会阻塞，没有准备好的通道返回0 返回的是感兴趣事件已经准备好的通道
+selector.selectionKeys().iterator()返回一个迭代对象 Iterator<SelectionKey> 在迭代这个对象例如while(true) {注意每一次迭代末尾的 iter.remove()因为Selector不会自己将已选择的键集从SelectKeys移除}
+selectionKey.channel()返回的通道需要转换成你需要的类型如ServerSocketChannel
 
-������ͨ��(Channel������Stream������˫���)��ȡ��������(���Ŀǰû�п��õ����ݲ��ᱣ���߳�����,дҲ��ͬ��)��Selector(ѡ����)ѡ��ͨ��
+数据由通道(Channel类似于Stream但是是双向的)读取到缓冲区(如果目前没有可用的数据不会保存线程阻塞,写也是同理)，Selector(选择区)选择通道
 
-Java�������ļ�һ��ʹ��BufferedReader����BufferedInputStream���ִ��л����IO�࣬�ļ�����ʹ��MapperByteBuffer
-selectģ��:���׽���ͨ��(SocketChannel)ע�ᵽһ��ѡ����Selector�У���ʱ����ѡ������select�������������ѡ���SelectionKey
-SocketChannel��дͨ��ByteBuffer ֱ��:HeapByteBufferֱ�Ӳ������ڴ浫�Ƕ��ڴ��ļ�����ʹ ���:MappedByteBuffer���ļ�ӳ�䵽�����ڴ�����������ڴ� fileChannel.map(int mode���ɷ����ڴ�ӳ���ļ��ķ�ʽMapMode.READ_ONLY,READ_WRITE,PRIVATE��ר�ã��޸Ļᴴ��������,long position,long size) force()��RWģʽ��ǿ��д���ļ�  load()���������ļ�д���ڴ� isLoader()�������ļ��Ƿ����ڴ���
+Java处理大文件一般使用BufferedReader或者BufferedInputStream这种带有缓冲的IO类，文件超大使用MapperByteBuffer
+select模型:将套接字通道(SocketChannel)注册到一个选择器Selector中，不时调用选择器的select方法返回满足的选择键SelectionKey
+SocketChannel读写通过ByteBuffer 直接:HeapByteBuffer直接操作堆内存但是对于大文件不好使 间接:MappedByteBuffer将文件映射到虚拟内存而不是物理内存 fileChannel.map(int mode（可访问内存映像文件的方式MapMode.READ_ONLY,READ_WRITE,PRIVATE（专用）修改会创建副本）,long position,long size) force()在RW模式下强行写入文件  load()将缓冲区文件写入内存 isLoader()缓冲区文件是否在内存中
 
-Scatter\Gatter ��Channel��ȡд����Buffer��Scatter Gatter�����Bufferд��һ��Channel
-transferFrom���Խ����ݴ�Դͨ�������䵽FileChannel�� transferTo�����ݴ�FileChannel���䵽����ͨ����
- Pipe��һ��sourceͨ����һ��sinkͨ�������ݽ�����sourceд��sinkͨ����  Pipe.SourceChannel sourceChannel = pipeTemp.source();//��ͨ���ж�����
+Scatter\Gatter 从Channel读取写入多个Buffer用Scatter Gatter将多个Buffer写入一个Channel
+transferFrom可以将数据从源通道反传输到FileChannel中 transferTo将数据从FileChannel传输到其他通道中
+ Pipe有一个source通道和一个sink通道，数据将会由source写道sink通道中  Pipe.SourceChannel sourceChannel = pipeTemp.source();//向通道中读数据
 
-ͬ�����첽�������ͷ�������
-ͬ��synchronous-->���� ���÷�����ֻ�еõ����أ��Լ��ŷ���
-�첽asynchronous-->������ ���÷����󲻷��ھ��Լ�����
+同步与异步，阻塞和非阻塞？
+同步synchronous-->阻塞 调用发出后只有得到返回，自己才返回
+异步asynchronous-->非阻塞 调用发出后不反悔就自己返回
 
-���߳�һ��ʹ���̳߳ؿ������̵߳Ĵ����ͻ��ճɱ��ϵ�,�����̴߳����ɱ��ߣ�ռ���ڴ���߳��л��ɱ�ƫ�ߣ����������ܴ��ʱ�����Ҫ����BIO(Blocking)
-��BIO��socket.read()���TCP RecvBuffer��û�����ݣ���һֱ����������NIO��������ݻὫ������������ȡ���ڴ��У����û�����ݷ���0������������AIO���������ڴ����Ҳ���첽��
-��NIO���߳���Ҫ:1.ʱ��ַ��������߳�ѡ��ʱ�� 2.I/O������ ����connect��read��write 3.ҵ���߳�һ�����Լ���ҵ���߼���Ȼ����������������IO�� DB������RPC��
-����Redis������Redis��˵�����ڷ������ȫ�ִ��еģ��ܹ���֤ͬһ���ӵ����������뷵��˳��һ�¡���������ʹ�õ��̣߳����У����������ݻ��塣Ȼ��pipeline���ͣ�����future��Ȼ��channel�ɶ�ʱ��ֱ���ڶ����а�futureȡ������done()�Ϳ�����
+多线程一般使用线程池可以让线程的创建和回收成本较低,但是线程创建成本高，占用内存大，线程切换成本偏高，在连接数很大的时候就需要抛弃BIO(Blocking)
+在BIO中socket.read()如果TCP RecvBuffer中没有数据，会一直阻塞而对于NIO如果有数据会将数据由网卡读取到内存中，如果没有数据返回0不会阻塞；而AIO是网卡到内存过程也是异步的
+在NIO中线程主要:1.时间分发器，单线程选择时间 2.I/O处理器 包括connect、read、write 3.业务线程一般有自己的业务逻辑当然还可能有其他阻塞IO如 DB操作、RPC等
+对于Redis，对于Redis来说，由于服务端是全局串行的，能够保证同一连接的所有请求与返回顺序一致。这样可以使用单线程＋队列，把请求数据缓冲。然后pipeline发送，返回future，然后channel可读时，直接在队列中把future取回来，done()就可以了
 
 
-20.Thread�߳�
-�߳�����״̬:���� new Thread(..)��(���� t.start()���غ��ھ��� ������:���й�����ʱ�ó�CPU���������������̻߳��CPU��Դ�������е������� 1.�߳�ͨ��sleep��������˯�� 2.����һ��I/Oʱ������ 3.�߳���õ�һ�������������ٱ�������ʹ�� 4.�߳��ڵȴ�һ����������
-	������ ִ��run����)������(run���������˳�ʱ��Ȼ����������ֹrun����û���쳣 ��is.Alive()�ж��߳��Ƿ�����)�������ڱ�ʾ�����໥ת��
+20.Thread线程
+线程五种状态:创建 new Thread(..)、(就绪 t.start()返回后处于就绪 、阻塞:运行过程暂时让出CPU，而其他就绪的线程获得CPU资源进入运行导致阻塞 1.线程通过sleep方法进入睡眠 2.调用一个I/O时被阻塞 3.线程想得到一个锁，但是锁再被其他人使用 4.线程在等待一个触发条件
+	、运行 执行run方法)、消亡(run方法正常退出时自然消亡或者终止run方法没有异常 用is.Alive()判断线程是否运行)，括号内表示可以相互转换
 http://blog.csdn.net/vking_wang/article/details/9952063
-һ������������ж���̣߳�����paralleliseָ���Ǿ��ж��ִ����¼�����������һ����ͬʱ��;����concurrency��ͬʱ���������¼�
-Thread����: 1.new Thread().setName("") 2.new Thread(Class.implementRunable,"")
-�Լ�д���߳���Ҫ�̳�ThreadȻ����дrun()������ע���start()������,runִֻ�����е����ݣ���start������JVM�߳�ȥ���ø��̵߳�run����
-thread.setPriority(int a)�����������ȼ�Ĭ��Ϊ5 ��ΧΪ1-10;thread.sleep(int a)�߳����ߣ�����һ��Ҫtry catchһ��;thread.setDaemon(true)�ػ��̣߳�����start֮ǰ����;thread.interrupt()�ж��߳� thread.yield()��ͣ��ǰ���������߳�
+一个进程里可能有多个线程，并行parallelise指的是具有多种处理事件的能力但不一定是同时的;并发concurrency是同时处理多种事件
+Thread创建: 1.new Thread().setName("") 2.new Thread(Class.implementRunable,"")
+自己写的线程需要继承Thread然后重写run()方法，注意和start()的区别,run只执行其中的内容，而start启动了JVM线程去调用该线程的run方法
+thread.setPriority(int a)可以设置优先级默认为5 范围为1-10;thread.sleep(int a)线程休眠，这里一般要try catch一下;thread.setDaemon(true)守护线程，需在start之前调用;thread.interrupt()中断线程 thread.yield()暂停当前启动其他线程
 
 
-1.wait() ����ǰ���߳̽������ߣ��ڵ���wait()֮ǰ��Ҫ��øö���Ķ��󼶱���(�Ǿ�̬�������ʹ��������ֻ�������е���wait����)���û�л�þͷ���IllegalMintorStateException������wait�������ͷŵ�ǰ��,wait����֮ǰ�̺߳������߳̾��������
-sleep��wait������ sleep���߳��ڲ�����Ϊ��wait�Ǳ�������ֹͣ
+1.wait() 将当前的线程进入休眠，在调用wait()之前需要获得该对象的对象级别锁(非静态方法锁和代码块锁即只能在其中调用wait方法)如果没有获得就返回IllegalMintorStateException，进入wait方法后释放当前锁,wait返回之前线程和其他线程竞争获得锁
+sleep和wait的区别？ sleep是线程内部的行为，wait是别人让你停止
 2.notify 
-ͬ������Ҫ�Ƕ��󼶱���������֪ͨ���п��ܵȴ��ö���������Ĵ���wait״̬���̣߳��ڻ�ö���������Ҫ�ȴ���notify���û�б�notify���ǻ�������wait״̬,��notify֮���̲߳��������ͷŶ�������wait���ڵ��߳�Ҳ�������ϻ�ö���������Ҫ�ȵ������˳�synchronized������
+同样是需要是对象级别锁，将会通知所有可能等待该对象对象锁的处于wait状态的线程，在获得对象锁后需要等待被notify如果没有被notify还是会阻塞在wait状态,在notify之后线程不会马上释放对象锁，wait所在的线程也不会马上获得对象锁，需要等到程序退出synchronized代码块后，
 3.notifyAll
-��notify���Ϊʹԭ������wait״̬�������߳��˳�wait״̬(�����õȴ�notify)�����ǻ�û�л�ö�������һ���������ͷ�(notifyAll�߳��˳����õ�notifyAll��synchronized�����)���Ὰ����øö����������˳�sychranized������ͷ�����������������һֱ�����л��ѵ��߳�ִ�����
-�ܽ᣺����̵߳��ö����wait��������ô�߳̾ͻᴦ�ڸö���ĵȴ����в��Ὰ���ö��������������notify����notifyALL�������ѵ��߳̽���ö���������У������е��̻߳Ὰ���ö����������û�о���������ֻ���ڵ���wait�������ܻص��ȴ����У����������������̻߳����ִ����synchranized�������ͷŸö���������ʱ�����е��̻߳��������
-ʵ��:
-��������Ӿ���һ���������ģ�������ʣ�ͻ�����������wait�����ѽ���notify���������û�оͻ�������waitת��notify����
+与notify差别为使原来处于wait状态的所有线程退出wait状态(即不用等待notify)，但是还没有获得对象锁，一旦对象锁释放(notifyAll线程退出调用的notifyAll的synchronized代码块)，会竞争获得该对象锁，在退出sychranized代码块释放锁后其他继续竞争一直讲所有唤醒的线程执行完毕
+总结：如果线程调用对象的wait方法，那么线程就会处于该对象的等待池中不会竞争该对象的锁；当调用notify或者notifyALL，被唤醒的线程进入该对象的锁池中，锁池中的线程会竞争该对象锁，如果没有竞争到锁，只有在调用wait方法才能回到等待池中，竞争到对象锁的线程会继续执行完synchranized代码块会释放该对象锁，这时锁池中的线程会继续竞争
+实例:
+这里的篮子就像一个控制中心，生产过剩就会让生产进程wait让消费进程notify，如果篮子没有就会让消费wait转而notify生产
 class Producer_Customer{
 	Basket basket = new Basket();  
     Producer pro = new Producer(basket);  
     Customer cus = new Customer(basket);  
      
-    Thread proth1 = new Thread(pro, "һ");  
-    Thread proth2 = new Thread(pro, "��");  
-    Thread proth3 = new Thread(pro, "��");  
-    Thread proth4 = new Thread(pro, "��");  
+    Thread proth1 = new Thread(pro, "一");  
+    Thread proth2 = new Thread(pro, "二");  
+    Thread proth3 = new Thread(pro, "三");  
+    Thread proth4 = new Thread(pro, "四");  
     Thread custh1 = new Thread(cus, "custh1");  
     Thread custh2 = new Thread(cus, "custh2");  
      
@@ -306,7 +306,7 @@ class Basket{
 
 		this.notifyAll();
 		basket[index++] = a;
-		System.out.println("������" + a + " ����ʣ��=" + index);
+		System.out.println("生产：" + a + " 篮子剩余=" + index);
 	}
 
 	public synchronized vid eat() {
@@ -316,7 +316,7 @@ class Basket{
 			}catch(interruptException e) {}
 			
 			this.notifyAll();
-			System.out.println("�Ե���" + basket[--index] + " ����ʣ��=" + index);  
+			System.out.println("吃掉：" + basket[--index] + " 篮子剩余=" + index);  
 		}
 
 	}
@@ -334,24 +334,24 @@ class Apple{
 }
 
 
-�߳���:
+线程组:
 ThreadGroup tg = new ThreadGroup("New Group");
 MyRunnable mr = new MyRunnable();
 Thread t1 = new Thread(tg,mr,"Thread Name");
 
 ...
-tg.setDaemon(true);//�������������ú�̨���̱�ʾ���̶߳��Ǻ�̨����
+tg.setDaemon(true);//设置组名称设置后台进程表示该线程都是后台进程
 
 
-Sychronized������:��ס���Ƕ�������Ǵ��룬����̻߳�ȡͬһ����
-���������������������ϵ��߳�����������Դ��ɵĻ���ȴ���������Щ�̳߳�Ϊ�����̣߳������߳�a����obj1��obj2��������obj1����a�Ѿ�����obj1��������obj2��ʱ��bҪȥ����obj1��ô����������������������
-ʵ����
+Sychronized互斥锁:锁住的是对象而不是代码，多个线程获取同一把锁
+死锁：两个或者两个以上的线程由于争夺资源造成的互相等待的现象，这些线程称为死锁线程；例如线程a锁定obj1和obj2，吧锁定obj1，当a已经锁定obj1正在锁定obj2的时候b要去锁定obj1那么两个锁都五大结束产生死锁
+实例：
 class DiedSynchronized {
 	main {
 		TellMe tm = new TellMe();
 		Thread t1 = new (tm,"t1")
 		Thread t2 = new (tm,"t2")
-		System.out.println(Thread.currentThread().getName()+"��t1��t2�߳��Ѿ���������");  
+		System.out.println(Thread.currentThread().getName()+"：t1和t2线程已经启动……");  
         t1.start();  
         t2.start();
 
@@ -359,11 +359,11 @@ class DiedSynchronized {
         	Thread.sleep((long)10000);
         }catch (InterruptedException ex) { }  
         if(t1.isAlive() && t2.isAlive()) {  
-            System.out.println(Thread.currentThread().getName()+"��10s�ڣ�t1��t2�߳̾�û������������֤��t1��t2�߳�������");  
+            System.out.println(Thread.currentThread().getName()+"：10s内，t1和t2线程均没有正常结束，证明t1和t2线程死锁！");  
             System.exit(0);  
         }  
         else  
-            System.out.println(Thread.currentThread().getName()+"��t1��t2�߳��Ѿ�������֤��û��������");  
+            System.out.println(Thread.currentThread().getName()+"：t1和t2线程已经结束，证明没有死锁！");  
 	}
 }
 
@@ -374,40 +374,40 @@ class TellMe implements Runnable {
 		if(flag) {
 			flag = false;
 			synchronized(this) {
-				System.out.println(Thread.currentThread().getName()+"���Ѿ���ȡ��this�������ڻ�ȡNumber������");  
+				System.out.println(Thread.currentThread().getName()+"：已经获取到this锁，正在获取Number锁……");  
 				try{
-					Thread.sleep(long(1000));#��ʹû��sleepҲ������
+					Thread.sleep(long(1000));#即使没有sleep也会死锁
 				}catch(interruptException e){}
 				synchronized(number) {
-					 System.out.println(Thread.currentThread().getName()+"��this����Number��ͬʱ��ȡ��ϣ�");  
+					 System.out.println(Thread.currentThread().getName()+"：this锁和Number锁同时获取完毕！");  
 				}
 			}
 
 		}else {
 			synchronized(_number) {  
-                System.out.println(Thread.currentThread().getName()+"���Ѿ���ȡ��Number�������ڻ�ȡthis������"); 
+                System.out.println(Thread.currentThread().getName()+"：已经获取到Number锁，正在获取this锁……"); 
                 try{
                 	Thread.sleep(long(1000));
                 }catch(interruptException e){}
 
                 Sychronized(this) {
-                	System.out.println(Thread.currentThread().getName()+"��this����Number��ͬʱ��ȡ��ϣ�");  
+                	System.out.println(Thread.currentThread().getName()+"：this锁和Number锁同时获取完毕！");  
                 }
 		}
 	}
 }
 
-�߳�ͬ������:
-����̲߳��ӿ��ƵĶԶ�����з��ʣ��޸����ݿ��ܳ������⣬�������ǿ��� 1.������Դ����Ϊprivate 2.������Ҫͬ���Ĵ�����synchronizedͬ�������(�ô������ԭ����:��ĳһʱ��ֻ��һ���߳����иô��룬��һ��monitor���Ӷ��󱣻��Ϳɼ���:��֤���ͷ���֮ǰ�޸ĵĹ������ݶ�����һ���߳̿ɼ���); ԭ��:�����ȡ�������ʹ�Լ��ĸ��ٻ���ʧЧ��֤�����ڴ浽�������ͷ���֮ǰ��ˢ�¸��ٻ��棬��ʹ���ĳ������ڴ� 
-ʲôʱ����Ҫͬ����
-1.�ɼ���ͬ��:��ȡ��������һ���߳�д��ı���;д����һ��������һ���̶߳�ȡ�ı��� 2.һ����ͬ��:���޸Ķ������ֵ��ʱ��֤�����߳�ԭ���ܿ�����ȫ������ 3.����ͬ��:��ΪJVM�Ѿ�ִ��ͬ����̬�ֶλ���static{}�еĳ�ʼ��������ʼ������ʱ������final�ֶΣ������߳�֮ǰ���������߳̿��Կ�������Ҫ�����Ķ���
-synchronized����:�޷��ж�һ�����ڻ�������̣߳��޷�ͨ��ͶƱ�������Ҫ���ͷ����Ķ�ջ֡��Ҫ�ͻ��������ͬ --�� Lock�����java.util.concurrent.lock������ʵ����ΪJava�� -->ReentrantLockʵ��Lock����ȼ�Synchronized������ͶƱ����ʱ���Ⱥ�Ϳ��ж����Ⱥ�ע����Synchronized���ڴ�����������Զ��ͷ���������Lock��Ҫ.unlock()�ͷ��� try catch finally 
-ͨ�����뷢��Synchronized�еĶ�ȡ��д���̻߳��಻����,����������ȡ�߳�Ҳ�����ţ����ǲ��Եġ�ʹ��ReentrantLock��ʵ��ReadWriteLock ,ͨ����set������ReadWriteLock.writeLock().lock()ȡ��д��;��get��ReadWriteLock.readLock().lock()��ö������������ǽ�Synchronized��Ϊ��������ReadWriteLock��Ϊ��д��(�������ڹ��������ڽ��и��߼���Ĳ�������)�����Ϳ�������һ��write�߳�д�����ݣ����read�̶߳�ȡ���ݣ����Ƕ�д��ֻ���ڶദ��������ֻ�з���ģʽ��ʱ�����ʵ�ֲ�������ǿ
+线程同步问题:
+多个线程不加控制的对对象进行访问，修改数据可能出现问题，这里我们可以 1.对于资源类标记为private 2.对于需要同步的代码用synchronized同步代码块(该代码具有原子性:在某一时间只有一个线程运行该代码，由一个monitor监视对象保护和可见性:保证在释放锁之前修改的共享数据对于下一个线程可见的); 原理:对象获取锁对象后使自己的高速缓存失效保证从主内存到变量，释放锁之前会刷新高速缓存，迫使更改出现主内存 
+什么时候需要同步？
+1.可见性同步:读取可能由另一个线程写入的变量;写到下一个可能另一个线程读取的变量 2.一致性同步:当修改多个变量值的时候保证其他线程原子能看到其全部更改 3.不必同步:因为JVM已经执行同步静态字段或者static{}中的初始化器，初始化数据时，访问final字段，创建线程之前创建对象，线程可以看见它将要处理的对象
+synchronized限制:无法中断一个正在获得锁的线程，无法通过投票获得锁，要求释放锁的堆栈帧需要和获得锁的相同 --》 Lock框架在java.util.concurrent.lock将锁定实现作为Java类 -->ReentrantLock实现Lock，相比件Synchronized添加锁投票、定时锁等候和可中断锁等候，注意在Synchronized中在代码块结束后会自动释放锁，但是Lock需要.unlock()释放锁 try catch finally 
+通过代码发现Synchronized中的读取和写入线程互相不干扰,但是两个读取线程也不干扰，这是不对的。使用ReentrantLock的实现ReadWriteLock ,通过在set方法中ReadWriteLock.writeLock().lock()取到写锁;在get中ReadWriteLock.readLock().lock()获得读锁。这里我们将Synchronized称为互斥锁，ReadWriteLock称为读写锁(允许对于共享数据在进行更高级别的并发访问)这样就可以自由一个write线程写入数据，多个read线程读取数据，但是读写锁只有在多处理器并且只有访问模式的时候才能实现并发性增强
 
-synchronized���ξ�̬������������ǽ�������������ͨ�������ߴ�������������
-������ͬ���Ķ��������ڻ��������Ķ��󶼿��ţ�����ж��Ƿ�ӵ���ͬһ������ ��ͬ���͵�������ͬһ�������ӵ��Ƕ�������������ͬһ����ʵ��Ϊһ�������ӵ���ͬһ��ʱ��Ϊһ����
+synchronized修饰静态方法和类对象是叫类锁，修饰普通方法或者代码块叫做对象锁
+加了相同锁的东西，对于获得这个锁的对象都开放，如何判断是否加的是同一个锁？ 不同类型的锁不是同一把锁，加的是对象锁，必须是同一对象实例为一把锁，加的是同一类时才为一把锁
 
-ʵ��:class synTest {private synchronized void test1() private void test2(){synchronized(this)}}
+实例:class synTest {private synchronized void test1() private void test2(){synchronized(this)}}
 	main{
 		final synTest st = new synTest(); 
 		Thread t1 = new Thread(new Runnable(){ 
@@ -423,36 +423,36 @@ synchronized���ξ�̬������������ǽ�������������ͨ�������ߴ�������������
 		t1.start()
 		t2.start()
 	}
-���ǿ��Է���synchronizedһ���Ǹ��Ǿ�̬��������һ���Ǹ���ǰ����this���������Զ��Ƕ��������Ƕ�ͬһ��������������t1����t2
-�����������ʵ��final synTest st1 = new synTest(); ��t2�ĳ� st1.test2()�������ߵ�������ͬһ���ͻ�������
-�����test1�ĳɾ�̬ private static synchronized test1();test2�иĳ�synchronized(synTest.class)��ô���߶����������ͻ�������t1��ִ��t2
+我们可以发现synchronized一个是给非静态方法加锁一个是给当前对象this加锁，所以都是对象锁都是对同一个，所以先运行t1运行t2
+如果创建两个实例final synTest st1 = new synTest(); 将t2改成 st1.test2()这样两者的所不是同一个就互不干扰
+如果给test1改成静态 private static synchronized test1();test2中改成synchronized(synTest.class)那么两者都是类锁，就会限制性t1后执行t2
 
 
--->�̼߳�ͨѶ��ǿCondition
-��ȴ�ͳ���̼߳��ͨ��:wait()һֱ�ȴ����캯��Ҳ�������ú����� -- await()  ;notify()����һ���̶߳���(�����)-- Signal(); notifyAll()���������̶߳��� -- signalAll()֮���Ը�����Ϊԭ�����е���Щ������final������д�����Ե�ͨ�ŷ���Condition������ʵ��
-Condition����Lock�ϣ�����Ϊ����̴߳�����ͬ��Condition 
-Lock Lock = new ReentrantLock(); lock.newCondition()�����߳�������Condition��һ����Ҫ���� ���߳���rCon��д�߳���wCon,�������㻺�����Object[] items = new Object[100]  int putptr;  д����  int takeptr; ������  int count;   ������������Ŀ
-��put(Object x)�����У�����Ҫlock.lock()������Ȼ���ж���������е�������Ŀcount==items.length(),�����Ļ���Ҫ����д�߳�wCon.await() ���û��д����д�����items[putptr] = x; ��Ҫ����д�����Ͷ����е���Ŀͬʱ���ж�if(++putptr == items.length) putptr=0 ++count ����Ѷ��߳�rCon.Signal() ע����lock.lock()���������Ҫtry catch finally������haul���ܽ����lock.unlock()
-��take()�У�������lock.lock() �ж���Ϣ�������Ϊ��while(count == 0) ���߳�����rCon.await() ,��ȡ���и������� Object x = items[takeptr] �ж�if(++takeptr==items.length) {takeptr = 0} ��ȡ����Ҫ��count-- ����д�߳�wCon.signal() return x
+-->线程间通讯增强Condition
+相比传统的线程间的通信:wait()一直等待构造函数也可以设置毫秒数 -- await()  ;notify()唤醒一个线程对象(具体的)-- Signal(); notifyAll()唤醒所有线程对象 -- signalAll()之所以该是因为原对象中的这些方法是final不能重写，所以的通信方法Condition都可以实现
+Condition绑定在Lock上，可以为多个线程创建不同的Condition 
+Lock Lock = new ReentrantLock(); lock.newCondition()创建线程锁对象Condition，一般需要两个 读线程锁rCon和写线程锁wCon,创建爱你缓存队列Object[] items = new Object[100]  int putptr;  写索引  int takeptr; 读索引  int count;   队列中数据数目
+在put(Object x)方法中，首先要lock.lock()锁定，然后判断如果队列中的数据数目count==items.length(),这样的话需要阻塞写线程wCon.await() 如果没有写满就写入队列items[putptr] = x; 需要更新写索引和队列中的数目同时得判断if(++putptr == items.length) putptr=0 ++count 最后唤醒读线程rCon.Signal() 注意在lock.lock()后的内容需要try catch finally这样的haul才能解除锁lock.unlock()
+在take()中，先锁定lock.lock() 判断消息队列如果为空while(count == 0) 读线程阻塞rCon.await() ,读取队列更新索引 Object x = items[takeptr] 判断if(++takeptr==items.length) {takeptr = 0} 读取后需要将count-- 唤醒写线程wCon.signal() return x
 
-��Synchronized���Ļ��������ܵ�Ӱ�죬���Ҫ��Ч�ʽϸ߲���OSSpinLock(û�н���ϵͳ��Kennel)
+加Synchronized锁的化，性能受到影响，如果要求效率较高采用OSSpinLock(没有进入系统的Kennel)
 
 
 
-�̳߳�:
-�̳߳صĺô�:���ڶ���߳�ִ�����⣬�μ����ٴ�������Ԫ���õ�ʱ�䣬���Ӵ�������Ԫ����������
-1.�̳߳ع�����(ThreadPool) ���������̳߳أ�����������
-2.�����߳�(PoolWorker) �̳߳��е��߳�û�������ʱ���ڵȴ�״̬������ѭ��ִ������
-3.����ӿ�(Task) ÿ���������ʵ�ֵĽӿڣ��������̵߳��������ִ�У��涨�������ںͽ�����β�����Լ�����ִ�е�״̬
-4.�������(taskQueue):���ڴ��û�д��������񣬻������
-T1�����߳�ʱ�� T2ִ���߳�ʱ�� T3�����߳�ʱ�� T1+T3 >> T2ʱ�����̳߳�-->����T1��T3
-volatile :���β�ͬ�̷߳��ʺ��޸ģ�������֤�������ڱ������Ż���ʡ�ԣ�Ҫ��ÿ��ֱ�Ӷ�ȡ
+线程池:
+线程池的好处:对于多个线程执行问题，课件减少处理器单元闲置的时间，增加处理器单元的吞吐能力
+1.线程池管理器(ThreadPool) 创建销毁线程池，添加新任务
+2.工作线程(PoolWorker) 线程池中的线程没有任务的时候处于等待状态，可以循环执行任务
+3.任务接口(Task) 每个任务必须实现的接口，供工作线程调用任务的执行，规定任务的入口和结束收尾工作以及任务执行的状态
+4.任务队列(taskQueue):对于存放没有处理的任务，缓存机制
+T1创建线程时间 T2执行线程时间 T3销毁线程时间 T1+T3 >> T2时候用线程池-->减少T1和T3
+volatile :修饰不同线程访问和修改，用来保证不会由于编译器优化而省略，要求每次直接读取
 
-�����������ֻ�������:��װ(���ؾ���ϸ��ģ�黯)����̬���̳У���װ�ͼ̳ж�����չ�Ѵ��ڵĴ���ģ��ʵ�ִ������ã�����̬Ϊ��ʵ�ֽӿ����ã�Ϊ�����ڼ̳к�������ʱ��֤ʹ�����е���һ���ʵ����ĳһ������ȷ����
-��̬�ͼ̳�:����ע��̳��е��ø���Ĺ��췽������super�������ǹ��췽���еĵ�һ����Ϊ��Ҫ�ȴ�����������ٴ������ࣺ��̬ʵ��������������:�̳С���д������ת�ͣ�ʵ����ʽΪ�̳�(���������ڸ��෽����д���ֲ�ͬ������)�ͽӿ�(ʵ�ֽӿڲ����ǽӿ���ͬһ�����Ĳ�ͬ�࣬���ڽӿڿ��Զ�̳кͶ�ʵ����������Աȼ̳к�)�������ж�������ñ�����ָ��ľ������ͺ͸����ñ������õķ����ڱ���ǲ�ȷ���ڳ������е�ʱ���ȷ�������Բ����޸ĳ������Ϳ��������ñ����󶨵���ͬ�������棬�Ӷ����µ��÷����ĸı�(�������޸����󶨵ľ������)��������������Ϊ�������ͣ��ø��༰�����������Ϊ�������룬����ʱ����ʵ�ʴ����Ķ������Ͷ�̬����ʹ���ĸ�����
-����ת��:��A��B�ĸ����ʱ�� A a = new B();�������Զ�����ת�ͣ��������ĺô��ǳ���ʹ�ø��������Ĺ��Ի�����ʹ������Ķ��ع��ܣ�ȱ����ǻᶪʧ�����Լ���������Ժͷ�������д�ķ������ᵫ�����صķ����ᶪ��������д�ķ����ڵ��õ�ʱ��ض�ʹ�õ������ඨ��ķ�����������̬���Ӷ�̬����
-����(�������¶��常��ķ���)������(�������ڶ�������ķ������ǲ�����ͬ)
-ʵ��:
+面向对象的三种基本特征:封装(隐藏具体细节模块化)、多态、继承；封装和继承都是拓展已存在的代码模块实现代码重用，而多态为了实现接口重用，为了类在继承和派生的时候保证使用者中的任一类的实例的某一属性正确调用
+多态和继承:这里注意继承中调用父类的构造方法其中super语句必须是构造方法中的第一条因为需要先创建父类对象再创建子类：多态实现满足三个条件:继承、重写、向上转型，实现形式为继承(多个子类对于父类方法重写表现不同的属性)和接口(实现接口并覆盖接口中同一方法的不同类，由于接口可以多继承和多实现所以灵活性比继承好)，程序中定义的引用变量所指向的具体类型和该引用变量调用的方法在编程是不确定在程序运行的时候才确定，所以不用修改程序代码就可以让引用变量绑定到不同的类上面，从而导致调用方法的改变(而不用修改所绑定的具体代码)，将父类类型作为参数类型，该父类及其子类对象作为参数传入，运行时根据实际创建的对象类型动态决定使用哪个方法
+向上转型:当A是B的父类的时候 A a = new B();这样会自动向上转型，这样做的好处是除了使用父类和子类的共性还可以使用子类的独特功能，缺点就是会丢失子类自己定义的属性和方法，重写的方法不会但是重载的方法会丢，对于重写的方法在调用的时候必定使用的是子类定义的方法，做到动态连接动态调用
+覆盖(子类重新定义父类的方法)和重载(允许存在多个重名的方法但是参数不同)
+实例:
 public class A {
     public String show(D obj) {
         return ("A and D");
@@ -505,20 +505,20 @@ resulu in console
 1--A and A
 2--A and A
 3--A and D
-4--B and A Ϊʲô����B and B ������������ñ��������������ʱ�������ö������;�������˭�ĳ�Ա�������̳����ж��󷽷��ĵ��ô���һ�����ȼ���this.show(O)��super.show(O)��this.show((super)O)��super.show((super)O)
-5--B and A a2��A���͵��������ͣ�thisΪA��A����û�лص�A�ĳ�����super.show(),����û�г���(��Object��) this.show((super)O) ע��super(C)ΪA����B
+4--B and A 为什么不是B and B 当超类对象引用变量引用子类对象时，被引用对象类型决定调用谁的成员方法，继承链中对象方法的调用存在一个优先级：this.show(O)、super.show(O)、this.show((super)O)、super.show((super)O)
+5--B and A a2是A类型的引用类型，this为A，A类中没有回到A的超类找super.show(),由于没有超类(除Object外) this.show((super)O) 注意super(C)为A或者B
 6--A and D 
 7--B and B
 8--B and B
 9--A and D
-�ܽ�:������������ñ��������Ӷ����ʱ�򣬱����ö�������Ͳ������ö����������˭�ķ��������Ǳ����÷��������ڳ��౻��������������ȼ�
+总结:当超类对象引用变量引用子对象的时候，被引用对象的类型不是引用对象决定调用谁的方法，而是被调用方法必须在超类被定义过，根据优先级
 
-�����Ͷ���(����ģ��):�����������е�����ʹ��ͬһ������������Service��Dao��actionΪ������
-����һ��txt�ļ���ȡtxt�ĵ������ʺϵ���������ÿһ�ζ�ȡtxt�ļ��Ͳ�����new�������󣬻���һ�����Ǳ�֤�����Ψһ�ԣ�������strut1��actionΪ��ʵ�����߳������Ļ����ܶ���û�ͬʱ�����ͻ����������Struts2 �Ͳ���
-ʵ��:
-����ģʽ
+单例和多例(对象模型):单例就是所有的请求使用同一个对象处理例如Service和Dao而action为多例；
+比如一个txt文件读取txt文档，就适合单例，这样每一次读取txt文件就不用再new出来对象，还有一个就是保证对象的唯一性，但是在strut1的action为单实例多线程这样的化可能多个用户同时操作就会遇到问题而Struts2 就不会
+实例:
+单例模式
 /*
-����ģʽ(����ģʽ):�乹�췽��δ˽��,����˽�еľ�̬ȫ�ֱ���singleton����������λ��ʵ���������������Ϊnull�Ļ��ͳ��������̴߳�������Υ��������ԭ��
+单例模式(经典模式):其构造方法未私有,定义私有的静态全局变量singleton来保存该类的位移实例，但是这里如果为null的化就出现两个线程创建对象违反单例的原则
  */
 public class Singleton() {
 	private static Singleton singleton = new Singleton();
@@ -531,7 +531,7 @@ public class Singleton() {
 	}
 }
 /**
- * Lazy��������ģʽ��������ֻ֤��һ���߳��ܹ����ʸ����飬�������if�жϵ�û�ж����ʱ��������ж���ֱ�ӷ���
+ * Lazy单例懒汉模式：加锁保证只有一个线程能够访问该语句块，这里加了if判断当没有对象的时候加锁，有对象直接返回
  */
 public class Singleton() {
 	private static Singleton singleton;
@@ -549,7 +549,7 @@ public class Singleton() {
 	}
 }
 /**
- * ����ģʽ readonlyָ���ó�������𼶣����ĳ�ʼ�����ɾ�̬���캯��ʵ�֣�������������ʱ����������ģʽ�£������Լ�����̰߳�ȫ�����⣬CLR������ǽ�����ɴ˿��Կ�������౻����ʱ�����Զ�ʵ��������࣬�������ڵ�һ�ε���GetInstance()���ʵ������Ψһ�ĵ�������
+ * 饿汉模式 readonly指定该常量是类别级，它的初始化交由静态构造函数实现，并可以在运行时编译在这种模式下，无需自己解决线程安全性问题，CLR会给我们解决。由此可以看到这个类被加载时，会自动实例化这个类，而不用在第一次调用GetInstance()后才实例化出唯一的单例对象
  */
 public sealed class Singleton() {
 	private static readonly Singleton singleton = new Singleton();
@@ -559,16 +559,16 @@ public sealed class Singleton() {
 	}
 }
 
-����ģʽ:�����Լ����������Լ���ʵ�����������ṩ
+多例模式:必须自己创建管理自己的实例，并向外提供
 public class Student {
 	private static int maxNumOfStudent = 2;
-	private static ArrayList<String> studentInfoList = new ArrayList<String>(maxNumOfStudent);//װѧ������
+	private static ArrayList<String> studentInfoList = new ArrayList<String>(maxNumOfStudent);//装学生姓名
 	private static ArrayList<Student> studentList = new ArrayList<Student>(maxNumOfStudent);
 	private statuc int selectNum = 0;
 
 	static{
 		for(int i = 0;i<3;i++) {
-			studentList.add(new Student("ѧ��"+(i+1));
+			studentList.add(new Student("学生"+(i+1));
 		}
 	}
 
@@ -576,14 +576,14 @@ public class Student {
 		studentInfoList.add(info);
 	}
 
-	//ѡ��ѧ��
+	//选出学生
 	public static Student getInstance() {
 		Random r = new Random();
 		selectNum = r.nextInt(maxNumOfStudent);
 		return studentList.get(selectNum)
 	}
 
-	//���ѧ������
+	//输出学生姓名
 	public static void studentInfo() {
 	System.out.println(studentInfoList.get(selectNum));}
 }
@@ -592,52 +592,52 @@ class Test{
 		int maxTeacher = 10;
 		for(int i =0;i<maxTeacher;i++) {
 			Student s = Student.getInstance();
-			System.out.print("��"+(i+1)+"����ʦ�ҵ��ǣ�"); 
+			System.out.print("第"+(i+1)+"个老师找的是："); 
 			s.studentInfo();
 		}
 	}
 }
 
-��̬���ڵ������Ƕ���������һ����������Ͷ��������ģʽ�еĸ����̬�����Ա����ĸ�������ڵ���ģʽ��ʹ�ö�̬Ҳ�����ڶ���ģʽ��ʹ��
+多态属于单例还是多例：不是一个概念，单例和多例是设计模式中的概念，多态是语言本身的概念，可以在单例模式下使用多态也可以在多例模式下使用
 
 
 
 /** 
- * �̳߳��࣬�̹߳������������̣߳�ִ�����������̣߳���ȡ�̻߳�����Ϣ 
+ * 线程池类，线程管理器：创建线程，执行任务，销毁线程，获取线程基本信息 
  */  
 public final class ThreadPool {  
-    // �̳߳���Ĭ���̵߳ĸ���Ϊ5  
+    // 线程池中默认线程的个数为5  
     private static int worker_num = 5;  
-    // �����߳�  
+    // 工作线程  
     private WorkThread[] workThrads;  
-    // δ����������  
+    // 未处理的任务  
     private static volatile int finished_task = 0;  
-    // ������У���Ϊһ������,List�̲߳���ȫ  
+    // 任务队列，作为一个缓冲,List线程不安全  
     private List<Runnable> taskQueue = new LinkedList<Runnable>();  
     private static ThreadPool threadPool;  
   
-    // ��������Ĭ���̸߳������̳߳�  
+    // 创建具有默认线程个数的线程池  
     private ThreadPool() {  
         this(5);  
     }  
   
-    // �����̳߳�,worker_numΪ�̳߳��й����̵߳ĸ���  
+    // 创建线程池,worker_num为线程池中工作线程的个数  
     private ThreadPool(int worker_num) {  
         ThreadPool.worker_num = worker_num;  
         workThrads = new WorkThread[worker_num];  
         for (int i = 0; i < worker_num; i++) {  
             workThrads[i] = new WorkThread();  
-            workThrads[i].start();// �����̳߳��е��߳�  
+            workThrads[i].start();// 开启线程池中的线程  
         }  
     }  
   
-    // ��̬ģʽ�����һ��Ĭ���̸߳������̳߳�  
+    // 单态模式，获得一个默认线程个数的线程池  
     public static ThreadPool getThreadPool() {  
         return getThreadPool(ThreadPool.worker_num);  
     }  
   
-    // ��̬ģʽ�����һ��ָ���̸߳������̳߳�,worker_num(>0)Ϊ�̳߳��й����̵߳ĸ���  
-    // worker_num<=0����Ĭ�ϵĹ����̸߳���  
+    // 单态模式，获得一个指定线程个数的线程池,worker_num(>0)为线程池中工作线程的个数  
+    // worker_num<=0创建默认的工作线程个数  
     public static ThreadPool getThreadPool(int worker_num1) {  
         if (worker_num1 <= 0)  
             worker_num1 = ThreadPool.worker_num;  
@@ -646,7 +646,7 @@ public final class ThreadPool {
         return threadPool;  
     }  
   
-    // ִ������,��ʵֻ�ǰ��������������У�ʲôʱ��ִ�����̳߳ع��������� 
+    // 执行任务,其实只是把任务加入任务队列，什么时候执行由线程池管理器决定 
     public void execute(Runnable task) {  
         synchronized (taskQueue) {  
             taskQueue.add(task);  
@@ -654,7 +654,7 @@ public final class ThreadPool {
         }  
     }  
   
-    // ����ִ������,��ʵֻ�ǰ��������������У�ʲôʱ��ִ�����̳߳ع���������  
+    // 批量执行任务,其实只是把任务加入任务队列，什么时候执行有线程池管理器觉定  
     public void execute(Runnable[] task) {  
         synchronized (taskQueue) {  
             for (Runnable t : task)  
@@ -663,7 +663,7 @@ public final class ThreadPool {
         }  
     }  
   
-    // ����ִ������,��ʵֻ�ǰ��������������У�ʲôʱ��ִ�����̳߳ع���������  
+    // 批量执行任务,其实只是把任务加入任务队列，什么时候执行有线程池管理器觉定  
     public void execute(List<Runnable> task) {  
         synchronized (taskQueue) {  
             for (Runnable t : task)  
@@ -672,40 +672,40 @@ public final class ThreadPool {
         }  
     }  
   
-    // �����̳߳�,�÷�����֤������������ɵ�����²����������̣߳�����ȴ�������ɲ�����  
+    // 销毁线程池,该方法保证在所有任务都完成的情况下才销毁所有线程，否则等待任务完成才销毁  
     public void destroy() {  
-        while (!taskQueue.isEmpty()) {// �����������ûִ����ɣ�����˯���  
+        while (!taskQueue.isEmpty()) {// 如果还有任务没执行完成，就先睡会吧  
             try {  
                 Thread.sleep(10);  
             } catch (InterruptedException e) {  
                 e.printStackTrace();  
             }  
         }  
-        // �����߳�ֹͣ����������Ϊnull  
+        // 工作线程停止工作，且置为null  
         for (int i = 0; i < worker_num; i++) {  
             workThrads[i].stopWorker();  
             workThrads[i] = null;  
         }  
         threadPool=null;  
-        taskQueue.clear();// ����������  
+        taskQueue.clear();// 清空任务队列  
     }  
   
-    // ���ع����̵߳ĸ���  
+    // 返回工作线程的个数  
     public int getWorkThreadNumber() {  
         return worker_num;  
     }  
   
-    // �������������ĸ���,������������ֻ����������е�������������ܸ�����û��ʵ��ִ�����  
+    // 返回已完成任务的个数,这里的已完成是只出了任务队列的任务个数，可能该任务并没有实际执行完成  
     public int getFinishedTasknumber() {  
         return finished_task;  
     }  
   
-    // ����������еĳ��ȣ�����û�������������  
+    // 返回任务队列的长度，即还没处理的任务个数  
     public int getWaitTasknumber() {  
         return taskQueue.size();  
     }  
   
-    // ����toString�����������̳߳���Ϣ�������̸߳�����������������  
+    // 覆盖toString方法，返回线程池信息：工作线程个数和已完成任务个数  
     @Override  
     public String toString() {  
         return "WorkThread number:" + worker_num + "  finished task number:"  
@@ -713,21 +713,21 @@ public final class ThreadPool {
     }  
   
     /** 
-     * �ڲ��࣬�����߳� 
+     * 内部类，工作线程 
      */  
     private class WorkThread extends Thread {  
-        // �ù����߳��Ƿ���Ч�����ڽ����ù����߳�  
+        // 该工作线程是否有效，用于结束该工作线程  
         private boolean isRunning = true;  
   
         /* 
-         * �ؼ����ڰ������������в��գ���ȡ������ִ�У���������пգ���ȴ� 
+         * 关键所在啊，如果任务队列不空，则取出任务执行，若任务队列空，则等待 
          */  
         @Override  
         public void run() {  
             Runnable r = null;  
-            while (isRunning) {// ע�⣬���߳���Ч����Ȼ����run���������߳̾�û����  
+            while (isRunning) {// 注意，若线程无效则自然结束run方法，该线程就没用了  
                 synchronized (taskQueue) {  
-                    while (isRunning && taskQueue.isEmpty()) {// ����Ϊ��  
+                    while (isRunning && taskQueue.isEmpty()) {// 队列为空  
                         try {  
                             taskQueue.wait(20);  
                         } catch (InterruptedException e) {  
@@ -735,57 +735,57 @@ public final class ThreadPool {
                         }  
                     }  
                     if (!taskQueue.isEmpty())  
-                        r = taskQueue.remove(0);// ȡ������  
+                        r = taskQueue.remove(0);// 取出任务  
                 }  
                 if (r != null) {  
-                    r.run();// ִ������  
+                    r.run();// 执行任务  
                 }  
                 finished_task++;  
                 r = null;  
             }  
         }  
   
-        // ֹͣ�������ø��߳���Ȼִ����run��������Ȼ����  
+        // 停止工作，让该线程自然执行完run方法，自然结束  
         public void stopWorker() {  
             isRunning = false;  
         }  
     }  
 }  
 
-//�����̳߳�  
+//测试线程池  
 public class TestThreadPool {  
     public static void main(String[] args) {  
-        // ����3���̵߳��̳߳�  
+        // 创建3个线程的线程池  
         ThreadPool t = ThreadPool.getThreadPool(3);  
         t.execute(new Runnable[] { new Task(), new Task(), new Task() });  
         t.execute(new Runnable[] { new Task(), new Task(), new Task() });  
         System.out.println(t);  
-        t.destroy();// �����̶߳�ִ����ɲ�destory  
+        t.destroy();// 所有线程都执行完成才destory  
         System.out.println(t);  
     }  
   
-    // ������  
+    // 任务类  
     static class Task implements Runnable {  
         private static volatile int i = 1;  
   
         @Override  
-        public void run() {// ִ������  
-            System.out.println("���� " + (i++) + " ���");  
+        public void run() {// 执行任务  
+            System.out.println("任务 " + (i++) + " 完成");  
         }  
     }  
 }  
-����Ϊ�Զ����̳߳�
-Javaͨ��Executors�ṩ4���̳߳�:
+上述为自定义线程池
+Java通过Executors提供4种线程池:
 1.newCachedThreadPool
-ExecutorService cachedThreadPool = Executor.newCachedThreadPool();//�ɻ�����̳߳أ��ɻ��պʹ���
+ExecutorService cachedThreadPool = Executor.newCachedThreadPool();//可缓存的线程池，可回收和创建
 for(){
 	try{
 		Thread.sleep(1000);
 	}catch
 	cachedThreadPool.execute(new Runnable() {..run(){}..})
 }
-�ڵ�һ��������ɺ�Ḵ����ɵ�һ��������̣߳����������´���
-2.newFixedThreadPool//�����̳߳�,��������̻߳��ڶ����еȴ�
+在第一个任务完成后会复用完成第一个任务的线程，而不会重新创建
+2.newFixedThreadPool//定长线程池,如果超出线程会在队列中等待
 ExecutorService  fixedThreadPool = Executor.newFixedThreadPool(3);
 for(int i =0;i<5;i++) {
 	final int index = i;
@@ -799,22 +799,22 @@ for(int i =0;i<5;i++) {
 		}
 	});
 }
-���ڶ����̳߳���ø���ϵͳ��Դ��������Runntime.getRuntime().availableProcessors()
-3.newScheduledThreadPool//�����̳߳�֧�ֶ�ʱ��������ִ������
+对于定长线程池最好根据系统资源进行设置Runntime.getRuntime().availableProcessors()
+3.newScheduledThreadPool//定长线程池支持定时和周期性执行任务
 main{
 	ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
 	scheduledThreadPool.execute(new Runnable() {
 		public void run() {
-			System.out.println("��ʱ3��")
+			System.out.println("延时3秒")
 		}
 	},3,TimeUnit.SECONDS);
 }
  main{
  	...
- 	scheduledThreadPool.execute(new Runnable() {...},1,2,TimeUnit.SECONDS);//��ʱ��ʱһ������ִ��һ��
+ 	scheduledThreadPool.execute(new Runnable() {...},1,2,TimeUnit.SECONDS);//定时延时一秒三秒执行一次
  }
 
-4.newSingleThreadExecutor//�������̻߳����̳߳ذ���ָ��˳��(FIFO,LIFO,���ȼ�ִ��)
+4.newSingleThreadExecutor//创建单线程化的线程池按照指定顺序(FIFO,LIFO,优先级执行)
 main{
 	ExecutorService singleThreadExecutor = Executor.newSingleThreadExecutor();
 	for(int i = 0;i<100;i++) {
@@ -833,23 +833,23 @@ main{
 		}catch (){}
 	}
 }
-//�����������
-\jdk1.6.0_06\bin\jconsole.exe���Կ���������
-runnable��callable<>(){�� call(){}}ע���з��ͽӿڼ�����ʲô<>����ʲô��ͬʱ������fixedThreadPool.execute()����fixedThreadPool.submit(New Callable<>())���ص���Future<������Callable����call()�����ķ���ֵ>;Future.get()���õ�����ֵ
+//将会依次输出
+\jdk1.6.0_06\bin\jconsole.exe可以看到进程数
+runnable和callable<>(){？ call(){}}注意有泛型接口即返回什么<>里填什么；同时不再是fixedThreadPool.execute()而是fixedThreadPool.submit(New Callable<>())返回的是Future<里面是Callable类中call()方法的返回值>;Future.get()将得到返回值
 
 
-��ʱ��:
+定时器:
 Timer t = new Timer();
-t.scheduler(TimerTask task,long delay,#long period);����t.scheduler(TimerTask task,Date)
+t.scheduler(TimerTask task,long delay,#long period);或者t.scheduler(TimerTask task,Date)
 
-��ʱɾ��xxx�ļ�
+定时删除xxx文件
 class DeteleDir{
 	private 
 	main{
 		Timer t = new Timer();
 		String s = "2015-10-11 15:23:65"
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = sdf.parse(s);//date.getTime()���ص��Ǵ�1970������ĺ�����long
+		Date date = sdf.parse(s);//date.getTime()返回的是从1970年往后的毫秒数long
 		t.scheduler(new DeleteDirTask(t),date);
 	}
 }
@@ -886,28 +886,28 @@ class DeleteDirTask extend TimerTask{
 }
 
 
-���߳�ʵ��˳�����:1.��������Ӧ��  Student.id Student.point       new ArrayList<Student>(int n); �����̳߳� ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(m); ����m<n ��һ��ȡ��n��ѧ��pop���̳߳��У���������ѧ��point֮��Ϳ�ʼ����ѧ��id����ȥ����ѧ����push��������û�еõ�point��ѧ���������飻�����NԽ����ܵĲ����Ծ�Խǿ����block�Ŀ����Ծ͵ͣ����ܳ��ֵĶ�BadCase����һ��СID����point��ʱ��ܳ�������������Ķ����������������ھ��޷�������
+多线程实现顺序操作:1.滑动窗口应用  Student.id Student.point       new ArrayList<Student>(int n); 创建线程池 ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(m); 其中m<n 第一次取出n个学生pop到线程池中，到计算完学生point之后就开始滑动学生id划出去多少学生就push进来多少没有得到point的学生进入数组；这里的N越大可能的并发性就越强，被block的可能性就低，可能出现的饿BadCase就是一个小ID计算point的时间很长，其他比他大的都基三晚了这样窗口就无法滑动了
 
 
-21.���ģʽ
-1.������ģʽ(����ֱ��ʵ��������):�򵥹���ģʽ(not 23)���������������󹤳�ģʽ������ģʽ��������ģʽ��ԭ��ģʽ
-2.�ṹ��ģʽ(�����������֯�ɸ���Ľṹ):������ģʽadapter���Ž�ģʽbridge�������ģʽcomponent��װ����ģʽdecorator������ģʽ����Ԫģʽflyweight�ʹ���ģʽproxy
-3.��Ϊģʽ(����ϵͳ��Ķ����ͨ�š����Ƹ���ϵͳ������):����ģʽcommand��������ģʽ��������ģʽ���н���ģʽ������¼ģʽ���۲���ģʽ��״̬ģʽstate������ģʽ��ģ��ģʽ�ͷ�����ģʽ
-���õ����ģʽ:
-1.����ģʽ ֻ��ͨ������.getInstance()(����������Լ�������)�������󣬶�����ͨ�����������ŵ�:���ٴ���Javaʵ��������ϵͳ����������ϵͳ����Javaʵ�����������ں�ʵ��״̬
-2.�򵥹���ģʽ(StaticFactory Method) :�ö�����úͶ��󴴽�����(���󴴽��ڼ򵥹������д���),ȱ�����ڲ�Ʒ�޸�ʱ�򵥹�����Ҳ��Ҫ�޸�
-3.��������(Factory Method)�ͳ��󷽷�(Abstract Method) ����ڼ򵥹���ģʽ�����жϵ��Ƕ��������͹��������(��������ٳ���һ���жϵĹ����൫�Ǻ������ظ�ѭ����)
-4.����ģʽ ����HibernateĬ�������ӳټ��أ���ϵͳ����A����ʱ��A������B����δ�����أ�ֻ�������õ�B��ʱ�Żᱻ���� ����Java��Proxy��InvocationHandlerʵ��������ʱ���ɶ�̬����
-����������MyProxyFactory
+21.设计模式
+1.创建型模式(无需直接实例化对象):简单工厂模式(not 23)、工厂方法、抽象工厂模式、单例模式、生成器模式和原型模式
+2.结构性模式(将多个对象组织成更大的结构):适配器模式adapter、桥接模式bridge、组合器模式component、装饰器模式decorator、门面模式、亨元模式flyweight和代理模式proxy
+3.行为模式(帮助系统间的对象间通信、控制复杂系统的流程):命令模式command、解释器模式、迭代器模式、中介者模式、备忘录模式、观察者模式、状态模式state、策略模式、模板模式和访问中模式
+常用的设计模式:
+1.单例模式 只能通过类名.getInstance()(这个方法是自己创建的)创建对象，而不能通过构造器。优点:减少创建Java实例带来的系统开销，便于系统跟踪Java实例的生命周期和实例状态
+2.简单工厂模式(StaticFactory Method) :让对象调用和对象创建分离(对象创建在简单工厂类中创建),缺陷是在产品修改时简单工厂类也需要修改
+3.工厂方法(Factory Method)和抽象方法(Abstract Method) 相对于简单工厂模式不用判断但是对象调用类和工厂类耦合(这里可以再常见一个判断的工厂类但是好像有重复循环了)
+4.代理模式 例如Hibernate默认启动延迟加载，当系统加载A对象时，A关联的B对象并未被加载，只有真正用到B类时才会被加载 利用Java的Proxy和InvocationHandler实现在运行时生成动态代理
+创建代理类MyProxyFactory
 
-//��ǿ��������
+//增强代理对象
 publci class MyInvokationHandler implements InvocationHandler {
 
 	public void setTarget(Object target) {
 		target = this.target ;
 	}
 
-	//ִ�ж�̬������������з��������ᱻ�滻��ִ�����µ�invoke()����
+	//执行动态代理对象的所有方法，都会被替换成执行如下的invoke()方法
 	public Object invoke(Object proxy,Method method,Object[] args) throws Exception {
 		TxUtil tx = new TxUtil();
 		tx.beginTx();
@@ -920,16 +920,16 @@ publci class MyInvokationHandler implements InvocationHandler {
 	}
 
 }
-//������������
+//创建代理对象
 public class MyProxyFactory() {
 	public static Object getProxy(Object target) {
 		MyInvokationHandler handler = new MyInvokationHandler();
 		handler.setTarget(target);
-		//���ض�̬��������
+		//返回动态代理对象
 		return Proxy.newProxyInstance(target.getClass().getClassLoader(),Target.getClass().getInterfaces(),handler)
 	}
 }
-//������
+//事务类
 public class TxUtil() {
 	public void beginTx() {
 		System.out.println("---start Transaction---")
@@ -940,49 +940,49 @@ public class TxUtil() {
 	}
 }
 
-5.����ģʽ
-ĳ��������Ҫʵ��һ�����ܣ�����������ܵĴ󲿷��Ѿ���ʵ�֣�������ٲ�����Ҫִ�и÷������ܱ�ȷ��������Java��һ�㴫��˷�������һ�����󣬸ö���һ��ʹ��һ�������ڲ�ʵ�����ʵ�����ýӿڳ�Ϊ����ӿ�
-Interface Command: process(int[] tagret)���ڷ�װ������Ϊ
+5.命令模式
+某个方法需要实现一个功能，但是这个功能的大部分已经被实现，这里的少部分需要执行该方法才能被确定；故在Java中一般传入此方法的是一个对象，该对象一般使用一个匿名内部实现类的实例，该接口称为命令接口
+Interface Command: process(int[] tagret)用于封装处理行为
 
 Class ProcessArray: each(int[] target,Command cmd) {cmd.process(target)}
 
 Class TestCommand {
 	ProcessArray pa = new ProcessArray();
 	int[] target = {3,-4,6,4}
-	//��һ�ξ��崦��
+	//第一次具体处理
 	pa.each(target,new Command() {
-		//��дprocess����
+		//重写process方法
 		..
 	})
-	//�ڶ��ξ��崦��
+	//第二次具体处理
 	pa.each(target,new Command() {
-		//��дprocess����
+		//重写process方法
 		..
 	})
 }
 
-6.����ģʽStrategy
-���ڷ�װϵ���㷨��Context�У��ͻ��˿�������ѡ���㷨��Ҳ������ContextΪ�ͻ�ѡ����ѵ��㷨
+6.策略模式Strategy
+用于封装系列算法在Context中，客户端可以自由选择算法，也可以让Context为客户选择最佳的算法
 Interface DiscountStrategy {double getDiscount(double originalPrice)}
 
 CLass NormalDiscount implements DiscountStrategy {double getDiscount(double originalPrice){return originalPrice*0.7}}
 Class Vip implements DiscountStrategy {double getDiscount(double originalPrice){return originalPrice*0.3}}
 
-//���Զ���
+//策略定义
 Class DiscountContext {
 	private DiscountStrategy strategy;
 
-	//�ù��������봫��DiscountStrategy
+	//用构造器闯入传入DiscountStrategy
 	public DiscountContext(DiscountStrategy strategy) {
 		this.strategy = strategy;
 	}
 
-	//�ṩ�����趨����
+	//提供策略设定方法
 	public void setStrategy(DiscountStrategy strategy) {
 		this.strategy = strategy;
 	}
 
-	//��ò�������Ҫ�õ���ֵ
+	//获得策略中想要得到的值
 	public static double getDiscountPrice(double price) {
 		if(strategy == null) {
 			strategy =  ew NormalDiscount();
@@ -992,30 +992,30 @@ Class DiscountContext {
 	}
 }
 
-//����
-//��������
+//测试
+//正常打折
 double normal = 36.23; DiscountContext sc = new DiscountContext(null); sc.getDiscountPrice(normal);
-double vip = 50.0; DiscountContext sc1 = new DiscountContext().setStrategy(new Vip()); sc1.getDiscountPrice(vip);�������ʹ�������ļ����ͻ��˺Ͳ�ͬ���۲�������Ϸ���
+double vip = 50.0; DiscountContext sc1 = new DiscountContext().setStrategy(new Vip()); sc1.getDiscountPrice(vip);这里可以使用配置文件将客户端和不同打折策略类耦合分离
 
 
-7.����ģʽFacade
-��һ�鸴�ӵ����װ��һ���������ⲿ�ӿ�
-// ���δ�����������ʵ��
+7.门面模式Facade
+将一组复杂的类包装到一个剪但的外部接口
+// 依次创建三个部门实例
 Payment pay = new PaymentImpl();
 Cook cook = new CookImpl();
 Waiter waiter = new WaiterImpl();
-// ���ε�����������ʵ���ķ�����ʵ���ò͹���
+// 依次调用三个部门实例的方法来实现用餐功能
 String food = pay.pay();
 food = cook.cook(food);
 waiter.serve(food);
 -->
 publicclass Facade {
-    // ���屻Facade��װ����������
+    // 定义被Facade封装的三个部门
     Payment pay;
     Cook cook;
     Waiter waiter;
  
-    // ������
+    // 构造器
     public Facade() {
        this.pay = new PaymentImpl();
        this.cook = new CookImpl();
@@ -1023,7 +1023,7 @@ publicclass Facade {
     }
  
     publicvoid serveFood() {
-       // ���ε����������ŵķ�������װ��һ��serveFood()����
+       // 依次调用三个部门的方法，封装成一个serveFood()方法
        String food = pay.pay();
        food = cook.cook(food);
        waiter.serve(food);
@@ -1032,27 +1032,27 @@ publicclass Facade {
 
 Test Facade f = new Facade();f.serveFood();
 
-8.�Ž�ģʽBridge
-����Dao ��DaoImpl
-//��ζ�ӿ�
+8.桥接模式Bridge
+例如Dao 和DaoImpl
+//口味接口
 Interface Peppery {String style();}
 
 Class pepperyStyle implements Peppery{
 	public String style() {
-		..��
+		..辣
 	}
 }
 
 Class plainStyle implements Peppery{
 	public String style() {
-		..�嵭
+		..清淡
 	}
 }
 
 public abstract class AbstractNoodle {
-	//���Perppery���������ڽ���ά�ȵı仯��������
+	//组合Perppery变量，用于将该维度的变化独立出来
 	protected Peppery style;
-    //ÿ��Noodle�������һ��Peppery����
+    //每份Noodle必须组合一个Peppery对象
     public AbstractNoodle(Peppery style)
     {
        this.style = style;
@@ -1066,37 +1066,37 @@ public Class PorkyNoodle extends AbstractNoodle {
 	}
 	publicvoid eat()
     {
-       System.out.println("����һ���������������������"
+       System.out.println("这是一碗稍嫌油腻的猪肉面条。"
            + super.style.style());
     }
 }
 
-BeefMoodle ţ��������
+BeefMoodle 牛肉面类似
 
-Test AbstractNoodle noodle1 = new BeefMoodle(new pepperyStyle); noodle1.eat()�õ�����������
-	AbstractNoodle noodle1 = new PorkyNoodle(new pepperyStyle); noodle1.eat()�õ�����ţ����
+Test AbstractNoodle noodle1 = new BeefMoodle(new pepperyStyle); noodle1.eat()得到辣油猪肉面
+	AbstractNoodle noodle1 = new PorkyNoodle(new pepperyStyle); noodle1.eat()得到辣油牛肉面
 
 
 
-9.�۲���ģʽ
-һ�����⣺������һ���ӿڣ��ýӿڹ涨�˾���������Ҫʵ�ֵķ������������ӡ�ɾ���۲����Լ�֪ͨ�۲��߸������ݵķ�����
-�����۲��ߣ��۲���Ҳ��һ���ӿڣ��ýӿڹ涨�˾���۲��������������ݵķ�����
+9.观察者模式
+一、主题：主题是一个接口，该接口规定了具体主题需要实现的方法，比如添加、删除观察者以及通知观察者更新数据的方法。
+二、观察者：观察者也是一个接口，该接口规定了具体观察者用来更新数据的方法。
 Interface Observer{void update(Observerable o,Object args)}
-�����������⣺����������һ��ʵ������ӿڵ��࣬��������˻ᾭ�������仯�����ݡ����һ���һ�����ϣ��ü��ϴ�ŵ��ǹ۲��ߵ����á�
-�ģ�����۲��ߣ�����۲�����ʵ���˹۲��߽ӿڵ�һ���ࡣ����۲��߰����п��Դ�ž����������õ�����ӿڱ������Ա����۲����þ������⽫�Լ����������ӵ���������ļ����У����Լ���Ϊ���Ĺ۲��ߣ�����������������⽫�Լ��Ӿ�������ļ�����ɾ����ʹ�Լ�����ʱ���Ĺ۲���
+三、具体主题：具体主题是一个实现主题接口的类，该类包含了会经常发生变化的数据。而且还有一个集合，该集合存放的是观察者的引用。
+四：具体观察者：具体观察者是实现了观察者接口的一个类。具体观察者包含有可以存放具体主题引用的主题接口变量，以便具体观察者让具体主题将自己的引用添加到具体主题的集合中，让自己成为它的观察者，或者让这个具体主题将自己从具体主题的集合中删除，使自己不在时它的观察者
 
-һ�Զ��������ϵ������۲���Observer�۲�һ���������subject������䷢���仯��ϵͳ�ܹ�֪ͨ���й۲���
-����(Interface) --> ��������(ArrayList<�۲���>(index)��ɾ��֪ͨ�۲���) -->  <--�۲���(Interface) --> ����۲���
+一对多的依赖关系，多个观察者Observer观察一个主题对象subject，如果其发生变化，系统能够通知所有观察者
+主题(Interface) --> 具体主题(ArrayList<观察者>(index)增删、通知观察者) -->  <--观察者(Interface) --> 具体观察者
 
-�۲��߽ӿ�
+观察者接口
 public Interface Observer {
 	void update(Observable o,Object arg);
 }
 
-Observable Ŀ�������
-������ͽӿ�:��������abstract���Σ��ӿ���Interface���Σ��������п����зǳ��󷽷��������ݵĳ�Ա���������ӿڱ������еķ������ǳ���ģ��ӿ��е����ݳ�Ա�����ǳ���
+Observable 目标或主题
+抽象类和接口:抽象类用abstract修饰，接口用Interface修饰，抽象类中可以有非抽象方法和有数据的成员变量，而接口必须所有的方法都是抽象的，接口中的数据成员必须是常量
 public abstract class Observable{
-	//�������еĹ۲��ߣ���Ϊ��������¼������
+	//保存所有的观察者，作为本对象的事件检测器
 	List<Observer> observers = new ArrayList<Observer>();
 
 	public void registObserver(Observer o) {
@@ -1108,7 +1108,7 @@ public abstract class Observable{
 	}
 
 	public void notifyObservers(Object value) {
-		//����ע�ᵽ�ñ��۲����ϵ����й۲���
+		//遍历注册到该被观察者上的所有观察者
 		for(Iterator it = observers.iterator();it.hasNext();) {
 			Observer o = (Observer)it.next();
 			o.update(this,value);
@@ -1116,7 +1116,7 @@ public abstract class Observable{
 	}
 }
 
-Product���۲��� ��������
+Product被观察者 具体主题
 public class Product extends Observerable {
 	private String name;
 	private double price;
@@ -1133,7 +1133,7 @@ public class Product extends Observerable {
    		return name;
 	}
 
-	//��������ô���Ե�ʱ����ô���ע�����еĹ۲���
+	//在设置那么属性的时候调用触发注册所有的观察者
 	public void setName(String name) {
    		this.name = name;
    		notifyObservers(name);
@@ -1143,55 +1143,55 @@ public class Product extends Observerable {
 public class NameObserver implements Observer {
 	public void update(Observable o,Object arg) {
 		if (arg instanceof String) {
-           // ��Ʒ���Ƹı�ֵ��name��
+           // 产品名称改变值在name中
            String name = (String) arg;
-           // ����һ��JFrame��������ʾ���۲�����״̬�ı�
-           JFrame f = new JFrame("�۲���");
-           JLabel l = new JLabel("���Ƹı�Ϊ��" + name);
+           // 启动一个JFrame窗口来显示被观察对象的状态改变
+           JFrame f = new JFrame("观察者");
+           JLabel l = new JLabel("名称改变为：" + name);
            f.add(l);
            f.pack();
            f.setVisible(true);
-           System.out.println("���ƹ۲���:" + o + "��Ʒ�����Ѿ��ı�Ϊ: " + name);
+           System.out.println("名称观察者:" + o + "物品名称已经改变为: " + name);
        }
 	}
 }
 
 public class PriceObserver implements Observer {
-    // ʵ�ֹ۲��߱���ʵ�ֵ�update����
+    // 实现观察者必须实现的update方法
     public void update(Observable o, Object arg) {
        if (arg instanceof Double) {
-           System.out.println("�۸�۲���:" + o + "��Ʒ�۸��Ѿ��ı�Ϊ: " + arg);
+           System.out.println("价格观察者:" + o + "物品价格已经改变为: " + arg);
        }
     }
 }
 
 public class Test{
 	public static void main(String[] args) {
-       // ����һ�����۲��߶���
-       Product p = new Product("���ӻ�", 176);
-       // ���������۲��߶���
+       // 创建一个被观察者对象
+       Product p = new Product("电视机", 176);
+       // 创建两个观察者对象
        NameObserver no = new NameObserver();
        PriceObserver po = new PriceObserver();
-       // �򱻹۲������ע�������۲��߶���
+       // 向被观察对象上注册两个观察者对象
        p.registObserver(no);
        p.registObserver(po);
-       // �������setter�������ı�Product��name��price����
-       p.setName("����");
+       // 程序调用setter方法来改变Product的name和price属性
+       p.setName("书桌");
        p.setPrice(345f);
     }
 }
 
-22.�¼���������
-���¼�Դ:������һ��button(��Ȼ���button��Ҫע��listener�Զ��¼���Ӧ)
-�¼�����:һ��̳�java.util.EventObject ��װ���¼�Դ������¼������Ϣ �������¼�Դ���¼��������д�������
-�¼�������:ʵ��java.util.EventListener�ӿ� ��Ҫע�����¼�Դ�ϣ������¼�
+22.事件监听机制
+由事件源:例如点击一个button(当然这个button需要注册listener以对事件响应)
+事件对象:一般继承java.util.EventObject 封装了事件源对象和事件相关信息 用于在事件源和事件监听器中传递数据
+事件监听器:实现java.util.EventListener接口 需要注册在事件源上，处理事件
 
-�¼���������ʵ�ֻ���:
-�¼��������ƺ͹۲���ģʽ:���۲��߼����������൱���¼�Դ��ִ���߼�ʱ֪ͨObserver��update(���ݱ��۲���,����) �¼��������notifyObservers(String)��String����
-ʵ��:
+事件监听器的实现机制:
+事件监听机制和观察者模式:被观察者即具体主题相当于事件源，执行逻辑时通知Observer的update(传递被观察者,参数) 事件对象就是notifyObservers(String)的String对象
+实例:
 public class DoorEvent extends EventObject
 {
-	private String doorState = "";	// ��ʾ�ŵ�״̬���С������͡��ء�����
+	private String doorState = "";	// 表示门的状态，有“开”和“关”两种
 	public DoorEvent(Object source)
 	{
 		super(source);
@@ -1209,22 +1209,22 @@ public class DoorEvent extends EventObject
 }
  
 
-IDoorListener���¼���������event listener��
+IDoorListener：事件监听器（event listener）
 
 public interface IDoorListener extends EventListener
 {
-	//EventListener�������¼��������ӿڱ�����չ�ı�ǽӿڡ���Ϊ���������ݵı�ǽӿڡ�     
-    //�����¼����������������Լ��������£�
+	//EventListener是所有事件侦听器接口必须扩展的标记接口、因为它是无内容的标记接口、     
+    //所以事件处理方法由我们自己声明如下：
 	public void dealDoorEvent(DoorEvent event);
 }
  
 
-FrontDoorListener���¼���������event listener��
+FrontDoorListener：事件监听器（event listener）
 
 public class FrontDoorListener implements IDoorListener
 {
 	/**
-	 * ������Ŀ��ţ����Ŷ���
+	 * 做具体的开门，关门动作
 	 * @param event 
 	 */
 	@Override
@@ -1232,17 +1232,17 @@ public class FrontDoorListener implements IDoorListener
 	{
 		if (event.getDoorState()!=null && event.getDoorState().equals("open"))
 		{
-			System.out.println("ǰ�Ŵ�");
+			System.out.println("前门打开");
 		}
 		else
 		{
-			System.out.println("ǰ�Źر�");
+			System.out.println("前门关闭");
 		}
 	}	
 }
  
 
-DoorManager���¼�Դ��event source��
+DoorManager：事件源（event source）
 
 public class DoorManager
 {
@@ -1279,7 +1279,7 @@ public class DoorManager
 	}
 	
 	/**
-	 * ģ�⿪���¼�
+	 * 模拟开门事件
 	 */
 	public void fireOpend()
 	{
@@ -1295,14 +1295,14 @@ public class DoorManager
 }
  
 
-�����ࣺ
+测试类：
 
 public class TestMain
 {
 	public static void main(String[] args)
 	{
 		DoorManager doorManager = new DoorManager();
-		// ���Ӽ�����
+		// 添加监听器
 		doorManager.addDoorListener(new FrontDoorListener());
 		doorManager.addDoorListener(new IDoorListener()
 		{
@@ -1311,37 +1311,222 @@ public class TestMain
 			{
 				if (event.getDoorState() != null && event.getDoorState().equals("open"))
 				{
-					System.out.println("���Ŵ򿪣���ʾ������");
+					System.out.println("后门打开，警示灯亮起");
 				}
 				else
 				{
-					System.out.println("���Źرգ���ʾ��Ϩ��");
+					System.out.println("后门关闭，警示灯熄灭");
 				}
 			}
 		});
 		
-		// ģ���¼�
-		System.out.println("ģ���Ŵ��¼�");
+		// 模拟事件
+		System.out.println("模拟门打开事件");
 		doorManager.fireOpend();
 		
-		System.out.println("ģ���Źر��¼�");
+		System.out.println("模拟门关闭事件");
 		DoorEvent doorEvent = new DoorEvent(doorManager);
 		doorEvent.setDoorState("close");
 		doorManager.notifyDoors(doorEvent);
 	}
 }
-��������
+输出结果：
 
-ģ���Ŵ��¼� 
-ǰ�Ŵ� 
-���Ŵ򿪣���ʾ������ 
-ģ���Źر��¼� 
-ǰ�Źر� 
-���Źرգ���ʾ��Ϩ��
+模拟门打开事件 
+前门打开 
+后门打开，警示灯亮起 
+模拟门关闭事件 
+前门关闭 
+后门关闭，警示灯熄灭
 23. GUI
 
-Frame f = new Frame("������������");//һ�㲻��ʾ����JFrame
-f.setTitle("����")
-f.setSize(int weight,int height);  -->���·���ӡ�ϲ�Ϊs.setBounds(int x,int y,int weight,int height);
-f.setLocation(int x,int y);//���Ͻ����� -->
-f.setVisable();���ÿɼ�
+Frame f = new Frame("窗体对象的名称");//一般不显示或者JFrame
+f.setTitle("标题")
+f.setSize(int weight,int height);  -->与下方刻印合并为s.setBounds(int x,int y,int weight,int height);
+f.setLocation(int x,int y);//左上角坐标 -->
+
+//设置布局为流式布局
+f.setLayout(new FlowLayout());
+
+//添加标签
+Label label =  new Label("");
+f.add(label);
+
+Button bu = new Button("");
+bu.setSize(20,10);
+f.add(bu);
+bu.setActionListerer(new ActionListener() {//对按钮添加事件
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		..
+	}
+});
+bu.addMouseListener(new MouseAdapter() {//对鼠标移动添加事件
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		//f.setBackground(Color.red);
+	}
+});
+bu.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseExited(MouseEvent e) {
+		..
+	}
+});
+
+//创建文本框
+final TextField tf = new TextField(20);
+f.add(tf);
+
+//给文本框添加事件
+tf.addKeyListener(new KeyAdapter() {
+	@Override
+	public void keyPressed(KeyEvent e) {
+		char ch = e.getKeyChar();//获取文本框中的字符
+	}
+});
+
+//设置文本域
+final TextArea ta = new TextArea(10,40);
+f.add(ta);
+
+//设置窗体可关闭
+f.addWindowListener(new WindowAdapter() {
+	@Override
+	public void windowClosing(WindowEvent e) {
+		System.exit(0);
+	}
+});
+
+//多级菜单
+MenuBar mb = new MenuBar();
+Menu m1 = new Menu("文件");
+Menu m2 = new Menu("更改名称");
+// 创建菜单项
+final MenuItem mi1 = new MenuItem("好好学习");
+final MenuItem mi2 = new MenuItem("天天向上");
+MenuItem mi3 = new MenuItem("恢复标题");
+MenuItem mi4 = new MenuItem("打开记事本");
+MenuItem mi5 = new MenuItem("退出系统");
+
+// 谁添加谁呢
+m2.add(mi1);
+m2.add(mi2);
+m2.add(mi3);
+
+m1.add(m2);
+m1.add(mi4);
+m1.add(mi5);
+
+mb.add(m1);;
+
+f.setMenuBar(mb);
+
+// 设置菜单栏
+f.setMenuBar(mb);
+
+// 设置窗体关闭
+f.addWindowListener(new WindowAdapter() {
+	@Override
+	public void windowClosing(WindowEvent e) {
+		System.exit(0);
+	}
+});
+
+mi1.addActionListener(new ActionListener() {
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		f.setTitle(mi1.getLabel());
+	}
+});
+
+mi2.addActionListener(new ActionListener() {
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		f.setTitle(mi2.getLabel());
+	}
+});
+
+mi3.addActionListener(new ActionListener() {
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		f.setTitle(name);
+	}
+});
+
+mi4.addActionListener(new ActionListener() {
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Runtime t = Runtime.getRuntime();
+		try {
+			t.exec("notepad");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+});
+
+mi5.addActionListener(new ActionListener() {
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		System.exit(0);
+	}
+});
+f.setVisable();设置可见
+
+24.Java网络编程
+
+一个域名只能对应一个IP地址，一个IP地址可以对应多个域名，就像通讯录和号码；在网络传输中都是以IP地址作为地址标识，
+域名-->DNS域名解析(DNS服务器)-->IP ; 为了让一个计算机可以同时运行多个网络程序，就引入了另外一个概念——端口(port)在0-65535之间，每个端口唯一的对应一个网络程序
+网络通讯基于“请求-响应”模型，问答机制
+ 在网络通讯中，第一次主动发起通讯的程序被称作客户端(Client)程序，简称客户端，而在第一次通讯中等待连接的程序被称作服务器端(Server)程序，简称服务器。一旦通讯建立，则客户端和服务器端完全一样，没有本质的区别
+
+C/S模型:在开发时需要分别开发客户端和服务器端,通用性差,在实际维护时，也需要维护专门的客户端和服务器端，维护的压力比较大
+B(Browser)/S模型:没有必要使用专用的客户端，而需要使用通用的客户端，例如浏览器;优势在于开发的压力比较小，缺点是浏览器的限制比较大，表现力不强，无法进行系统级操作等
+P2P:应该一个P2P程序中既包含客户端程序，也包含服务器端程序
+**协议(Protocol):网络中传输的数据格式在网络编程中就被称作协议
+	如何编写协议?:只要按照这种协议格式能够生成唯一的编码，按照该编码可以唯一的解析出发送数据的内容即可。也正因为各个网络程序之间协议格式的不同，所以才导致了客户端程序都是专用的结构。
+
+网络通信方式:
+	TCP(Transmission Control Protocol):类似于接打电话，在网络通讯的时候需要设置专门的虚拟连接进行可靠的数据传输，如果发送失败客户端会自动重新发送该数据
+	UDP(User Datagram Protocol用户数据报协议):类似于发送短信，不需要创建专门的虚拟连接纯属不是太可靠但是比TCP快，TCP一般传输的数据比UDP大，因为TCP中传输的数据要建立专用的虚拟连接以及确定传输是否正确
+网络编程步骤:
+	客户端网络编程步骤:
+		1.建立连接 指定需要连接的服务器IP地址和端口
+		2.交换数据 交换数据严格按照请求响应模型进行，由客户端发送一个请求数据到服务器，服务器反馈一个响应数据给客户端，如果客户端不发送请求则服务器端就不响应，可多次交换
+		3.关闭网络连接 释放程序占用端口、内存等资源
+		由于网络编程是比较耗时的操作，所以一般开启专门的现场进行网络通讯。
+
+	服务器端网络编程步骤:
+		1.监听端口
+		2.获得连接 一般在服务器端获得连接会开启一个专门的线程处理该连接，使每一个连接诶都用独立的线程实现
+		3.交换数据
+		4.关闭连接
+
+TCP编程:客户端java.net.Socket 服务器端java.net.ServerSocket
+main{
+	Socket socket = null;
+	InputStream is = null;
+	OutputStream os = null;
+
+	//设置IP和端口
+	String serverIp = "127.0.0.1";
+	int port = 10000;
+
+	String message = "from Client";
+	try{
+		Socket socket = new Socket(serverIp,port);
+
+		os = socket.getOutputStream();
+		
+	}catch(Exception e) {
+		e.printStackTrace();
+	}
+}
+
