@@ -217,7 +217,7 @@ transferFrom可以将数据从源通道反传输到FileChannel中 transferTo将�
 
 同步与异步，阻塞和非阻塞？
 同步synchronous-->阻塞 调用发出后只有得到返回，自己才返回
-异步asynchronous-->非阻塞 调用发出后不反悔就自己返回
+异步asynchronous-->非阻塞 调用发出后不返回就自己返回
 
 多线程一般使用线程池可以让线程的创建和回收成本较低,但是线程创建成本高，占用内存大，线程切换成本偏高，在连接数很大的时候就需要抛弃BIO(Blocking)
 在BIO中socket.read()如果TCP RecvBuffer中没有数据，会一直阻塞而对于NIO如果有数据会将数据由网卡读取到内存中，如果没有数据返回0不会阻塞；而AIO是网卡到内存过程也是异步的
@@ -1976,13 +1976,22 @@ public class LogicThread extends Thread{
 	}
 }
 
+网络协议:
+
+网络协议设计
+	客户端: 例如设定约定数字0代表+，1代表减，2代表乘，3代表除 “12，432，0”
+	服务端: 需要设定反馈的数据格式 例如:如果格式正确返回结果，错误返回字符串"错误"
+
+客户端程序需要处理:
+	1.客户端发送数据格式生成
+	2.服务端反馈数据格式解析
+服务端程序需要处理:
+	1.服务端反馈数据格式生成
+	2.客户端发送数据格式解析
+常见的数据格式:http(Hyper Text Transfer Protocol超文本传输协议)、FTP(File Transfer Protocol文件传输协议)、SMTP(Simple Mail Transfer Protocol简单邮件传输协议)
 
 
-
-
-
-
-
+25.反射
 
 
 
