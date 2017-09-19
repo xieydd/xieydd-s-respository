@@ -1992,6 +1992,78 @@ public class LogicThread extends Thread{
 
 
 25.反射
+程序访问，检测，修改它本身的状态或行为的一种能力。根据自身的状态和结果，调整或修改应用描述的行为的状态和相关的语义
+反射机制的作用:.class --> .java反编译;通过反射访问Java对象的构造方法、属性、方法
+java.lang.Class;                
+java.lang.reflect.Constructor;
+java.lang.reflect.Field;        
+java.lang.reflect.Method;
+java.lang.reflect.Modifier;
+反射机制获得类的三种方法: Class1 = Class.forName(""); Class2 = Student.class; Student s = new Student();Class3 = s.getClass;
+获得对象: Student s = Class.forName("Student").newInstance();
+获取属性:
+	获取所有属性:
+	Class c = Class.forName("JavaBase.Student");
+	Field[] fs = c.getDeclaredFields();
+
+	StringBuffer sb = new StringBuffer();
+	//获得方法的
+	sb.append(Modify.toString(c.getModifiers())+"class"+c.getSimpleName()+"\n");
+	Field[] fs = c.getDeclaredFields();
+	//这里的饿属性是这个类
+	for (Field field : fs) {
+		//获得属性的修饰符如public static
+		sb.append(Modifier.toString(c.getModifiers())+" ");
+		//获得属性的类型的名称
+		sb.append(field.getType().getName());
+		//获得属性的名称
+		sb.append(field.getName());
+	}
+
+
+	获取部分属性:
+		Class c = Class.forName("JavaBase.Student");
+		Field id = c.getDeclaredField("id");
+		//实例化这个类
+		Object o = c.instance();
+		id.setAccessible(true);//使用反射机制可以打破封装性，但是这样使Java属性不安全
+		id.set(o,"100");//相当于o.set("100")
+
+获取所有方法:getDeclaredMethods();
+获取方法的返回类型:getReturnType()
+获取方法的参数:getParameterTypes()
+获取特定的方法:getDeclaredMethod("方法名",参数类型.class,,)
+
+获得构造方法关键字:getDeclaredConstructors()
+获得特定:getDeclaredConstructor(参数类型.class,...)
+
+获得父类: getSuperClass()
+获得接口:getInterfaces()
+
+在抽象工厂中使用反射更加方便的读取数据库连接字符串，和配置文件相配合更加灵活
+ <configuration>  
+	<appSettings>  
+		<add     key=""  value=""/>  
+	</appSettings>  
+</configuration> 
+assembly.load("当前程序集的名称").CreateInstance("当前命名空间名称".要实例化的类名);
+可以更好的变换数据库
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
