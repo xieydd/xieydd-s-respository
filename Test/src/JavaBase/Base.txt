@@ -1711,22 +1711,22 @@ class SimpleUDPClient{
 	main{
 		String s = "xieydd";
 		String serverhost = "127.0.0.1";
-		int port = 10001;
+		int port = 10010;
 		DatagramSocket ds = null; //连接对象
 		DatagramPacket sendDp = null;//发送数据包对象
 		DatagramPacket receiveDp = null;//接受数据包对象
 		int i = 1;
 		try{
+			//建立连接
+			ds = new DatagramSocket();
+			//初始化发送包对象
+			InetAddress address = InetAddress.getByName(serverhost);
 			while(true) {
-				//建立连接
-				ds = new DatagramSocket();
+
 				//初始化发送数据
 				Date d = new Date();
 				String content = d.toString();//将当前时间转换成字符串
 				byte[] data = content.getBytes();
-
-				//初始化发送包对象
-				InetAddress address = InetAddress.getByName(serverhost);
 				sendDp = new DatagramPacket(data,data.length,address,port);
 
 				//发送
@@ -1766,9 +1766,11 @@ class SimpleUDPServer{
 		try{
 			ds = new DatagramSocket(port);
 			System.out.println("服务器端已启动："+i);
+			//初始化接收数据
+			byte[] b = new byte[1024];
+				
+				
 			while(true) {
-				//初始化接收数据
-				byte[] b = new byte[1024];
 				receiveDp = new DatagramPacket(b,b.length);
 				ds.receive(receiveDp);
 
@@ -1803,6 +1805,176 @@ class SimpleUDPServer{
 }
 
 
+改造1:
+UDP实现多线程客户端实现（上面的只能叫做复用不能叫做多线程，需要单独建立线程）
+class MulUDPClient{
+	main{
+		String s = "xieydd";
+		String serverhost = "127.0.0.1";
+		int port = 10010;
+		DatagramSocket ds = null; //连接对象
+		DatagramPacket sendDp = null;//发送数据包对象
+		DatagramPacket receiveDp = null;//接受数据包对象
+		int i = 1;
+		try{
+				//建立连接
+				ds = new DatagramSocket();
+				//初始化发送包对象
+				InetAddress address = InetAddress.getByName(serverhost);
+			while(true) {
+				//初始化发送数据
+				Date d = new Date();
+				String content = d.toString();//将当前时间转换成字符串
+				byte[] data = content.getBytes();
+				sendDp = new DatagramPacket(data,data.length,address,port);
+
+				//发送
+				ds.send(sendDp);
+
+				//初始化接受数据
+				byte[] b = new byte[1024];
+				receiveDp = new DatagramPacket(b,b.length);
+				//接收
+				ds.receive(receiveDp);
+				//读取反馈内容，并输出
+		        byte[] response = receiveDp.getData();
+		        int len = receiveDp.getLength();
+		        String sb = new String(response,0,len);
+		        System.out.println("服务器端"+i+"反馈为：" + sb);
+				Thread.sleep(1000);
+				i++;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+				ds.close();
+			}catch(Exception e) {}
+		}
+	}
+}
+
+
+由于UDP数据传输过程中可能存在丢失，所以在运行该程序时可能会出现程序阻塞的情况。如果需要避免该问题，可以将客户端的网络发送部分也修改成线程实现
+class MulUDPClient2{
+	main{
+		String s = "xieydd";
+		String serverhost = "127.0.0.1";
+		int port = 10010;
+		DatagramSocket ds = null; //连接对象
+		DatagramPacket sendDp = null;//发送数据包对象
+		DatagramPacket receiveDp = null;//接受数据包对象
+		int i = 1;
+		try{
+				//建立连接
+				ds = new DatagramSocket();
+				//初始化发送包对象
+				InetAddress address = InetAddress.getByName(serverhost);
+			while(true) {
+				//初始化发送数据
+				Date d = new Date();
+				String content = d.toString();//将当前时间转换成字符串
+				byte[] data = content.getBytes();
+				byte[] b = new byte[1024];
+				receiveDp = new DatagramPacket(b,b.length);
+				sendDp = new DatagramPacket(data,data.length,address,port);
+				new LogicThreadClient(ds,sendDp,receiveDp);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+				ds.close();
+			}catch(Exception e) {}
+		}
+	}
+}
+
+public class LogicThreadClient extends Thread{
+	DatagramSocket ds;
+	DatagramPacket sendDp;
+	DatagramPacket receiveDp;
+	InetAddress address;
+	int port;
+	public LogicThreadClient(DatagramSocket ds,DatagramPacket sendDp,DatagramPacket receiveDp){
+		this.ds = ds;
+		this.sendDp = sendDp;
+		this.receiveDp = receiveDp;
+		start();
+	}
+
+	public void run() {
+
+		try{
+			//发送信息
+			ds.send(sendDp);
+			byte[] response = ds.receive(receiveDp).getData();
+			String sb = new String(response,0,response.length);
+			System.out.println("服务器端"+i+"反馈为：" + sb);
+			Thread.sleep(1000);
+			i++;
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+}
+
+UDP实现多线程客户端的服务端实现
+class MulUDPServer {
+	main{
+		DatagramSocket ds;
+		DatagramPacket receiveDp;
+		final int port = 10010;
+		byte[] b = new byte[1024];
+		receiveDp = new DatagramPacket(b,b.length); 
+
+		try {
+			ds = new DatagramSocket(port);
+			System.out.println("服务器端已经启动");
+			while(true) {
+				ds.receive(receiveDp);
+
+				//启动线程处理数据包
+				new LogicThread(ds,receiveDp);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+}
+
+public class LogicThread extends Thread{
+
+	DatagramSocket ds;
+	DatagramPacket dp;
+	public LogicThread(DatagramSocket ds,DatagramPacket dp){
+		this.ds = ds;
+		this.dp = dp;
+		start();
+	}
+
+	public void run() {
+
+		try{
+			byte[] b = dp.getData();
+			int len = b.length;
+			InetAddress clientAddress = dp.getAddress();
+			int clientPort = dp.getPort();
+			//输出,对得到的信息进行处理
+			System.out.println("客户端IP：" + clientAddress.getHostAddress());
+			System.out.println("客户端端口号：" + clientPort);
+			System.out.println("客户端发送内容：" + new String(b,0,len));
+
+			//反馈信息
+			byte[] returnByte = "OK".getBytes();
+			DatagramPacket sendDp = new DatagramPacket(b,b.length,clientAddress,clientPort);
+			ds.send(sendDp);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+}
 
 
 
