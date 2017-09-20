@@ -149,13 +149,13 @@ getPath()得到相对路径  getAbsolutePath()得到绝对路径 getModified()�
 18.IO 主动，输出即写，读取即读;注意流的回收一般在try catch finally中的finally中执行.close()
 -->字节流 OutputStream InputStream 
 	--》 xxxOutputStream(File.、Buffered.高效) ..实现上面的抽象类的子类xxx对应的是操作对象,例如File writer(xxx)注意里面是字节会自动转换 其中的换行操作同样需要.getBytes()转换成字节，Windows为\r\n linux为\n mac为\r;操作中文会出乱码;指定编码和解码的类型 InputStreamReader(new FileInputStream(""),"UTF-8")
-	--》xxxInputStream byte[] bys = new byte[]; int len =0; while((len = fis.read(bys))!=-1) {System.out.println(new String(bys,0,len))} fis.close();
+	--》xxxInputStream byte[] bys = new byte[1024]; int len =0; while((len = fis.read(bys))!=-1) {System.out.println(new String(bys,0,len))} fis.close();
 	--》DataInputStream(InputStream in)数据输入流一般保存位.dat文件和文本文件区分开来
 	
 -->字符流        Writer    Reader
 	--》OutputStreamWriter write(int char[] char[],0,len String String,0,n) 注意在写的时候需要flush()刷新缓存区才能写到;flush()和close()的区别:flush只是刷新缓存区，刷新后的流对象还可以继续使用，而close()方法先刷新缓冲区再关闭流对象，不能使用
 	--》InputStreamReader char[] chs = new char[1024];
-	--》FIleReader = FileInputStream + 编码表(GBK)
+	--》FileReader = FileInputStream + 编码表(GBK)
 	--》BufferedWriter new BufferedWriter(new FileWriter("path"));
 	--》BufferedReader 除了char[] chs = new char[1024];还有读取的特殊方法newline()根据系统换行符string line = null;while((BUfferedReader.readLine())!=-1){}
 		--》LineNumberReader getLineNumber()获得当前行号  setLineNumber(int lineNumber)
@@ -174,18 +174,57 @@ Properties 是一个Map集合 set/getProperty stringPropertyNames获取所有键
 IO流是阻塞的例如一个线程调用read或者write需要完全写入或者读取才能继续
 
 
-19.NIO IO面对流，NIO面向缓冲区，NIO为非阻塞
+19.NIO IO面对流，NIO面向缓冲区，NIO为非阻塞(当某通道没有读取到数据或者没有要写的对象的时候不会线程阻塞，该线程会做其他事情)
+IO读取字节或字符之后没有缓存，所以不能前后移动流中的数据
+NIO可以前后动在缓存区中的数据，但是要保证缓存区中的数据是你要处理的数据，还要保证当更多的数据进入缓存中时不会覆盖缓存区中未处理的数据
 http://www.importnew.com/19816.html
-Channel 
+Channel
+由于NIO是非阻塞的，所以一个线程可以管理多个Channel
+IO与NIO:
+//采用FileInputStream读取文件内容
+IO{
+	InputStream is = null;
+	try{
+		is = new BufferedInputStream(new FileInputStream("a.txt"));
+		byte[] bys = new byte[1024];
+
+		while((len = is.read(bys))!=-1){
+			...
+		}
+
+	}catch(IOException e) {
+		e.printStackTrace();
+	}finally{
+		try{
+			if(is != null) {
+			is.close();
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+NIO{
+	RandomAccessFile aFile = null;
+	try{
+		aFile = new RandomAccessFile("a.txt","rw");
+		FileChannel fileChannel = aFile.getChannel();
+		ByteBuffer buf = ByteBuffer.allocate(1024);
+	}
+}
+
+
+
 -->FileChannel  IO FileChannel fileChannel = IO.getChannel()
 -->DatagramChannel UDP 发送和接受的是包
--->SocketChannel TCP(server和client) channel.configureBlocking(false)返回值表明所请求操作完成的进度,如ServerSocketChannel调用accept()如果有连接请求返回SocketChannel否则返回null
+-->SocketChannel TCP(client) channel.configureBlocking(false)返回值表明所请求操作完成的进度,如ServerSocketChannel调用accept()如果有连接请求返回SocketChannel否则返回null
 client
 打开:socketChannel = SocketChannel.open();socketChannel.connect(new InetSocketAddress("ip",8080))
 关闭:socketChannel.close()
 读取中:非阻塞模式下read()可能为读取数据就返回所以需要关注返回的值int表示读取的字节
-
--->ServerSocketChannel
+Channel与Stream:Stream是单向的例如InputStream和OutputStream但是Channel是双向的
+-->ServerSocketChannel (server)
 server
 打开:ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
 关闭:serverSocketChannel.close()
@@ -2048,6 +2087,7 @@ java.lang.reflect.Modifier;
 </configuration> 
 assembly.load("当前程序集的名称").CreateInstance("当前命名空间名称".要实例化的类名);
 可以更好的变换数据库
+
 
 
 
