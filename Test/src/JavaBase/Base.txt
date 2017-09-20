@@ -211,6 +211,25 @@ NIO{
 		aFile = new RandomAccessFile("a.txt","rw");
 		FileChannel fileChannel = aFile.getChannel();
 		ByteBuffer buf = ByteBuffer.allocate(1024);
+
+		int bytesRead = fileChannel.read(buf);
+		while(bytesRead != -1) {
+			buf.flip();
+			while(buf.hasRemaining()) {
+				System.out.print((char)buf.get());
+			}
+			buf.compat();//或者buf.clear();
+		}
+	}catch(IOException e) {
+		e.printStackTrace();
+	}finally{
+		try{
+			if(aFile != null) {
+				aFile.close();
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
 
@@ -224,6 +243,78 @@ client
 关闭:socketChannel.close()
 读取中:非阻塞模式下read()可能为读取数据就返回所以需要关注返回的值int表示读取的字节
 Channel与Stream:Stream是单向的例如InputStream和OutputStream但是Channel是双向的
+TCP案例:客户端使用NIO服务端使用IO
+client{
+	ByteBuffer buffer = new ByteBuffer[1024];
+	SocketChannel socketChannel = null;
+	try{
+		socketChannel = SocketChannel.open();
+		//配置阻塞行为实现非阻塞
+		socketChannel.configureBlocking(false);
+		socketChannel.connect(new InetSocketAddress("127.0.0.1",8080));
+
+		if(socketChannel.finishConnect()) {
+			int i =0;
+			while(true) {
+				TimeUnit.SECONDS.sleep(1);
+				String info = "I`am"+i+"information";
+				buffer.clear();
+				buffer.put(info.getBytes());
+				buffer.flip();
+				while(bufffer.hasRemaining()) {
+					System.out.println(buffer);
+                    socketChannel.write(buffer);
+				}
+				i++;
+			}
+		}
+	}catch(IOException e| interruptException e){
+		e.printStackTrace();
+	}finally{
+		try{
+			socketChannel.close();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+server{
+	ServerSocket serverSocket = null;
+	InputStream is = null;
+	try{
+		serverSocket = new ServerSocket(8080);
+
+		while(true) {
+			int recvMsgSize = 0;
+			byte[] receBuf = new byte[1024];
+			while(true) {
+				Socket clntSocket = serverSocket.accept();
+	            SocketAddress clientAddress = clntSocket.getRemoteSocketAddress();
+	            System.out.println("Handling client at "+clientAddress);
+	            in = clntSocket.getInputStream();
+	               while((recvMsgSize=in.read(recvBuf))!=-1){
+                   byte[] temp = new byte[recvMsgSize];
+                   System.arraycopy(recvBuf, 0, temp, 0, recvMsgSize);
+                   System.out.println(new String(temp));
+			}
+
+		}
+	}catch (IOException e){
+        e.printStackTrace();
+    }finally{
+           try{
+               if(serverSocket!=null){
+                   serverSocket.close();
+               }
+               if(in!=null){
+                   in.close();
+               }
+           }catch(IOException e){
+               e.printStackTrace();
+    	}
+    }  	
+}
 -->ServerSocketChannel (server)
 server
 打开:ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
@@ -231,11 +322,12 @@ server
 监听新进来的连接:while(true) { SocketChannel socketChannel = serverSocketChannel.accept();} serverSocketChannel可以设置非阻塞的，所以在accept()会立即返回如果没有新进来的连接返回的是null ;后面加判断if(!socketChannel=null) {}
 
 Buffer
--->每一个基本数据类型对应一个Buffer例如FloatBuffer 1.分配空间ByteBuffer buf = ByteBuffer.allocate(1024) 2.写入到buffer int bytesRead = fileChannel.read(buf) 3.调用filp方法buf.flip() 4.从Buffer读取数据buf.get()5.调用clear()(position=0,limit=capacity-->position=n,..-filp()->position=0,limit=n-clear()->初始)或者compact()Buffer有未读取数据的时候将未读取数据方法哦Buffer起始处，position=未读取数据末+1，这样Buffer准备好写入数据而不会覆盖未读取的数据
+-->每一个基本数据类型对应一个Buffer例如FloatBuffer 1.分配空间创建一个1024的缓存组 ByteBuffer buf = ByteBuffer.allocate(1024) 2.写入到buffer int bytesRead = fileChannel.read(buf) 3.调用filp方法buf.flip() 4.从Buffer读取数据buf.get()5.调用clear()(position=0,limit=capacity写入-->position=n,..-filp()->position=0,limit=n-clear()->初始)可能有些缓存对象没有被调用而被遗忘或者compact()Buffer有未读取数据的时候将未读取数据方法哦Buffer起始处，position=未读取数据末+1，这样Buffer准备好写入数据而不会覆盖未读取的数据 通过调用Buffer.mark()方法，可以标记Buffer中的一个特定的position，之后可以通过调用Buffer.reset()方法恢复到这个position。Buffer.rewind()方法将position设回0，所以你可以重读Buffer中的所有数据。limit保持不变，仍然表示能从Buffer中读取多少个元素
 	从Channel写入Buffer:fileChannel.read(buf) buf.put();从Buffer读取到Channel channel.write(buf) 从Buffer中读取buf.get()	
 -->MappedByteBuffer...
 
 Selector
+使用NIO选择器在大量的客户端连接服务端的时候吗，当方法阻塞时只要出现通道可以进行IO操作就指出信道(当不使用这个时需要循环遍历即主动轮巡所有通道得到其IO状态，这样机器浪费资源，但是如果使用Selector就会管理里面的通道，当有一个通道进行IO操作的时候会报告其进行什么样的IO操作是写还是读取)
 创建:Selector selector = Selector.open();
 注册(使channel和Selector配合): ssc = serverSocketChannel.open();这里的ssc必须是非阻塞的才能和Selector配合由于FileChannel不能切换到非阻塞模式，所以无法和Selector一起使用 ssc.socket().bind(new InetSocketAddress(PORT));ssc.configureBlocking(false);ssc.register(selector, SelectionKey.OP_ACCEPT#这个参数表明Selector监听Channel对于什么事件感兴趣Connect(连接就绪)、Accept(接受就绪)、Read、Writer,theObject#附加对象);
 	regist()返回的是SelectionKey对象，包含interest集合、ready集合int readySet = selectionKey.readyOps();可以得到什么事件准备好，也可以单独SelectionKey.isAcceptable()、SelectionKey访问Channel或Selector selectionKey.channel()
@@ -246,6 +338,106 @@ selectionKey.channel()返回的通道需要转换成你需要的类型如ServerS
 
 数据由通道(Channel类似于Stream但是是双向的)读取到缓冲区(如果目前没有可用的数据不会保存线程阻塞,写也是同理)，Selector(选择区)选择通道
 
+TCP服务端的NIO写法:
+server{
+	private static final int BUF_SIZE = 1024;
+	private static final int PORT = 8080;
+	private static final int TIMEOUT = 3000;
+
+	public static void main(String[] args) {
+		selector();
+	}
+
+	public static void handleAccept(SelectionKey key) throws IOException {
+		ServerSocketChannel ssChannel = (ServerSocketChannel) key.channel();
+		SocketChannel sc = ssChannel.accept();
+		sc.configureBlocking(false);
+		sc.register(key.selector(), SelectionKey.OP_READ,
+				ByteBuffer.allocateDirect(BUF_SIZE));
+	}
+
+	public static void handleRead(SelectionKey key) throws IOException {
+		SocketChannel sc = (SocketChannel) key.channel();
+		ByteBuffer buf = (ByteBuffer) key.attachment();
+		long bytesRead = sc.read(buf);
+		while (bytesRead > 0) {
+			buf.flip();
+			while (buf.hasRemaining()) {
+				System.out.print((char) buf.get());
+			}
+			System.out.println();
+			buf.clear();
+			bytesRead = sc.read(buf);
+		}
+		if (bytesRead == -1) {
+			sc.close();
+		}
+	}
+
+	public static void handleWrite(SelectionKey key) throws IOException {
+		ByteBuffer buf = (ByteBuffer) key.attachment();
+		buf.flip();
+		SocketChannel sc = (SocketChannel) key.channel();
+		while (buf.hasRemaining()) {
+			sc.write(buf);
+		}
+		buf.compact();
+	}
+
+	public static void selector() {
+		Selector selector = null;
+		ServerSocketChannel ssc = null;
+		try {
+			selector = Selector.open();
+			ssc = ServerSocketChannel.open();
+			ssc.socket().bind(new InetSocketAddress(PORT));
+			ssc.configureBlocking(false);
+			ssc.register(selector, SelectionKey.OP_ACCEPT);
+
+			while (true) {
+				if (selector.select(TIMEOUT) == 0) {
+					System.out.println("==");
+					continue;
+				}
+				Iterator<SelectionKey> iter = selector.selectedKeys()
+						.iterator();
+				while (iter.hasNext()) {
+					SelectionKey key = iter.next();
+					if (key.isAcceptable()) {
+						handleAccept(key);
+					}
+					if (key.isReadable()) {
+						handleRead(key);
+					}
+					if (key.isWritable() && key.isValid()) {
+						handleWrite(key);
+					}
+					if (key.isConnectable()) {
+						System.out.println("isConnectable = true");
+					}
+					iter.remove();
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (selector != null) {
+					selector.close();
+				}
+				if (ssc != null) {
+					ssc.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
+
+
 Java处理大文件一般使用BufferedReader或者BufferedInputStream这种带有缓冲的IO类，文件超大使用MapperByteBuffer
 select模型:将套接字通道(SocketChannel)注册到一个选择器Selector中，不时调用选择器的select方法返回满足的选择键SelectionKey
 SocketChannel读写通过ByteBuffer 直接:HeapByteBuffer直接操作堆内存但是对于大文件不好使 间接:MappedByteBuffer将文件映射到虚拟内存而不是物理内存 fileChannel.map(int mode（可访问内存映像文件的方式MapMode.READ_ONLY,READ_WRITE,PRIVATE（专用）修改会创建副本）,long position,long size) force()在RW模式下强行写入文件  load()将缓冲区文件写入内存 isLoader()缓冲区文件是否在内存中
@@ -253,6 +445,10 @@ SocketChannel读写通过ByteBuffer 直接:HeapByteBuffer直接操作堆内存�
 Scatter\Gatter 从Channel读取写入多个Buffer用Scatter Gatter将多个Buffer写入一个Channel
 transferFrom可以将数据从源通道反传输到FileChannel中 transferTo将数据从FileChannel传输到其他通道中
  Pipe有一个source通道和一个sink通道，数据将会由source写道sink通道中  Pipe.SourceChannel sourceChannel = pipeTemp.source();//向通道中读数据
+
+
+
+DatagramChannel
 
 同步与异步，阻塞和非阻塞？
 同步synchronous-->阻塞 调用发出后只有得到返回，自己才返回
