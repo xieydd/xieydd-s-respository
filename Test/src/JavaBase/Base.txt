@@ -336,6 +336,11 @@ Selector
 selector.selectionKeys().iterator()返回一个迭代对象 Iterator<SelectionKey> 在迭代这个对象例如while(true) {注意每一次迭代末尾的 iter.remove()因为Selector不会自己将已选择的键集从SelectKeys移除}
 selectionKey.channel()返回的通道需要转换成你需要的类型如ServerSocketChannel
 
+SelectionKey
+访问channel与Selection:selectionKey.channel(); selectionKey.selector();
+也可以将更多的信息附着到SelectionKey上 selectionKey.attach(Object);
+
+
 数据由通道(Channel类似于Stream但是是双向的)读取到缓冲区(如果目前没有可用的数据不会保存线程阻塞,写也是同理)，Selector(选择区)选择通道
 
 TCP服务端的NIO写法:
@@ -350,10 +355,10 @@ server{
 
 	public static void handleAccept(SelectionKey key) throws IOException {
 		ServerSocketChannel ssChannel = (ServerSocketChannel) key.channel();
-		SocketChannel sc = ssChannel.accept();
+		SocketChannel sc = ssChannel.accept();//ssc.accept() Accepts a connection made to this channel's socket.
 		sc.configureBlocking(false);
 		sc.register(key.selector(), SelectionKey.OP_READ,
-				ByteBuffer.allocateDirect(BUF_SIZE));
+				ByteBuffer.allocateDirect(BUF_SIZE));//利用channel的regist方法向在Selector上注册的channel上添加缓存
 	}
 
 	public static void handleRead(SelectionKey key) throws IOException {
@@ -390,30 +395,46 @@ server{
 		try {
 			selector = Selector.open();
 			ssc = ServerSocketChannel.open();
-			ssc.socket().bind(new InetSocketAddress(PORT));
-			ssc.configureBlocking(false);
-			ssc.register(selector, SelectionKey.OP_ACCEPT);
+			ssc.socket().bind(new InetSocketAddress(PORT));//ServerSocketChannel.socket() --> ServerSocket
+			ssc.configureBlocking(false);//设置非阻塞，在这个模式下的accept()会立即返回SocketChannel如果没有返回null
+			/*
+			相当于
+			ServerSocketChannel ssc = ServerSocketChannel.open();
+			ssc.socket().bind(new InetSocketAddress(8080));
+			while(true) {
+				if(ssc.accept() != null) {
+				...
+				}
+			}
+
+			 */
+			
+			//SelectionKey是一个类 public static final int OP_ACCEPT = 1 << 4;对于OP_READ = 1 << 0 OP_WRITE = 1 << 2 OP_CONNECT = 1 << 3
+			
+			ssc.register(selector, SelectionKey.OP_ACCEPT);//将感兴趣的通道注册到选择器上
 
 			while (true) {
-				if (selector.select(TIMEOUT) == 0) {
+				//Selects a set of keys whose corresponding channels are ready for I/O operations
+				//select()阻塞到至少有一个通道在你注册的事件上就绪了。select(long timeout)和select()一样，除了最长会阻塞timeout毫秒(参数)。selectNow()不会阻塞，不管什么通道就绪都立刻返回（译者注：此方法执行非阻塞的选择操作。如果自从前一次选择操作后，没有通道变成可选择的，则此方法直接返回零。）
+				if (selector.select(TIMEOUT) == 0) {//这样就是没有通道准备
 					System.out.println("==");
 					continue;
 				}
 				Iterator<SelectionKey> iter = selector.selectedKeys()
-						.iterator();
+						.iterator();//Set<SelectionKey>.iterator();
 				while (iter.hasNext()) {
 					SelectionKey key = iter.next();
 					if (key.isAcceptable()) {
-						handleAccept(key);
+						handleAccept(key);//等待就绪
 					}
 					if (key.isReadable()) {
-						handleRead(key);
+						handleRead(key);//等待读
 					}
 					if (key.isWritable() && key.isValid()) {
-						handleWrite(key);
+						handleWrite(key);//等待写
 					}
 					if (key.isConnectable()) {
-						System.out.println("isConnectable = true");
+						System.out.println("isConnectable = true");//等待链接
 					}
 					iter.remove();
 				}
@@ -439,12 +460,114 @@ server{
 
 
 Java处理大文件一般使用BufferedReader或者BufferedInputStream这种带有缓冲的IO类，文件超大使用MapperByteBuffer
+
 select模型:将套接字通道(SocketChannel)注册到一个选择器Selector中，不时调用选择器的select方法返回满足的选择键SelectionKey
-SocketChannel读写通过ByteBuffer 直接:HeapByteBuffer直接操作堆内存但是对于大文件不好使 间接:MappedByteBuffer将文件映射到虚拟内存而不是物理内存 fileChannel.map(int mode（可访问内存映像文件的方式MapMode.READ_ONLY,READ_WRITE,PRIVATE（专用）修改会创建副本）,long position,long size) force()在RW模式下强行写入文件  load()将缓冲区文件写入内存 isLoader()缓冲区文件是否在内存中
+SocketChannel读写通过ByteBuffer 直接:HeapByteBuffer直接操作堆内存但是对于大文件不好使 间接:MappedByteBuffer将文件映射到虚拟内存而不是物理内存 
+FileChannel提供map方法来吧文件映射为内存映像文件 MappedByteBuffer fileChannel.map(int mode（可访问内存映像文件的方式MapMode.READ_ONLY,READ_WRITE,PRIVATE（专用）修改会创建副本）,long position,long size) force()在缓冲区RW模式下强行写入文件  load()将缓冲区文件写入内存，并返回引用 isLoader()缓冲区文件是否在内存中
+
+案例:
+采用ByteBuffer和MappedByteBuffer分别读取大小约为200M的文件
+ByteBuffer{
+	RandomAccessFile aFile = null;
+	FileChannel fs = null;
+	try{
+		aFile = new RandomAccessFile("z.txt","rw");
+		fs = aFile.getChannel();
+
+		long beginTime = System.currentTimeMillis();
+		ByteBuff buff = ByteBuffer.allocate((int)aFile.length());
+		buff.clear();
+		fs.read(buff);
+
+		long endTime = System.currentTimeMillis();
+		System.out.println("Read time: "+(timeEnd-timeBegin)+"ms");
+	}catch(IOException e){
+		e.printStackTrace;
+	}finally{
+		try{
+			if(aFile != null) {
+				aFile.close();
+
+			}
+			if(fs != null) {
+				fs.close();
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+MappedByteBuffer{
+	RandomAccessFile aFile = null;
+	FileChannel fs = null;
+	try{
+		aFile = new RandomAccessFile("a.txt","rw");
+		fs = aFile.getChannel();
+		long beginTime = System.currentTimeMillis();
+		MappedByteBuffer mbb = fs.map(FileChannel.MapMode.READ_ONLY,0,aFile.length());
+
+		long endTime = System.currentTimeMillis();
+		System.out.println("Read time: "+(timeEnd-timeBegin)+"ms");
+	}catch(IOException e){
+		e.printStackTrace;
+	}finally{
+		try{
+			if(aFile != null) {
+				aFile.close();
+
+			}
+			if(fs != null) {
+				fs.close();
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+结果:
+Read time: 1ms
+=============
+Read time: 407ms
+
 
 Scatter\Gatter 从Channel读取写入多个Buffer用Scatter Gatter将多个Buffer写入一个Channel
 transferFrom可以将数据从源通道反传输到FileChannel中 transferTo将数据从FileChannel传输到其他通道中
- Pipe有一个source通道和一个sink通道，数据将会由source写道sink通道中  Pipe.SourceChannel sourceChannel = pipeTemp.source();//向通道中读数据
+案例:
+ScattingAndGather{
+	public static void main(String args[]){
+        gather();
+    }
+ 
+    public static void gather()
+    {
+        ByteBuffer header = ByteBuffer.allocate(10);
+        ByteBuffer body = ByteBuffer.allocate(10);
+ 
+        byte [] b1 = {'0', '1'};
+        byte [] b2 = {'2', '3'};
+        header.put(b1);
+        body.put(b2);
+ 
+        ByteBuffer [] buffs = {header, body};
+ 
+        try
+        {
+            FileOutputStream os = new FileOutputStream("src/scattingAndGather.txt");
+            FileChannel channel = os.getChannel();
+            channel.write(buffs);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+Pipe有一个source通道和一个sink通道，数据将会由source写道sink通道中  Pipe.SourceChannel sourceChannel = pipeTemp.source();//向通道中读数据
+
 
 
 
