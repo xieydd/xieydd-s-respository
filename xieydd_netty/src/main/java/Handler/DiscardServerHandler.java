@@ -17,7 +17,7 @@ import io.netty.util.ReferenceCountUtil;
 修改2:实现echo服务器功能，将输入数据打印到客户端
 * @author xieydd xieydd@gmail.com  
 
-* @date 2017-9-20 上午11:37:03 
+* @date 2017-9-20 上午11:37:04 
 
 *
  */
